@@ -142,6 +142,73 @@ DELETE /api/produtos/{id}
 </section>
 
 <section>
+  <h2>⚙️ Configuração do Ambiente (Desenvolvimento)</h2>
+
+  <p>
+    Para rodar o projeto localmente, é necessário configurar o ambiente de desenvolvimento com o .NET SDK e criar os microserviços.
+  </p>
+
+  <h3>🧩 Pré-requisitos</h3>
+  <ul>
+    <li>.NET SDK 8.0 ou superior</li>
+    <li>PostgreSQL</li>
+    <li>Git</li>
+  </ul>
+
+  <h3>📥 Clonar o repositório</h3>
+  <pre>
+git clone https://github.com/seu-usuario/seu-repositorio.git
+cd marketplace-microservices
+  </pre>
+
+  <h3>🧱 Criação dos Microserviços</h3>
+  <p>
+    Cada microserviço foi criado como um projeto independente utilizando ASP.NET Web API.
+  </p>
+
+  <pre>
+cd src/nome-do-service
+dotnet new webapi
+  </pre>
+
+  <p>
+    Esse processo deve ser repetido para cada serviço (users, products, cart, orders, etc).
+  </p>
+
+  <h3>📂 Estrutura interna dos serviços</h3>
+  <p>
+    Após a criação do projeto, foram adicionadas as camadas para organização da aplicação:
+  </p>
+
+  <pre>
+mkdir Controllers Services Repositories DTO Models Data
+  </pre>
+
+  <h3>🌐 Criação do Frontend (MVC)</h3>
+  <pre>
+cd web
+dotnet new mvc
+  </pre>
+
+  <h3>▶️ Executar um microserviço</h3>
+  <pre>
+cd src/products-service
+dotnet run
+  </pre>
+
+  <p>
+    A API estará disponível em <code>http://localhost:porta</code>.
+  </p>
+
+  <h3>💡 Observações</h3>
+  <ul>
+    <li>Cada microserviço é executado de forma independente</li>
+    <li>Cada serviço possui seu próprio banco de dados</li>
+    <li>A aplicação MVC consome os serviços via HTTP</li>
+  </ul>
+</section>
+
+<section>
   <h2>🚀 Execução</h2>
   <ol>
     <li>Clonar o repositório</li>
