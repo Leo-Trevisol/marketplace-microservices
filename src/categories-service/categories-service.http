@@ -1,6 +1,0 @@
-@categories_service_HostAddress = http://localhost:5016
-
-GET {{categories_service_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
