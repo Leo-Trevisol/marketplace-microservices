@@ -1,0 +1,6 @@
+@Ftec.ProjetoWeb.Produtos_HostAddress = http://localhost:5014
+
+GET {{Ftec.ProjetoWeb.Produtos_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

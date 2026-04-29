@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Aplicacao/">
+    <Project Path="Ftec.ProjetoWeb.Produtos.Aplicacao/Ftec.ProjetoWeb.Produtos.Aplicacao.csproj" />
+  </Folder>
+  <Folder Name="/Dominio/">
+    <Project Path="Ftec.ProjetoWeb.Produtos.Dominio/Ftec.ProjetoWeb.Produtos.Dominio.csproj" />
+  </Folder>
+  <Folder Name="/Persistencia/">
+    <Project Path="Ftec.ProjetoWeb.Produtos.Persistencia/Ftec.ProjetoWeb.Produtos.Persistencia.csproj" />
+    <Project Path="Ftec.ProjetoWeb.Produtos.Repositorio.Test/Ftec.ProjetoWeb.Produtos.Repositorio.Test.csproj" />
+  </Folder>
+  <Folder Name="/Servico/">
+    <Project Path="Ftec.ProjetoWeb.Produtos/Ftec.ProjetoWeb.Produtos.csproj" />
+  </Folder>
+</Solution>
