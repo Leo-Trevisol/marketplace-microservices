@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Ftec.ProjetoWeb.Produtos.Dominio\Ftec.ProjetoWeb.Produtos.Dominio.csproj" />
+    <ProjectReference Include="..\Ftec.ProjetoWeb.Produtos.Persistencia\Ftec.ProjetoWeb.Produtos.Persistencia.csproj" />
+  </ItemGroup>
+
 </Project>
