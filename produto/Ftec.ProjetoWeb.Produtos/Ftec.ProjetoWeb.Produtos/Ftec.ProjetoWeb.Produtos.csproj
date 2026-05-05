@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Ftec.ProjetoWeb.Produtos.Aplicacao\Ftec.ProjetoWeb.Produtos.Aplicacao.csproj" />
+  </ItemGroup>
+
 </Project>
