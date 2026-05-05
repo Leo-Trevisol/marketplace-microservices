@@ -6,6 +6,7 @@ namespace Ftec.ProjetoWeb.Produtos.Repositorio.Test
     [TestClass]
     public sealed class ProdutoTest
     {
+
     }
 }
 
