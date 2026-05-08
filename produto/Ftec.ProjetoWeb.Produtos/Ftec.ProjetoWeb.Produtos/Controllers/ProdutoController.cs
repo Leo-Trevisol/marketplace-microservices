@@ -1,6 +1,8 @@
 using Ftec.ProjetoWeb.Produtos.Aplicacao;
 using Ftec.ProjetoWeb.Produtos.Aplicacao.DTO;
+using Ftec.ProjetoWeb.Produtos.Dominio.Entidade;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.NetworkInformation;
 
 namespace Ftec.ProjetoWeb.Produtos.Controllers
 {
@@ -47,32 +49,41 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
         }
 
         [HttpPost]
-        public IActionResult InserirProduto([FromBody] ProdutoDTO produto) {
+        public Response<Produto> InserirProduto([FromBody] ProdutoDTO produto) {
             try {
-                produtoAplicacao.AdicionarProduto(produto);
-                return Created(string.Empty, produto);
+                var response = produtoAplicacao.AdicionarProduto(produto);
+                return response;
             } catch (Exception ex) {
-                return BadRequest(ex.Message);
+                return new Response<Produto>() {
+                    Sucesso = false,
+                    Data = null,
+                    Message = ex.Message
+                };
             }
         }
 
         [HttpPut]
-        public IActionResult AtualizarProduto([FromBody] ProdutoDTO produto) {
+        public Response<Produto> AtualizarProduto([FromBody] ProdutoDTO produto) {
             try {
-                produtoAplicacao.AlterarProduto(produto);
-                return Ok(produto);
+                var response = produtoAplicacao.AlterarProduto(produto);
+                return response;
             } catch (Exception ex) {
-                return BadRequest(ex.Message);
+                return new Response<Produto>() {
+                    Sucesso = false,
+                    Data = null,
+                    Message = ex.Message
+                };
             }
         }
 
         [HttpDelete("{codigo}")]
-        public IActionResult DeleteProduto(string codigo) {
+        public Response<Produto> DeleteProduto(string codigo) {
             try {
-                produtoAplicacao.ExcluirProduto(codigo);
-                return NoContent();
+                var status = produtoAplicacao.ExcluirProduto(codigo);
+                var response = new Response<Produto>(status, null, (status ? "Sucesso ao exlcuir produto!" : "Erro ao excluir produto"));
+                return response;
             } catch (Exception ex) {
-                return BadRequest(ex.Message);
+                return new Response<Produto>(false, null, ex.Message);
             }
         }
     }

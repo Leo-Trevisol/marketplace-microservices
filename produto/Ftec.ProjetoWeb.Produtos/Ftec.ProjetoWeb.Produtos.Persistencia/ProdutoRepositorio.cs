@@ -9,11 +9,10 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
     public class ProdutoRepositorio : IProdutoRepositorio{
 
         private string stringConexao;
-
         public ProdutoRepositorio(string strConexao) {
             stringConexao = strConexao;
         }
-        public void CriarProduto(Produto produto) {
+        public Response<Produto> CriarProduto(Produto produto) {
             using (var conexao = new NpgsqlConnection(stringConexao)) {
                 conexao.Open();
                 using (var transacao = conexao.BeginTransaction()) {
@@ -24,7 +23,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
 
                         comando.CommandText = 
                             "INSERT INTO " +
-                            "public.produto(id, codigo, nome, preco, quantidadeEstoque, estoqueMinimoVenda, idCategoria, descricao, disponivel) " +
+                            "public.produtos(id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", descricao, disponivel) " +
                             "VALUES (@id, @codigo, @nome, @preco, @quantidadeEstoque, @estoqueMinimoVenda, @idCategoria, @descricao, @disponivel);";
                         comando.Parameters.AddWithValue("id", produto.Id);
                         comando.Parameters.AddWithValue("codigo", produto.Codigo);
@@ -38,14 +37,24 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                         comando.ExecuteNonQuery();
 
                         transacao.Commit();
+                        return new Response<Produto> {
+                            Sucesso = true,
+                            Data = produto,
+                            Message = "Produto criado com sucesso"
+                        };
                     } catch (Exception e) {
                         transacao.Rollback();
+                        return new Response<Produto> {
+                            Sucesso = false,
+                            Data = null,
+                            Message = $"Erro ao criar produto: {e.Message}"
+                        };
                         throw e;
                     }
                 }
             }
         }
-        public void AlterarProduto(Produto produto) {
+        public Response<Produto> AlterarProduto(Produto produto) {
             using (var conexao = new NpgsqlConnection(stringConexao)) {
                 conexao.Open();
                 using (var transacao = conexao.BeginTransaction()) {
@@ -53,10 +62,10 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                         var comando = new NpgsqlCommand();
                         comando.Connection = conexao;
                         comando.Transaction = transacao;
-
+                        
                         comando.CommandText =
-                            "UPDATE public.produto SET " +
-                            "codigo = @codigo, nome = @nome, preco = @preco, quantidadeEstoque = @quantidadeEstoque, estoqueMinimoVenda = @estoqueMinimoVenda, idCategoria = @idCategoria, descricao = @descricao, disponivel = @disponivel " +
+                            "UPDATE public.produtos SET " +
+                            "codigo = @codigo, nome = @nome, preco = @preco, \"quantidadeEstoque\" = @quantidadeEstoque, \"estoqueMinimoVenda\" = @estoqueMinimoVenda, \"idCategoria\" = @idCategoria, descricao = @descricao, disponivel = @disponivel " +
                             "WHERE id = @id;";
 
                         comando.Parameters.AddWithValue("id", produto.Id);
@@ -72,14 +81,24 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
 
                         transacao.Commit();
 
+                        return new Response<Produto> {
+                            Sucesso = true,
+                            Data = produto,
+                            Message = "Produto alterado com sucesso"
+                        };
+
                     } catch (Exception e) {
                         transacao.Rollback();
-                        throw e;
+                        return new Response<Produto> {
+                            Sucesso = false,
+                            Data = null,
+                            Message = $"Erro ao alterar produto: {e.Message}"
+                        };
                     }
                 }
             }
         }
-        public void ExcluirProduto(string codigo) {
+        public bool ExcluirProduto(string codigo) {
             using (var conexao = new NpgsqlConnection(stringConexao)) {
                 conexao.Open();
                 using (var transacao = conexao.BeginTransaction()) {
@@ -88,14 +107,15 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                         comando.Connection = conexao;
                         comando.Transaction = transacao;
 
-                        comando.CommandText = "DELETE FROM public.produto WHERE codigo = @codigo;";
+                        comando.CommandText = "DELETE FROM public.produtos WHERE codigo = @codigo;";
                         comando.Parameters.AddWithValue("codigo", codigo);
                         comando.ExecuteNonQuery();
 
                         transacao.Commit();
+                        return true;
                     } catch (Exception e) {
                         transacao.Rollback();
-                        throw e;
+                        return false;
                     }
                 }
             }
@@ -109,9 +129,9 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                 var comando = new NpgsqlCommand();
                 comando.Connection = conexao;
 
-                comando.CommandText = 
-                    "SELECT id, codigo, nome, preco, quantidadeEstoque, estoqueMinimoVenda, idCategoria, descricao, disponivel " +
-                    "FROM public.produto " +
+                comando.CommandText =
+                    "SELECT id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", descricao, disponivel " +
+                    "FROM public.produtos " +
                     "WHERE codigo = @codigo;";
 
                 comando.Parameters.AddWithValue("codigo", codigo);
@@ -144,8 +164,8 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                 comando.Connection = conexao;
 
                 comando.CommandText =
-                    "SELECT id, codigo, nome, preco, quantidadeEstoque, estoqueMinimoVenda, idCategoria, descricao, disponivel " +
-                    "FROM public.produto " +
+                    "SELECT id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", descricao, disponivel " +
+                    "FROM public.produtos " +
                     "WHERE codigo LIKE @texto OR nome LIKE @texto OR descricao LIKE @texto;";
 
                 comando.Parameters.AddWithValue("texto", $"%{texto}%");
@@ -178,7 +198,8 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
 
                 var comando = new NpgsqlCommand();
                 comando.Connection = conexao;
-                comando.CommandText = "SELECT id, codigo, descricao, preco FROM public.produto;";
+                comando.CommandText = "SELECT id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", descricao, disponivel " +
+                    "FROM public.produtos;";
 
                 using (var reader = comando.ExecuteReader()) {
                     while (reader.Read()) {
