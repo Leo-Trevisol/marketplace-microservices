@@ -25,8 +25,7 @@
 <section>
   <h2>📌 Objetivo</h2>
   <p>
-    Desenvolver uma aplicação web baseada em arquitetura de microserviços, aplicando conceitos de APIs REST,
-    integração entre serviços, persistência de dados e deploy em cloud.
+    Desenvolver um marketplace baseado em arquitetura de microserviços, aplicando conceitos de APIs REST, integração entre serviços, persistência de dados e deploy em cloud.
   </p>
 </section>
 
@@ -38,15 +37,16 @@
 
   <h3>Microserviços:</h3>
   <ul>
-    <li>Usuário</li>
-    <li>Produto</li>
-    <li>Categoria</li>
+    <li>Usuários</li>
+    <li>Produtos</li>
+    <li>Categorias</li>
     <li>Carrinho</li>
-    <li>Pedido</li>
-    <li>Pagamento</li>
+    <li>Pedidos</li>
+    <li>Pagamentos</li>
+    <li>Frete</li>
     <li>Estatísticas</li>
-    <li>Avaliação (Review)</li>
-    <li>Busca (Procura)</li>
+    <li>Avaliações</li>
+    <li>Estatísticas</li>
   </ul>
 
   <p>
@@ -89,28 +89,141 @@ README.md
 </section>
 
 <section>
-  <h2>🔧 Estrutura dos Microserviços</h2>
+  <h2>🔧 Estrutura do Microserviço</h2>
 
   <pre>
-Controllers/
-Services/
-Repositories/
-DTO/
-Models/
-Data/
+    Controllers/
+    Services/
+    Repositories/
+    DTO/
   </pre>
+
+<section>
+  <h2>💂‍♀️ Entidade</h2>
+
+  <h3>Produtos</h3>
+
+| Campo                | Tipo      | Descrição                                                  |
+| -------------------- | --------- | ---------------------------------------------------------- |
+| `Id`                 | `Guid`    | Identificador único                                        |
+| `Codigo`             | `string`  | Código único do produto                                    |
+| `Nome`               | `string`  | Nome do produto                                            |
+| `Preco`              | `decimal` | Preço do produto                                           |
+| `QuantidadeEstoque`  | `int`     | Quantidade do produto em estoque                           |
+| `EstoqueMinimoVenda` | `int`     | xxxxxxx                                                    |
+| `IdCategoria`        | `Guid`    | Identificador único da categoria do produto                |
+| `Descricao`          | `string`  | Descrição opcional do produto                              |
+| `Disponivel`         | `bool`    | Produto disponível para venda = true. Indisponível = false |
+
+</section>
+
 </section>
 
 <section>
-  <h2>🔌 Padrão de Endpoints</h2>
+  <h2>🔌 Endpoints</h2>
 
+  <section>
+    <h3>POST api/produto/cadastrarProduto - Cadastrar novo produto</h3>
+    <h4>Body</h4>
+<pre>
+{
+  "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
+  "codigo": "PROD-100",
+  "nome": "Caneta Azul BIC",
+  "preco": 120.90,
+  "quantidadeEstoque": 5,
+  "estoqueMinimoVenda": 10,
+  "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+  "descricao": "Descrição do produto referente novo teste via postman",
+  "disponivel": true
+}
+</pre>
+  <h4>Resposta: 201 Created</h4>
+  </section>
+  
+  <section>
+    <h3>PUT api/produto/atualizarProduto - Atualizar produto existente</h3>
+    <h4>Body</h4>
+<pre>
+{
+  "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
+  "codigo": "PROD-100",
+  "nome": "Caneta Vermelha BIC",
+  "preco": 130.90,
+  "quantidadeEstoque": 10,
+  "estoqueMinimoVenda": 10,
+  "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+  "descricao": "Descrição do produto referente novo teste via postman",
+  "disponivel": true
+}
+</pre>
+  <h4>Resposta: 200 Ok</h4>
+  </section>
+  
+  <section>
+    <h3>DELETE api/produto/excluirProduto/{codigo} - Deletar produto existente</h3>
+    
+  <h4>Resposta: 200 Ok</h4>
+  </section>
+  <section>
+    <h3>GET api/produto/listar - Lista todos os produtos</h3>
+    
+  <h4>Resposta</h4>
   <pre>
-GET    /api/produtos
-GET    /api/produtos/{id}
-POST   /api/produtos
-PUT    /api/produtos/{id}
-DELETE /api/produtos/{id}
-  </pre>
+[
+  {
+    "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
+    "codigo": "PROD-100",
+    "nome": "Caneta Vermelha BIC",
+    "preco": 130.90,
+    "quantidadeEstoque": 10,
+    "estoqueMinimoVenda": 10,
+    "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+    "descricao": "Descrição do produto referente novo teste via postman",
+    "disponivel": true
+  },
+  {...},
+  {...}
+]
+</pre>
+  </section>
+  <section>
+    <h3>GET api/produto/obtem/{codigo} - Obtém produto pelo código</h3>
+    
+  <h4>Resposta</h4>
+  <pre>
+{
+  "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
+  "codigo": "PROD-100",
+  "nome": "Caneta Vermelha BIC",
+  "preco": 130.90,
+  "quantidadeEstoque": 10,
+  "estoqueMinimoVenda": 10,
+  "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+  "descricao": "Descrição do produto...",
+  "disponivel": true
+}
+</pre>
+  </section>
+  <section>
+    <h3>GET api/produto/buscar/{texto} - Busca produto por texto em código, nome ou descrição</h3>
+    
+  <h4>Resposta</h4>
+  <pre>
+{
+  "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
+  "codigo": "PROD-100",
+  "nome": "Caneta Vermelha BIC",
+  "preco": 130.90,
+  "quantidadeEstoque": 10,
+  "estoqueMinimoVenda": 10,
+  "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+  "descricao": "Descrição do produto...",
+  "disponivel": true
+}
+</pre>
+  </section>
+  
 </section>
 
 <section>
@@ -136,7 +249,7 @@ DELETE /api/produtos/{id}
   <h2>🗄️ Banco de Dados</h2>
   <ul>
     <li>PostgreSQL</li>
-    <li>Um banco por microserviço</li>
+    <li>Um banco de dados para cada microserviço</li>
     <li>Scripts disponíveis na pasta <code>/database</code></li>
   </ul>
 </section>
