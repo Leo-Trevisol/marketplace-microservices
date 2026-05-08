@@ -70,6 +70,44 @@ namespace Ftec.ProjetoWeb.Produtos.Repositorio.Test
                 Assert.Fail($"Exceção lançada durante a exclusão: {ex.Message}");
             }
         }
+
+        [TestMethod]
+        public void TestObterProduto() {
+            var produto = CriarProdutoTeste();
+
+            repositorio.CriarProduto(produto);
+
+            try {
+                var produtoObtido = repositorio.ObtemPorCodigo(produto.Codigo);
+                Assert.IsNotNull(produtoObtido, "Produto obtido com sucesso.");
+            } catch (Exception ex) {
+                Assert.Fail($"Exceção lançada durante a obtenção: {ex.Message}");
+            }
+        }
+
+        [TestMethod]
+        public void TestProcurarProdutoPorTexto() {
+            var produto = CriarProdutoTeste();
+            repositorio.CriarProduto(produto);
+            try {
+                var produtosEncontrados = repositorio.ProcurarPorTexto("Cadeira");
+                Assert.IsTrue(produtosEncontrados.Any(p => p.Codigo == produto.Codigo), "Produto encontrado por texto.");
+            } catch (Exception ex) {
+                Assert.Fail($"Exceção lançada durante a busca por texto: {ex.Message}");
+            }
+        }
+
+        [TestMethod]
+        public void TestListarProdutos() {
+            var produto = CriarProdutoTeste();
+            repositorio.CriarProduto(produto);
+            try {
+                var produtos = repositorio.ListaTodosProdutos();
+                Assert.IsTrue(produtos.Any(p => p.Codigo == produto.Codigo), "Produto listado com sucesso.");
+            } catch (Exception ex) {
+                Assert.Fail($"Exceção lançada durante a listagem: {ex.Message}");
+            }
+        }
     }
 }
 
