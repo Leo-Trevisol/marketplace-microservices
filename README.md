@@ -35,25 +35,6 @@
     O sistema é composto por um frontend em ASP.NET MVC que consome múltiplos microserviços independentes.
   </p>
 
-  <h3>Microserviços:</h3>
-  <ul>
-    <li>Usuários</li>
-    <li>Produtos</li>
-    <li>Categorias</li>
-    <li>Carrinho</li>
-    <li>Pedidos</li>
-    <li>Pagamentos</li>
-    <li>Frete</li>
-    <li>Estatísticas</li>
-    <li>Avaliações</li>
-    <li>Estatísticas</li>
-  </ul>
-
-  <p>
-    Cada microserviço possui sua própria API REST e banco de dados independente (PostgreSQL).
-  </p>
-</section>
-
 <section>
   <h2>⚙️ Tecnologias</h2>
 
@@ -77,29 +58,7 @@
 </section>
 
 <section>
-  <h2>📁 Estrutura do Projeto</h2>
-
-  <pre>
-src/        # Microserviços
-web/        # Aplicação MVC
-docs/       # Documentação
-database/   # Scripts SQL
-README.md
-  </pre>
-</section>
-
-<section>
-  <h2>🔧 Estrutura do Microserviço</h2>
-
-  <pre>
-    Controllers/
-    Services/
-    Repositories/
-    DTO/
-  </pre>
-
-<section>
-  <h2>💂‍♀️ Entidade</h2>
+  <h2>💂‍♀️ Entidade - Produto</h2>
 
   <h3>Produtos</h3>
 
@@ -355,27 +314,6 @@ dotnet new webapi
   <p>
     Esse processo deve ser repetido para cada serviço (users, products, cart, orders, etc).
   </p>
-
-  <h3>📂 Estrutura interna dos serviços</h3>
-  <p>
-    Após a criação do projeto, foram adicionadas as camadas para organização da aplicação:
-  </p>
-
-  <pre>
-mkdir Controllers Services Repositories DTO Models Data
-  </pre>
-
-  <h3>🌐 Criação do Frontend (MVC)</h3>
-  <pre>
-cd web
-dotnet new mvc
-  </pre>
-
-  <h3>▶️ Executar um microserviço</h3>
-  <pre>
-cd src/products-service
-dotnet run
-  </pre>
 
   <p>
     A API estará disponível em <code>http://localhost:porta</code>.
