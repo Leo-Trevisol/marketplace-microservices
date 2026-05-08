@@ -16,39 +16,53 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
             produtoAplicacao = new ProdutoAplicacao(config["strConexao"]);
         }
 
-        [HttpGet]
-        public IActionResult ListarProdutos() {
+        [HttpGet("listar")]
+        public Response<List<ProdutoDTO>> ListarProdutos() {
             try {
                 var produtos = produtoAplicacao.ListarProdutos();
-                return Ok(produtos);
+                if (produtos != null && produtos.Count > 0) {
+                    var total = produtos.Count();
+                    return new Response<List<ProdutoDTO>>(true, produtos, $"{total} Produtos listados!");
+                } else {
+                    return new Response<List<ProdutoDTO>>(false, null, "Nenhum produto cadastrado!");
+                }
             } catch (Exception ex) {
-                return StatusCode(500, ex.Message);
+                return new Response<List<ProdutoDTO>>(false, null, $"ERRO! {ex.Message}");
             }
         }
 
-        [HttpGet("{texto}")]
-        public IActionResult ProcurarPorTexto(string texto) {
+        [HttpGet("buscar/{texto}")]
+        public Response<List<ProdutoDTO>> ProcurarPorTexto(string texto) {
             try {
                 var produtos = produtoAplicacao.ProcurarPorTexto(texto);
-                return Ok(produtos);
+                if(produtos != null && produtos.Count > 0) {
+                    var total = produtos.Count();
+                    return new Response<List<ProdutoDTO>>(true, produtos, $"{total} Produtos encontrados!");
+                } else {
+                    return new Response<List<ProdutoDTO>>(false, null, "Nenhum produto encontrado! Revise o termo de busca");
+                }
             } catch (Exception ex) {
-                return StatusCode(500, ex.Message);
+                return new Response<List<ProdutoDTO>>(false, null, $"ERRO! {ex.Message}");
             }
         }
 
-        [HttpGet("{codigo}")]
-        public IActionResult ObtemPorCodigo(string codigo) {
+        [HttpGet("obtem/{codigo}")]
+        public Response<ProdutoDTO> ObtemPorCodigo(string codigo) {
             try {
                 var produto = produtoAplicacao.ObterProduto(codigo);
-                return Ok(produto);
+                if(produto == null) {
+                    return new Response<ProdutoDTO>(false, null, "Nenhum produto encontrado. Altere o código ou revise a pesquisa");
+                } else {
+                    return new Response<ProdutoDTO>(true, produto, "Produto encontrado");
+                }
             } catch (Exception ex) when (ex.Message.Contains("não encontrado")) {
-                return NotFound(ex.Message);
+                return new Response<ProdutoDTO>(false, null, "Produto não encontrado");
             } catch (Exception ex) {
-                return StatusCode(500, ex.Message);
+                return new Response<ProdutoDTO>(false, null, $"ERRO! {ex.Message}");
             }
         }
 
-        [HttpPost]
+        [HttpPost("cadastrarProduto")]
         public Response<Produto> InserirProduto([FromBody] ProdutoDTO produto) {
             try {
                 var response = produtoAplicacao.AdicionarProduto(produto);
@@ -62,7 +76,7 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("atualizarProduto")]
         public Response<Produto> AtualizarProduto([FromBody] ProdutoDTO produto) {
             try {
                 var response = produtoAplicacao.AlterarProduto(produto);
@@ -76,7 +90,7 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
             }
         }
 
-        [HttpDelete("{codigo}")]
+        [HttpDelete("excluirProduto/{codigo}")]
         public Response<Produto> DeleteProduto(string codigo) {
             try {
                 var status = produtoAplicacao.ExcluirProduto(codigo);

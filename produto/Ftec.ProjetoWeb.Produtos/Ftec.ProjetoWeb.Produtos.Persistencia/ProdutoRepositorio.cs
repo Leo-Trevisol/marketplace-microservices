@@ -166,7 +166,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                 comando.CommandText =
                     "SELECT id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", descricao, disponivel " +
                     "FROM public.produtos " +
-                    "WHERE codigo LIKE @texto OR nome LIKE @texto OR descricao LIKE @texto;";
+                    "WHERE codigo ILIKE @texto OR nome ILIKE @texto OR descricao ILIKE @texto;";
 
                 comando.Parameters.AddWithValue("texto", $"%{texto}%");
 
