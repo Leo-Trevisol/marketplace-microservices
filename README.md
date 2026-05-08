@@ -69,7 +69,7 @@
 | `Nome`               | `string`  | Nome do produto                                            |
 | `Preco`              | `decimal` | Preço do produto                                           |
 | `QuantidadeEstoque`  | `int`     | Quantidade do produto em estoque                           |
-| `EstoqueMinimoVenda` | `int`     | xxxxxxx                                                    |
+| `EstoqueMinimoVenda` | `int`     | Quantidade de estoque mínimo para disponibilização do produto para venda                                                    |
 | `IdCategoria`        | `Guid`    | Identificador único da categoria do produto                |
 | `Descricao`          | `string`  | Descrição opcional do produto                              |
 | `Disponivel`         | `bool`    | Produto disponível para venda = true. Indisponível = false |
