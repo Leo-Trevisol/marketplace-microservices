@@ -16,7 +16,7 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao {
             produtoRepositorio = new ProdutoRepositorio(strConexao);
         }
 
-        public void AdicionarProduto(ProdutoDTO produto) {
+        public Response<Produto> AdicionarProduto(ProdutoDTO produto) {
             Produto prod = ProdutoAdapter.ModelToEntity(produto);
 
             if (string.IsNullOrEmpty(prod.Codigo))
@@ -37,9 +37,10 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao {
             if (prod.QuantidadeEstoque < prod.EstoqueMinimoVenda)
                 prod.Disponivel = false;
 
-            produtoRepositorio.CriarProduto(prod);
+            var response = produtoRepositorio.CriarProduto(prod);
+            return response;
         }
-        public void AlterarProduto(ProdutoDTO produto) {
+        public Response<Produto> AlterarProduto(ProdutoDTO produto) {
             Produto prod = ProdutoAdapter.ModelToEntity(produto);
 
             if (string.IsNullOrEmpty(prod.Codigo))
@@ -57,13 +58,15 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao {
             if (prod.QuantidadeEstoque < prod.EstoqueMinimoVenda)
                 prod.Disponivel = false;
 
-            produtoRepositorio.AlterarProduto(prod);
+            var response = produtoRepositorio.AlterarProduto(prod);
+
+            return response;
         }
-        public void ExcluirProduto(string codigo) {
+        public bool ExcluirProduto(string codigo) {
             if (string.IsNullOrEmpty(codigo))
                 throw new Exception("O código do produto é obrigatório para exclusão.");
 
-            produtoRepositorio.ExcluirProduto(codigo);
+            return produtoRepositorio.ExcluirProduto(codigo);
         }
         public ProdutoDTO ObterProduto(string codigo) {
             Produto prod = produtoRepositorio.ObtemPorCodigo(codigo);
