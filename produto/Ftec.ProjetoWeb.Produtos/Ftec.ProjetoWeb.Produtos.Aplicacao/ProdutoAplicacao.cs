@@ -22,6 +22,10 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao {
             if (string.IsNullOrEmpty(prod.Codigo))
                 throw new Exception("O código do produto é obrigatório.");
 
+            if (prod.IdImagemPrincipal == Guid.Empty) {
+                throw new Exception("Imagem Principal obrigatória.");
+            }
+
             if (string.IsNullOrEmpty(prod.Nome))
                 throw new Exception("O nome do produto é obrigatório.");
 
@@ -38,6 +42,7 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao {
                 prod.Disponivel = false;
 
             var response = produtoRepositorio.CriarProduto(prod);
+
             return response;
         }
         public Response<Produto> AlterarProduto(ProdutoDTO produto) {
@@ -45,6 +50,10 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao {
 
             if (string.IsNullOrEmpty(prod.Codigo))
                 throw new Exception("O código do produto é obrigatório.");
+
+            if (prod.IdImagemPrincipal == Guid.Empty) {
+                throw new Exception("Imagem Principal obrigatória.");
+            }
 
             if (string.IsNullOrEmpty(prod.Nome))
                 throw new Exception("O nome do produto é obrigatório.");
