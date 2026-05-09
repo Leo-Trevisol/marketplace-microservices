@@ -138,7 +138,24 @@ README.md
   "disponivel": true
 }
 </pre>
-  <h4>Resposta: 201 Created</h4>
+  <h4>Resposta:</h4>
+  <pre>
+{
+  "sucesso": (true/false),
+  "data": {
+      "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
+      "codigo": "PROD-100",
+      "nome": "Caneta Azul BIC",
+      "preco": 120.90,
+      "quantidadeEstoque": 5,
+      "estoqueMinimoVenda": 10,
+      "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+      "descricao": "Descrição do produto referente novo teste via postman",
+      "disponivel": true
+  }
+  "message": (Mensagem de retorno)
+}
+</pre>
   </section>
   
   <section>
@@ -157,34 +174,68 @@ README.md
   "disponivel": true
 }
 </pre>
-  <h4>Resposta: 200 Ok</h4>
+  <h4>Resposta:</h4>
+  <pre>
+  {
+    "sucesso": (true/false),
+    "data": {
+        "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
+        "codigo": "PROD-100",
+        "nome": "Caneta Vermelha BIC",
+        "preco": 130.90,
+        "quantidadeEstoque": 10,
+        "estoqueMinimoVenda": 10,
+        "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+        "descricao": "Descrição do produto referente novo teste via postman",
+        "disponivel": true
+    }
+    "message": (Mensagem de retorno)
+  }
+  </pre>
   </section>
   
   <section>
     <h3>DELETE api/produto/excluirProduto/{codigo} - Deletar produto existente</h3>
     
-  <h4>Resposta: 200 Ok</h4>
+  <h4>Resposta:</h4>
+    <pre>
+  {
+    "sucesso": (true/false),
+    "data": null,
+    "message": (Mensagem de retorno)
+  }
+  </pre>
   </section>
   <section>
     <h3>GET api/produto/listar - Lista todos os produtos</h3>
     
   <h4>Resposta</h4>
   <pre>
-[
   {
-    "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
-    "codigo": "PROD-100",
-    "nome": "Caneta Vermelha BIC",
-    "preco": 130.90,
-    "quantidadeEstoque": 10,
-    "estoqueMinimoVenda": 10,
-    "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
-    "descricao": "Descrição do produto referente novo teste via postman",
-    "disponivel": true
-  },
-  {...},
-  {...}
-]
+    "sucesso": (true/false),
+    "data": [{
+      "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
+      "codigo": "PROD-100",
+      "nome": "Caneta Vermelha BIC",
+      "preco": 130.90,
+      "quantidadeEstoque": 10,
+      "estoqueMinimoVenda": 10,
+      "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+      "descricao": "Descrição do produto...",
+      "disponivel": true
+    },{
+      "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
+      "codigo": "PROD-101",
+      "nome": "Caneta Verde BIC",
+      "preco": 130.90,
+      "quantidadeEstoque": 10,
+      "estoqueMinimoVenda": 10,
+      "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+      "descricao": "Descrição do produto...",
+      "disponivel": true
+    }...],
+    "message": (Mensagem de retorno)
+  }
 </pre>
   </section>
   <section>
@@ -193,15 +244,19 @@ README.md
   <h4>Resposta</h4>
   <pre>
 {
-  "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
-  "codigo": "PROD-100",
-  "nome": "Caneta Vermelha BIC",
-  "preco": 130.90,
-  "quantidadeEstoque": 10,
-  "estoqueMinimoVenda": 10,
-  "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
-  "descricao": "Descrição do produto...",
-  "disponivel": true
+    "sucesso": (true/false),
+    "data": {
+      "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
+      "codigo": "PROD-100",
+      "nome": "Caneta Vermelha BIC",
+      "preco": 130.90,
+      "quantidadeEstoque": 10,
+      "estoqueMinimoVenda": 10,
+      "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+      "descricao": "Descrição do produto...",
+      "disponivel": true
+    },
+    "message": (Mensagem de retorno)
 }
 </pre>
   </section>
@@ -211,17 +266,30 @@ README.md
   <h4>Resposta</h4>
   <pre>
 {
-  "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
-  "codigo": "PROD-100",
-  "nome": "Caneta Vermelha BIC",
-  "preco": 130.90,
-  "quantidadeEstoque": 10,
-  "estoqueMinimoVenda": 10,
-  "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
-  "descricao": "Descrição do produto...",
-  "disponivel": true
+    "sucesso": (true/false),
+    "data": [{
+      "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
+      "codigo": "PROD-100",
+      "nome": "Caneta Vermelha BIC",
+      "preco": 130.90,
+      "quantidadeEstoque": 10,
+      "estoqueMinimoVenda": 10,
+      "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+      "descricao": "Descrição do produto...",
+      "disponivel": true
+    },{
+      "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
+      "codigo": "PROD-101",
+      "nome": "Caneta Verde BIC",
+      "preco": 130.90,
+      "quantidadeEstoque": 10,
+      "estoqueMinimoVenda": 10,
+      "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+      "descricao": "Descrição do produto...",
+      "disponivel": true
+    }...],
+    "message": (Mensagem de retorno)
 }
-</pre>
   </section>
   
 </section>
