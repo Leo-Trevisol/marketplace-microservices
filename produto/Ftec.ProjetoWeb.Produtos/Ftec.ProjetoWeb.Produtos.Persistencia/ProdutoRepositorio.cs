@@ -23,8 +23,8 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
 
                         comando.CommandText = 
                             "INSERT INTO " +
-                            "public.produtos(id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", descricao, disponivel) " +
-                            "VALUES (@id, @codigo, @nome, @preco, @quantidadeEstoque, @estoqueMinimoVenda, @idCategoria, @descricao, @disponivel);";
+                            "public.produtos(id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", \"idImagemPrincipal\", descricao, disponivel, destaque) " +
+                            "VALUES (@id, @codigo, @nome, @preco, @quantidadeEstoque, @estoqueMinimoVenda, @idCategoria, @idImagemPrincipal, @descricao, @disponivel, @destaque);";
                         comando.Parameters.AddWithValue("id", produto.Id);
                         comando.Parameters.AddWithValue("codigo", produto.Codigo);
                         comando.Parameters.AddWithValue("nome", produto.Nome);
@@ -32,8 +32,10 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                         comando.Parameters.AddWithValue("quantidadeEstoque", produto.QuantidadeEstoque);
                         comando.Parameters.AddWithValue("estoqueMinimoVenda", produto.EstoqueMinimoVenda);
                         comando.Parameters.AddWithValue("idCategoria", produto.IdCategoria);
+                        comando.Parameters.AddWithValue("idImagemPrincipal", produto.IdImagemPrincipal);
                         comando.Parameters.AddWithValue("descricao", produto.Descricao);
                         comando.Parameters.AddWithValue("disponivel", produto.Disponivel);
+                        comando.Parameters.AddWithValue("destaque", produto.Destaque);
                         comando.ExecuteNonQuery();
 
                         transacao.Commit();
@@ -65,7 +67,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                         
                         comando.CommandText =
                             "UPDATE public.produtos SET " +
-                            "codigo = @codigo, nome = @nome, preco = @preco, \"quantidadeEstoque\" = @quantidadeEstoque, \"estoqueMinimoVenda\" = @estoqueMinimoVenda, \"idCategoria\" = @idCategoria, descricao = @descricao, disponivel = @disponivel " +
+                            "codigo = @codigo, nome = @nome, preco = @preco, \"quantidadeEstoque\" = @quantidadeEstoque, \"estoqueMinimoVenda\" = @estoqueMinimoVenda, \"idCategoria\" = @idCategoria, \"idImagemPrincipal\" = @idImagemPrincipal, descricao = @descricao, disponivel = @disponivel, destaque = @destaque " +
                             "WHERE id = @id;";
 
                         comando.Parameters.AddWithValue("id", produto.Id);
@@ -75,8 +77,10 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                         comando.Parameters.AddWithValue("quantidadeEstoque", produto.QuantidadeEstoque);
                         comando.Parameters.AddWithValue("estoqueMinimoVenda", produto.EstoqueMinimoVenda);
                         comando.Parameters.AddWithValue("idCategoria", produto.IdCategoria);
+                        comando.Parameters.AddWithValue("idImagemPrincipal", produto.IdImagemPrincipal);
                         comando.Parameters.AddWithValue("descricao", produto.Descricao);
                         comando.Parameters.AddWithValue("disponivel", produto.Disponivel);
+                        comando.Parameters.AddWithValue("destaque", produto.Destaque);
                         comando.ExecuteNonQuery();
 
                         transacao.Commit();
@@ -130,7 +134,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                 comando.Connection = conexao;
 
                 comando.CommandText =
-                    "SELECT id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", descricao, disponivel " +
+                    "SELECT id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", \"idImagemPrincipal\", descricao, disponivel, destaque " +
                     "FROM public.produtos " +
                     "WHERE codigo = @codigo;";
 
@@ -146,8 +150,10 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                         produto.QuantidadeEstoque = Convert.ToInt32(reader["quantidadeestoque"]);
                         produto.EstoqueMinimoVenda = Convert.ToInt32(reader["estoqueminimovenda"]);
                         produto.IdCategoria = Guid.Parse(reader["idcategoria"].ToString());
+                        produto.IdImagemPrincipal = Guid.Parse(reader["idImagemPrincipal"].ToString());
                         produto.Descricao = reader["descricao"].ToString();
                         produto.Disponivel = Convert.ToBoolean(reader["disponivel"]);
+                        produto.Destaque = Convert.ToBoolean(reader["destaque"]);
                     }
                 }
             }
@@ -164,7 +170,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                 comando.Connection = conexao;
 
                 comando.CommandText =
-                    "SELECT id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", descricao, disponivel " +
+                    "SELECT id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", \"idImagemPrincipal\", descricao, disponivel, destaque " +
                     "FROM public.produtos " +
                     "WHERE codigo ILIKE @texto OR nome ILIKE @texto OR descricao ILIKE @texto;";
 
@@ -181,8 +187,10 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                         produto.QuantidadeEstoque = Convert.ToInt32(reader["quantidadeestoque"]);
                         produto.EstoqueMinimoVenda = Convert.ToInt32(reader["estoqueminimovenda"]);
                         produto.IdCategoria = Guid.Parse(reader["idcategoria"].ToString());
+                        produto.IdImagemPrincipal = Guid.Parse(reader["idImagemPrincipal"].ToString());
                         produto.Descricao = reader["descricao"].ToString();
                         produto.Disponivel = Convert.ToBoolean(reader["disponivel"]);
+                        produto.Destaque = Convert.ToBoolean(reader["destaque"]);
 
                         list.Add(produto);
                     }
@@ -198,16 +206,23 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
 
                 var comando = new NpgsqlCommand();
                 comando.Connection = conexao;
-                comando.CommandText = "SELECT id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", descricao, disponivel " +
+                comando.CommandText = "SELECT id, codigo, nome, preco, \"quantidadeEstoque\", \"estoqueMinimoVenda\", \"idCategoria\", \"idImagemPrincipal\", descricao, disponivel, destaque " +
                     "FROM public.produtos;";
 
                 using (var reader = comando.ExecuteReader()) {
                     while (reader.Read()) {
                         Produto produto = new Produto();
-                        produto.Id = Guid.Parse(reader["Id"].ToString());
+                        produto.Id = Guid.Parse(reader["id"].ToString());
                         produto.Codigo = reader["codigo"].ToString();
-                        produto.Descricao = reader["descricao"].ToString();
+                        produto.Nome = reader["nome"].ToString();
                         produto.Preco = Convert.ToDecimal(reader["preco"]);
+                        produto.QuantidadeEstoque = Convert.ToInt32(reader["quantidadeestoque"]);
+                        produto.EstoqueMinimoVenda = Convert.ToInt32(reader["estoqueminimovenda"]);
+                        produto.IdCategoria = Guid.Parse(reader["idcategoria"].ToString());
+                        produto.IdImagemPrincipal = Guid.Parse(reader["idImagemPrincipal"].ToString());
+                        produto.Descricao = reader["descricao"].ToString();
+                        produto.Disponivel = Convert.ToBoolean(reader["disponivel"]);
+                        produto.Destaque = Convert.ToBoolean(reader["destaque"]);
 
                         list.Add(produto);
                     }
