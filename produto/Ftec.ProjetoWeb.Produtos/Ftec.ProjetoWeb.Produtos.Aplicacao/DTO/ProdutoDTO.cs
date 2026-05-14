@@ -16,9 +16,10 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao.DTO
         public int EstoqueMinimoVenda { get; set; }
         public Guid IdCategoria { get; set; }
         public Guid IdImagemPrincipal { get; set; }
-        public MediaDTO Media { get; set; }
+        //public MediaDTO Media { get; set; }
         public string Descricao { get; set; }
         public bool Destaque { get; set; }
         public bool Disponivel { get; set; }
+        public bool Excluido { get; set; }
     }
 }

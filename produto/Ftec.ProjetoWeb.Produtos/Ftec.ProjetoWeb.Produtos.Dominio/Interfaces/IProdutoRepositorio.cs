@@ -11,6 +11,7 @@ namespace Ftec.ProjetoWeb.Produtos.Dominio.Interfaces
         Response<Produto> AlterarProduto(Produto produto);
         bool ExcluirProduto(string codigo);
         Produto ObtemPorCodigo(string codigo);
+        Produto ObtemPorId(string id);
         List<Produto> ProcurarPorTexto(string texto);
         List<Produto> ListaTodosProdutos();
     }
