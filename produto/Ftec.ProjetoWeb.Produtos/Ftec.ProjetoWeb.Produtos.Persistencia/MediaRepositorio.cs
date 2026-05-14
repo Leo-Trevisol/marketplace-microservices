@@ -27,9 +27,9 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
 
                         comando.CommandText = @"
                         INSERT INTO media
-                        (id, ""nomeArquivo"", ""nomeUnico"", ""caminhoArquivo"", ""tipoArquivo"", extensao)
+                        (id, nomeArquivo, nomeUnico, caminhoArquivo, tipoArquivo, extensao, dataupload)
                         VALUES
-                        (@id, @nomearquivo, @nomeunico, @caminhoarquivo, @tipoarquivo, @extensao)
+                        (@id, @nomearquivo, @nomeunico, @caminhoarquivo, @tipoarquivo, @extensao, @dataupload)
                     ";
 
                         comando.Parameters.AddWithValue("@id", media.Id);
@@ -38,6 +38,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                         comando.Parameters.AddWithValue("@caminhoarquivo", media.CaminhoArquivo);
                         comando.Parameters.AddWithValue("@tipoarquivo", media.TipoArquivo.ToString());
                         comando.Parameters.AddWithValue("@extensao", media.Extensao);
+                        comando.Parameters.AddWithValue("@dataupload", DateTime.Now);
 
                         comando.ExecuteNonQuery();
 

@@ -18,7 +18,7 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao {
 
         public Response<Produto> AdicionarProduto(ProdutoDTO produto) {
             Produto prod = ProdutoAdapter.ModelToEntity(produto);
-
+            prod.Excluido = false;
             if (string.IsNullOrEmpty(prod.Codigo))
                 throw new Exception("O código do produto é obrigatório.");
 
@@ -77,8 +77,8 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao {
 
             return produtoRepositorio.ExcluirProduto(codigo);
         }
-        public ProdutoDTO ObterProduto(string codigo) {
-            Produto prod = produtoRepositorio.ObtemPorCodigo(codigo);
+        public ProdutoDTO ObterProduto(string codigo, bool porId = false) {
+            Produto prod = !porId ? produtoRepositorio.ObtemPorCodigo(codigo) : produtoRepositorio.ObtemPorId(codigo);
             if (prod == null)
                 throw new Exception("Produto não encontrado.");
 

@@ -9,6 +9,7 @@ namespace Ftec.ProjetoWeb.Produtos.Dominio.Entidade
             Id = Guid.NewGuid();
             Disponivel = false;
             Destaque = false;
+            Excluido = false;
         }
         public string Codigo { get; set; }
         public string Nome { get; set; }
@@ -19,6 +20,7 @@ namespace Ftec.ProjetoWeb.Produtos.Dominio.Entidade
         public Guid IdImagemPrincipal { get; set; }
         public string Descricao { get; set; }
         public bool Destaque { get; set; }
+        public bool Excluido { get; set; }
         public bool Disponivel { get; set; }
     }
 }

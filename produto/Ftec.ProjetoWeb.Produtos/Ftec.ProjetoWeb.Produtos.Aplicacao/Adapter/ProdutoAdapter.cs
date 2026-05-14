@@ -22,8 +22,10 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao.Adapter
             entity.QuantidadeEstoque = model.QuantidadeEstoque;
             entity.EstoqueMinimoVenda = model.EstoqueMinimoVenda;
             entity.IdCategoria = model.IdCategoria;
+            entity.IdImagemPrincipal = model.IdImagemPrincipal;
             entity.Descricao = model.Descricao;
             entity.Disponivel = model.Disponivel;
+            entity.Excluido = model.Excluido;
 
             return entity;
         }
@@ -42,8 +44,10 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao.Adapter
             model.QuantidadeEstoque = entity.QuantidadeEstoque;
             model.EstoqueMinimoVenda = entity.EstoqueMinimoVenda;
             model.IdCategoria = entity.IdCategoria;
+            model.IdImagemPrincipal = entity.IdImagemPrincipal;
             model.Descricao = entity.Descricao;
             model.Disponivel = entity.Disponivel;
+            model.Excluido = entity.Excluido;
 
             return model;
         }

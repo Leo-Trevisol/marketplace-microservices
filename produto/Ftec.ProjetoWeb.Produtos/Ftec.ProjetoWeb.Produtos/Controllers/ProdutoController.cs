@@ -61,6 +61,21 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
                 return new Response<ProdutoDTO>(false, null, $"ERRO! {ex.Message}");
             }
         }
+        [HttpGet("obtemPorId/{id}")]
+        public Response<ProdutoDTO> ObtemPorId(string id) {
+            try {
+                var produto = produtoAplicacao.ObterProduto(id, true);
+                if (produto == null) {
+                    return new Response<ProdutoDTO>(false, null, "Nenhum produto encontrado. Altere o código ou revise a pesquisa");
+                } else {
+                    return new Response<ProdutoDTO>(true, produto, "Produto encontrado");
+                }
+            } catch (Exception ex) when (ex.Message.Contains("não encontrado")) {
+                return new Response<ProdutoDTO>(false, null, "Produto não encontrado");
+            } catch (Exception ex) {
+                return new Response<ProdutoDTO>(false, null, $"ERRO! {ex.Message}");
+            }
+        }
 
         [HttpPost("cadastrarProduto")]
         public Response<Produto> InserirProduto([FromBody] ProdutoDTO produto) {
@@ -90,10 +105,10 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
             }
         }
 
-        [HttpDelete("excluirProduto/{codigo}")]
-        public Response<Produto> DeleteProduto(string codigo) {
+        [HttpDelete("excluirProduto/{id}")]
+        public Response<Produto> DeleteProduto(string id) {
             try {
-                var status = produtoAplicacao.ExcluirProduto(codigo);
+                var status = produtoAplicacao.ExcluirProduto(id);
                 var response = new Response<Produto>(status, null, (status ? "Sucesso ao exlcuir produto!" : "Erro ao excluir produto"));
                 return response;
             } catch (Exception ex) {
