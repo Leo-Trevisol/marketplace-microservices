@@ -1,0 +1,159 @@
+{
+  "info": {
+    "_postman_id": "79986ca6-a619-4ff0-8672-1b5a2eb58452",
+    "name": "Produtos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53563087",
+    "_collection_link": "https://go.postman.co/collection/53563087-79986ca6-a619-4ff0-8672-1b5a2eb58452?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "ListarTodos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}api/produto/listar",
+          "host": [
+            "{{baseURL}}api"
+          ],
+          "path": [
+            "produto",
+            "listar"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ObtemPorCodigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}api/produto/obtem/PROD-6794",
+          "host": [
+            "{{baseURL}}api"
+          ],
+          "path": [
+            "produto",
+            "obtem",
+            "PROD-6794"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ObtemPorId",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}api/produto/obtemPorId/",
+          "host": [
+            "{{baseURL}}api"
+          ],
+          "path": [
+            "produto",
+            "obtemPorId",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "BuscaPorTexto",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}api/produto/buscar/blabla",
+          "host": [
+            "{{baseURL}}api"
+          ],
+          "path": [
+            "produto",
+            "buscar",
+            "blabla"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Deletar",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}api/produto/deletar/PROD-6964",
+          "host": [
+            "{{baseURL}}api"
+          ],
+          "path": [
+            "produto",
+            "deletar",
+            "PROD-6964"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AtualizarProduto",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"id\": \"98e82e66-d132-4077-94bd-60dc0f4ffe30\",\r\n  \"codigo\": \"PROD-100\",\r\n  \"nome\": \"Caneta Azul BIC\",\r\n  \"preco\": 120.90,\r\n  \"quantidadeEstoque\": 5,\r\n  \"estoqueMinimoVenda\": 10,\r\n  \"idCategoria\": \"9c8a7b6e-1234-4abc-9def-123456789abc\",\r\n  \"descricao\": \"Descrição do produto referente novo teste via postman\",\r\n  \"disponivel\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}api/produto/atualizarProduto",
+          "host": [
+            "{{baseURL}}api"
+          ],
+          "path": [
+            "produto",
+            "atualizarProduto"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CadastrarProduto",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"id\": \"98e82e66-d132-4077-94bd-60dc0f4ffe30\",\r\n  \"codigo\": \"PROD-100\",\r\n  \"nome\": \"Caneta Azul BIC\",\r\n  \"preco\": 19.90,\r\n  \"quantidadeEstoque\": 2,\r\n  \"estoqueMinimoVenda\": 1,\r\n  \"idCategoria\": \"9c8a7b6e-1234-4abc-9def-123456789abc\",\r\n  \"idImagemPrincipal\": \"d5a75da7-3ce0-4532-a9ed-6c660dfc1e59\",\r\n  \"descricao\": \"Descrição do produto referente novo teste via postman\",\r\n  \"disponivel\": true,\r\n  \"detaque\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}api/produto/cadastrarProduto",
+          "host": [
+            "{{baseURL}}api"
+          ],
+          "path": [
+            "produto",
+            "cadastrarProduto"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
