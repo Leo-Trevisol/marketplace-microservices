@@ -7,22 +7,27 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ftec.ProjetoWeb.Produtos.Aplicacao {
-    public class ProdutoAplicacao {
+namespace Ftec.ProjetoWeb.Produtos.Aplicacao
+{
+    public class ProdutoAplicacao
+    {
 
         IProdutoRepositorio produtoRepositorio;
 
-        public ProdutoAplicacao(string strConexao) {
+        public ProdutoAplicacao(string strConexao)
+        {
             produtoRepositorio = new ProdutoRepositorio(strConexao);
         }
 
-        public Response<Produto> AdicionarProduto(ProdutoDTO produto) {
+        public Response<Produto> AdicionarProduto(ProdutoDTO produto)
+        {
             Produto prod = ProdutoAdapter.ModelToEntity(produto);
             prod.Excluido = false;
             if (string.IsNullOrEmpty(prod.Codigo))
                 throw new Exception("O código do produto é obrigatório.");
 
-            if (prod.IdImagemPrincipal == Guid.Empty) {
+            if (prod.IdImagemPrincipal == Guid.Empty)
+            {
                 throw new Exception("Imagem Principal obrigatória.");
             }
 
@@ -45,13 +50,16 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao {
 
             return response;
         }
-        public Response<Produto> AlterarProduto(ProdutoDTO produto) {
+        public Response<Produto> AlterarProduto(ProdutoDTO produto)
+        {
+
             Produto prod = ProdutoAdapter.ModelToEntity(produto);
 
             if (string.IsNullOrEmpty(prod.Codigo))
                 throw new Exception("O código do produto é obrigatório.");
 
-            if (prod.IdImagemPrincipal == Guid.Empty) {
+            if (prod.IdImagemPrincipal == Guid.Empty)
+            {
                 throw new Exception("Imagem Principal obrigatória.");
             }
 
@@ -66,39 +74,47 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao {
 
             if (prod.QuantidadeEstoque < prod.EstoqueMinimoVenda)
                 prod.Disponivel = false;
+            Console.WriteLine($"Produto: {prod.Id}");
 
             var response = produtoRepositorio.AlterarProduto(prod);
 
             return response;
         }
-        public bool ExcluirProduto(string codigo) {
+        public bool ExcluirProduto(string codigo)
+        {
             if (string.IsNullOrEmpty(codigo))
                 throw new Exception("O código do produto é obrigatório para exclusão.");
 
             return produtoRepositorio.ExcluirProduto(codigo);
         }
-        public ProdutoDTO ObterProduto(string codigo, bool porId = false) {
+        public ProdutoDTO ObterProduto(string codigo, bool porId = false)
+        {
             Produto prod = !porId ? produtoRepositorio.ObtemPorCodigo(codigo) : produtoRepositorio.ObtemPorId(codigo);
             if (prod == null)
                 throw new Exception("Produto não encontrado.");
 
             return ProdutoAdapter.EntityToModel(prod);
         }
-        public List<ProdutoDTO> ProcurarPorTexto(string texto) {
-            if(string.IsNullOrEmpty(texto))
+        public List<ProdutoDTO> ProcurarPorTexto(string texto)
+        {
+            if (string.IsNullOrEmpty(texto))
                 throw new Exception("Texto de busca não informado.");
 
             List<Produto> produtos = produtoRepositorio.ProcurarPorTexto(texto);
             List<ProdutoDTO> dtos = new List<ProdutoDTO>();
-            if(dtos == null) {
+            if (dtos == null)
+            {
                 throw new Exception("Nenhum produto encontrado. Altere o termo de busca, ou revise o texto informado.");
-            } else {
+            }
+            else
+            {
                 foreach (Produto prod in produtos)
                     dtos.Add(ProdutoAdapter.EntityToModel(prod));
                 return dtos;
             }
         }
-        public List<ProdutoDTO> ListarProdutos() {
+        public List<ProdutoDTO> ListarProdutos()
+        {
             List<Produto> produtos = produtoRepositorio.ListaTodosProdutos();
             List<ProdutoDTO> dtos = new List<ProdutoDTO>();
             foreach (Produto prod in produtos)

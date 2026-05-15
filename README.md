@@ -62,17 +62,20 @@
 
   <h3>Produtos</h3>
 
-| Campo                | Tipo      | Descrição                                                  |
-| -------------------- | --------- | ---------------------------------------------------------- |
-| `Id`                 | `Guid`    | Identificador único                                        |
-| `Codigo`             | `string`  | Código único do produto                                    |
-| `Nome`               | `string`  | Nome do produto                                            |
-| `Preco`              | `decimal` | Preço do produto                                           |
-| `QuantidadeEstoque`  | `int`     | Quantidade do produto em estoque                           |
-| `EstoqueMinimoVenda` | `int`     | Quantidade de estoque mínimo para disponibilização do produto para venda                                                    |
-| `IdCategoria`        | `Guid`    | Identificador único da categoria do produto                |
-| `Descricao`          | `string`  | Descrição opcional do produto                              |
-| `Disponivel`         | `bool`    | Produto disponível para venda = true. Indisponível = false |
+| Campo                | Tipo      | Descrição                                                                |
+| -------------------- | --------- | ------------------------------------------------------------------------ |
+| `Id`                 | `Guid`    | Identificador único                                                      |
+| `Codigo`             | `string`  | Código único do produto                                                  |
+| `Nome`               | `string`  | Nome do produto                                                          |
+| `Preco`              | `decimal` | Preço do produto                                                         |
+| `QuantidadeEstoque`  | `int`     | Quantidade do produto em estoque                                         |
+| `EstoqueMinimoVenda` | `int`     | Quantidade de estoque mínimo para disponibilização do produto para venda |
+| `IdCategoria`        | `Guid`    | Identificador único da categoria do produto                              |
+| `Descricao`          | `string`  | Descrição opcional do produto                                            |
+| `Disponivel`         | `bool`    | Produto disponível para venda = true. Indisponível = false               |
+| `Excluido`           | `bool`    | Produto excluído (soft delete)                                           |
+| `Destaque`           | `bool`    | Controla os produtos que aparecerão em destaque na página principal      |
+| `idImagemPrincipal`  | `Guid`    | Chave estrangeira para a tabela "media" que armazena a imagem do produto |
 
 </section>
 
@@ -86,33 +89,39 @@
     <h4>Body</h4>
 <pre>
 {
-  "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
   "codigo": "PROD-100",
-  "nome": "Caneta Azul BIC",
-  "preco": 120.90,
-  "quantidadeEstoque": 5,
-  "estoqueMinimoVenda": 10,
+  "nome": "Lápis Verde BIC",
+  "preco": 19.9,
+  "quantidadeEstoque": 2,
+  "estoqueMinimoVenda": 1,
   "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+  "idImagemPrincipal": "d5a75da7-3ce0-4532-a9ed-6c660dfc1e59",
   "descricao": "Descrição do produto referente novo teste via postman",
-  "disponivel": true
+  "disponivel": true,
+  "destaque": true
 }
 </pre>
-  <h4>Resposta:</h4>
+  <h3>Resposta:</h3>
+
+  <h4>200 OK - Sucesso</h4>
   <pre>
 {
-  "sucesso": (true/false),
-  "data": {
-      "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
-      "codigo": "PROD-100",
-      "nome": "Caneta Azul BIC",
-      "preco": 120.90,
-      "quantidadeEstoque": 5,
-      "estoqueMinimoVenda": 10,
-      "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
-      "descricao": "Descrição do produto referente novo teste via postman",
-      "disponivel": true
-  }
-  "message": (Mensagem de retorno)
+    "sucesso": true,
+    "data": {
+        "codigo": "PROD-100",
+        "nome": "Lápis Verde BIC",
+        "preco": 19.9,
+        "quantidadeEstoque": 2,
+        "estoqueMinimoVenda": 1,
+        "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+        "idImagemPrincipal": "d5a75da7-3ce0-4532-a9ed-6c660dfc1e59",
+        "descricao": "Descrição do produto referente novo teste via postman",
+        "destaque": false,
+        "excluido": false,
+        "disponivel": true,
+        "id": "cea80051-6c3a-45fc-99af-024c02a3c6eb"
+    },
+    "message": "Produto criado com sucesso"
 }
 </pre>
   </section>
@@ -122,39 +131,46 @@
     <h4>Body</h4>
 <pre>
 {
-  "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
-  "codigo": "PROD-100",
-  "nome": "Caneta Vermelha BIC",
-  "preco": 130.90,
-  "quantidadeEstoque": 10,
-  "estoqueMinimoVenda": 10,
-  "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
-  "descricao": "Descrição do produto referente novo teste via postman",
-  "disponivel": true
+    "codigo": "PROD-100",
+    "nome": "Lápis Vermelho BIC",
+    "preco": 50,
+    "quantidadeEstoque": 2,
+    "estoqueMinimoVenda": 1,
+    "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+    "idImagemPrincipal": "d5a75da7-3ce0-4532-a9ed-6c660dfc1e59",
+    "descricao": "Descrição do produto referente novo teste via postman",
+    "destaque": false,
+    "excluido": false,
+    "disponivel": true,
+    "id": "cea80051-6c3a-45fc-99af-024c02a3c6eb"
 }
 </pre>
-  <h4>Resposta:</h4>
+  <h3>Resposta</h3>
+  <h4>200 OK: Sucesso</h4>
   <pre>
-  {
-    "sucesso": (true/false),
+{
+    "sucesso": true,
     "data": {
-        "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
         "codigo": "PROD-100",
-        "nome": "Caneta Vermelha BIC",
-        "preco": 130.90,
-        "quantidadeEstoque": 10,
-        "estoqueMinimoVenda": 10,
+        "nome": "Lápis Vermelho BIC",
+        "preco": 50,
+        "quantidadeEstoque": 2,
+        "estoqueMinimoVenda": 1,
         "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+        "idImagemPrincipal": "d5a75da7-3ce0-4532-a9ed-6c660dfc1e59",
         "descricao": "Descrição do produto referente novo teste via postman",
-        "disponivel": true
-    }
-    "message": (Mensagem de retorno)
-  }
+        "destaque": false,
+        "excluido": false,
+        "disponivel": true,
+        "id": "cea80051-6c3a-45fc-99af-024c02a3c6eb"
+    },
+    "message": "Produto alterado com sucesso"
+}
   </pre>
   </section>
   
   <section>
-    <h3>DELETE api/produto/excluirProduto/{codigo} - Deletar produto existente</h3>
+    <h3>DELETE api/produto/excluirProduto/{id} - Deletar produto existente</h3>
     
   <h4>Resposta:</h4>
     <pre>
@@ -170,31 +186,53 @@
     
   <h4>Resposta</h4>
   <pre>
-  {
-    "sucesso": (true/false),
-    "data": [{
-      "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
-      "codigo": "PROD-100",
-      "nome": "Caneta Vermelha BIC",
-      "preco": 130.90,
-      "quantidadeEstoque": 10,
-      "estoqueMinimoVenda": 10,
-      "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
-      "descricao": "Descrição do produto...",
-      "disponivel": true
-    },{
-      "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
-      "codigo": "PROD-101",
-      "nome": "Caneta Verde BIC",
-      "preco": 130.90,
-      "quantidadeEstoque": 10,
-      "estoqueMinimoVenda": 10,
-      "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
-      "descricao": "Descrição do produto...",
-      "disponivel": true
-    }...],
-    "message": (Mensagem de retorno)
-  }
+{
+    "sucesso": true,
+    "data": [
+        {
+            "id": "4bf48e11-3fe0-4db3-a84a-fafb0db52665",
+            "codigo": "PROD-100",
+            "nome": "Caneta Azul BIC",
+            "preco": 19.90,
+            "quantidadeEstoque": 2,
+            "estoqueMinimoVenda": 1,
+            "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+            "idImagemPrincipal": "d5a75da7-3ce0-4532-a9ed-6c660dfc1e59",
+            "descricao": "Descrição do produto referente novo teste via postman",
+            "destaque": false,
+            "disponivel": true,
+            "excluido": false
+        },
+        {...},
+        {...}
+    ],
+    "message": "3 Produtos listados!"
+}
+</pre>
+  </section>
+  <section>
+    <h3>GET api/produto/obtemPorId/{id} - Obtém produto pelo id</h3>
+    
+  <h4>Resposta</h4>
+  <pre>
+{
+    "sucesso": true,
+    "data": {
+        "id": "cea80051-6c3a-45fc-99af-024c02a3c6eb",
+        "codigo": "PROD-100",
+        "nome": "Lápis Vermelho BIC",
+        "preco": 50,
+        "quantidadeEstoque": 2,
+        "estoqueMinimoVenda": 1,
+        "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+        "idImagemPrincipal": "d5a75da7-3ce0-4532-a9ed-6c660dfc1e59",
+        "descricao": "Descrição do produto referente novo teste via postman",
+        "destaque": false,
+        "disponivel": true,
+        "excluido": true
+    },
+    "message": "Produto encontrado"
+}
 </pre>
   </section>
   <section>
@@ -203,19 +241,22 @@
   <h4>Resposta</h4>
   <pre>
 {
-    "sucesso": (true/false),
+    "sucesso": true,
     "data": {
-      "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
-      "codigo": "PROD-100",
-      "nome": "Caneta Vermelha BIC",
-      "preco": 130.90,
-      "quantidadeEstoque": 10,
-      "estoqueMinimoVenda": 10,
-      "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
-      "descricao": "Descrição do produto...",
-      "disponivel": true
+        "id": "36b9e1ae-3977-43a6-8b87-a8cbee4ba4b7",
+        "codigo": "PROD-100",
+        "nome": "Caneta Azul BIC",
+        "preco": 19.90,
+        "quantidadeEstoque": 2,
+        "estoqueMinimoVenda": 1,
+        "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+        "idImagemPrincipal": "d5a75da7-3ce0-4532-a9ed-6c660dfc1e59",
+        "descricao": "Descrição do produto referente novo teste via postman",
+        "destaque": false,
+        "disponivel": true,
+        "excluido": true
     },
-    "message": (Mensagem de retorno)
+    "message": "Produto encontrado"
 }
 </pre>
   </section>
@@ -225,32 +266,89 @@
   <h4>Resposta</h4>
   <pre>
 {
-    "sucesso": (true/false),
-    "data": [{
-      "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
-      "codigo": "PROD-100",
-      "nome": "Caneta Vermelha BIC",
-      "preco": 130.90,
-      "quantidadeEstoque": 10,
-      "estoqueMinimoVenda": 10,
-      "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
-      "descricao": "Descrição do produto...",
-      "disponivel": true
-    },{
-      "id": "98e82e66-d132-4077-94bd-60dc0f4ffe30",
-      "codigo": "PROD-101",
-      "nome": "Caneta Verde BIC",
-      "preco": 130.90,
-      "quantidadeEstoque": 10,
-      "estoqueMinimoVenda": 10,
-      "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
-      "descricao": "Descrição do produto...",
-      "disponivel": true
-    }...],
-    "message": (Mensagem de retorno)
+    "sucesso": true,
+    "data": [
+        {
+            "id": "4bf48e11-3fe0-4db3-a84a-fafb0db52665",
+            "codigo": "PROD-100",
+            "nome": "Caneta Azul BIC",
+            "preco": 19.90,
+            "quantidadeEstoque": 2,
+            "estoqueMinimoVenda": 1,
+            "idCategoria": "9c8a7b6e-1234-4abc-9def-123456789abc",
+            "idImagemPrincipal": "d5a75da7-3ce0-4532-a9ed-6c660dfc1e59",
+            "descricao": "Descrição do produto referente novo teste via postman",
+            "destaque": false,
+            "disponivel": true,
+            "excluido": false
+        },
+        {...},
+        {...}
+    ],
+    "message": "3 Produtos encontrados!"
 }
   </section>
   
+</section>
+
+<section>
+  <h2>📸 Entidade - Media</h2>
+
+  <h3>Imagens</h3>
+
+| Campo            | Tipo        | Descrição                                        |
+| ---------------- | ----------- | ------------------------------------------------ |
+| `Id`             | `Guid`      | Identificador único                              |
+| `NomeArquivo`    | `string`    | Nome do arquivo                                  |
+| `NomeUnico`      | `string`    | Nome único do arquivo (com Guid)                 |
+| `CaminhoArquivo` | `string`    | Caminho do diretório de armazenamento do arquivo |
+| `TipoArquivo`    | `string`    | "Imagem"                                         |
+| `Extensao`       | `string`    | Extensão do arquivo                              |
+| `DataUpload`     | `timestamp` | Data de upload do arquivo                        |
+
+</section>
+
+<section>
+  <h2>🔌 Endpoints</h2>
+
+  <section>
+    <h2>POST api/media/upload - Upload de nova imagem</h2>
+    <h3>Content-Type: multipart/form-data</h3>
+    <h3>Parâmetros</h3>
+
+| Campo   | Tipo | Obrigatório |
+| ------- | ---- | ----------- |
+| arquivo | file | Sim         |
+
+  <h3>Resposta:</h3>
+
+  <h4>200 OK - Sucesso</h4>
+  <pre>
+{
+    "sucesso": true,
+    "data": {
+        "id": "76171fb0-0d0b-435a-b9c8-b223a357a3b7",
+        "caminho": (caminho do arquivo)
+    },
+    "message": "Upload realizado com sucesso"
+}
+</pre>
+  </section>
+  <section>
+    <h2>DELETE api/media/deletar/{idImagem} - Deletar imagem cadastrada</h2>
+
+  <h3>Resposta:</h3>
+
+  <h4>200 OK - Sucesso</h4>
+  <pre>
+{
+    "sucesso": true,
+    "data": true,
+    "message": "Mídia excluída com sucesso"
+}
+</pre>
+  </section>
+
 </section>
 
 <section>

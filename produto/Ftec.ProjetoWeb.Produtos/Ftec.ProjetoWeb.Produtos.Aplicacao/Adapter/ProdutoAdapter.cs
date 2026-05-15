@@ -9,13 +9,19 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao.Adapter
 {
     public static class ProdutoAdapter
     {
-        public static Produto ModelToEntity(ProdutoDTO model) {
-            if(model == null) {
+        public static Produto ModelToEntity(ProdutoDTO model)
+        {
+            if (model == null)
+            {
                 return null;
-            } 
+            }
 
             Produto entity = new Produto();
 
+            if (model.Id.ToString() != "00000000-0000-0000-0000-000000000000")
+            {
+                entity.Id = model.Id;
+            }
             entity.Codigo = model.Codigo;
             entity.Nome = model.Nome;
             entity.Preco = model.Preco;
@@ -30,14 +36,17 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao.Adapter
             return entity;
         }
 
-        public static ProdutoDTO EntityToModel(Produto entity) {
+        public static ProdutoDTO EntityToModel(Produto entity)
+        {
 
-            if (entity == null) {
+            if (entity == null)
+            {
                 return null;
             }
 
             ProdutoDTO model = new ProdutoDTO();
 
+            model.Id = entity.Id;
             model.Codigo = entity.Codigo;
             model.Nome = entity.Nome;
             model.Preco = entity.Preco;
@@ -52,6 +61,6 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao.Adapter
             return model;
         }
 
-       
+
     }
 }
