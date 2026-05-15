@@ -4,45 +4,23 @@ using Ftec.ProjetoWeb.Produtos.Dominio.Entidade;
 using Ftec.ProjetoWeb.Produtos.Dominio.Enum;
 using Ftec.ProjetoWeb.Produtos.Persistencia;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 using System.Net.NetworkInformation;
 
-namespace Ftec.ProjetoWeb.Produtos.Controllers
-{
-
-    /// <summary>
-    /// Controller responsável pelo gerenciamento de mídias e upload de arquivos.
-    /// </summary>
+namespace Ftec.ProjetoWeb.Produtos.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class MediaController : ControllerBase
-    {
+    public class MediaController : ControllerBase {
 
         MediaRepositorio _mediaRepositorio;
         string caminhoUpload;
 
-        public MediaController(IConfiguration config)
-        {
+        public MediaController(IConfiguration config) {
             caminhoUpload = config["uploadPath"];
             _mediaRepositorio = new MediaRepositorio(config["strConexao"], caminhoUpload);
         }
 
-        /// <summary>
-        /// Realiza upload de uma imagem.
-        /// </summary>
-        /// <param name="arquivo">Arquivo enviado via multipart/form-data.</param>
-        /// <returns>Dados da mídia salva.</returns>
-        [SwaggerOperation(
-            Summary = "Upload de imagem",
-            Description = "Realiza upload de uma imagem utilizando multipart/form-data."
-        )]
-        [Consumes("multipart/form-data")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("upload")]
-        public async Task<IActionResult> Upload(IFormFile arquivo)
-        {
-
+        public async Task<IActionResult> Upload(IFormFile arquivo) {
             if (arquivo == null || arquivo.Length == 0)
                 return BadRequest(new { sucesso = false, message = "Arquivo inválido" });
 
@@ -52,13 +30,11 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
             var caminhoFisico = Path.Combine(caminhoUpload, nomeUnico);
             var caminhoVirtual = $"{caminhoUpload}/{nomeUnico}";
 
-            using (var stream = new FileStream(caminhoFisico, FileMode.Create))
-            {
+            using (var stream = new FileStream(caminhoFisico, FileMode.Create)) {
                 await arquivo.CopyToAsync(stream);
             }
 
-            var media = new Media
-            {
+            var media = new Media {
                 NomeArquivo = arquivo.FileName,
                 NomeUnico = nomeUnico,
                 CaminhoArquivo = caminhoVirtual,
@@ -68,94 +44,58 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
 
             var response = _mediaRepositorio.InserirMedia(media);
 
-            if (response.Sucesso)
-            {
-                return Ok(new
-                {
+            if (response.Sucesso) {
+                return Ok(new {
                     sucesso = true,
-                    data = new MediaResponse
-                    {
+                    data = new MediaResponse {
                         Id = media.Id,
                         Caminho = media.CaminhoArquivo
                     },
                     message = "Upload realizado com sucesso"
                 });
-            }
-            else
-            {
-                return BadRequest(new
-                {
+            } else {
+                return BadRequest(new {
                     sucesso = false,
                     data = "",
                     message = "Erro ao realizar Upload"
                 });
             }
+
+
         }
 
-        /// <summary>
-        /// Obtém uma mídia pelo ID.
-        /// </summary>
-        /// <param name="id">ID da mídia.</param>
-        /// <returns>Dados da mídia encontrada.</returns>
-        [SwaggerOperation(
-            Summary = "Obter mídia por ID",
-            Description = "Retorna os dados de uma mídia através do ID informado."
-        )]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("obterPorId/{id}")]
-        public IActionResult Obter(Guid id)
-        {
-
+        public IActionResult Obter(Guid id) {
             var media = _mediaRepositorio.ObterMedia(id);
 
-            if (media == null)
-            {
-                return NotFound(new
-                {
+            if (media == null) {
+                return NotFound(new {
                     sucesso = false,
                     data = (object)null,
                     message = "Mídia não encontrada"
                 });
             }
 
-            return Ok(new
-            {
+            return Ok(new {
                 sucesso = true,
                 data = media,
                 message = "Mídia encontrada"
             });
         }
 
-        /// <summary>
-        /// Remove uma mídia pelo ID.
-        /// </summary>
-        /// <param name="id">ID da mídia.</param>
-        /// <returns>Status da exclusão.</returns>
-        [SwaggerOperation(
-            Summary = "Excluir mídia",
-            Description = "Remove uma mídia do sistema através do ID informado."
-        )]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("deletar/{id}")]
-        public IActionResult Deletar(Guid id)
-        {
-
+        public IActionResult Deletar(Guid id) {
             var response = _mediaRepositorio.DeletarMedia(id);
 
-            if (!response.Sucesso)
-            {
-                return BadRequest(new
-                {
+            if (!response.Sucesso) {
+                return BadRequest(new {
                     sucesso = false,
                     data = false,
                     message = response.Message
                 });
             }
 
-            return Ok(new
-            {
+            return Ok(new {
                 sucesso = true,
                 data = true,
                 message = "Mídia excluída com sucesso"

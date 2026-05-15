@@ -2,14 +2,10 @@ using Ftec.ProjetoWeb.Produtos.Aplicacao;
 using Ftec.ProjetoWeb.Produtos.Aplicacao.DTO;
 using Ftec.ProjetoWeb.Produtos.Dominio.Entidade;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 using System.Net.NetworkInformation;
 
 namespace Ftec.ProjetoWeb.Produtos.Controllers
 {
-    /// <summary>
-    /// Controller responsável pelo gerenciamento de produtos.
-    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ProdutoController : ControllerBase
@@ -21,16 +17,6 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
             produtoAplicacao = new ProdutoAplicacao(config["strConexao"]);
         }
 
-        /// <summary>
-        /// Lista todos os produtos cadastrados.
-        /// </summary>
-        /// <returns>Lista de produtos.</returns>
-
-        [SwaggerOperation(
-            Summary = "Listar produtos",
-            Description = "Retorna todos os produtos cadastrados no sistema."
-        )]
-        [ProducesResponseType(typeof(Response<List<ProdutoDTO>>), StatusCodes.Status200OK)]
         [HttpGet("listar")]
         public Response<List<ProdutoDTO>> ListarProdutos()
         {
@@ -53,16 +39,6 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
             }
         }
 
-        /// <summary>
-        /// Busca produtos por nome, código ou descrição.
-        /// </summary>
-        /// <param name="texto">Texto utilizado na pesquisa.</param>
-        /// <returns>Produtos encontrados.</returns>
-        [SwaggerOperation(
-            Summary = "Buscar produtos",
-            Description = "Realiza busca textual de produtos."
-        )]
-        [ProducesResponseType(typeof(Response<List<ProdutoDTO>>), StatusCodes.Status200OK)]
         [HttpGet("buscar/{texto}")]
         public Response<List<ProdutoDTO>> ProcurarPorTexto(string texto)
         {
@@ -85,17 +61,6 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
             }
         }
 
-        /// <summary>
-        /// Obtém um produto pelo código.
-        /// </summary>
-        /// <param name="codigo">Código do produto.</param>
-        /// <returns>Produto encontrado.</returns>
-        [SwaggerOperation(
-            Summary = "Obter produto por código",
-            Description = "Retorna um produto através do código informado."
-        )]
-        [ProducesResponseType(typeof(Response<ProdutoDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("obtem/{codigo}")]
         public Response<ProdutoDTO> ObtemPorCodigo(string codigo)
         {
@@ -120,18 +85,6 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
                 return new Response<ProdutoDTO>(false, null, $"ERRO! {ex.Message}");
             }
         }
-
-        /// <summary>
-        /// Obtém um produto pelo ID.
-        /// </summary>
-        /// <param name="id">ID do produto.</param>
-        /// <returns>Produto encontrado.</returns>
-        [SwaggerOperation(
-            Summary = "Obter produto por ID",
-            Description = "Retorna um produto através do ID informado."
-        )]
-        [ProducesResponseType(typeof(Response<ProdutoDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("obtemPorId/{id}")]
         public Response<ProdutoDTO> ObtemPorId(string id)
         {
@@ -157,17 +110,6 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
             }
         }
 
-        /// <summary>
-        /// Cadastra um novo produto.
-        /// </summary>
-        /// <param name="produto">Dados do produto.</param>
-        /// <returns>Produto cadastrado.</returns>
-        [SwaggerOperation(
-            Summary = "Cadastrar produto",
-            Description = "Realiza o cadastro de um novo produto."
-        )]
-        [ProducesResponseType(typeof(Response<Produto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("cadastrarProduto")]
         public Response<Produto> InserirProduto([FromBody] ProdutoDTO produto)
         {
@@ -187,17 +129,6 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
             }
         }
 
-        /// <summary>
-        /// Atualiza um produto existente.
-        /// </summary>
-        /// <param name="produto">Dados atualizados do produto.</param>
-        /// <returns>Produto atualizado.</returns>
-        [SwaggerOperation(
-            Summary = "Atualizar produto",
-            Description = "Atualiza os dados de um produto existente."
-        )]
-        [ProducesResponseType(typeof(Response<Produto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("atualizarProduto")]
         public Response<Produto> AtualizarProduto([FromBody] ProdutoDTO produto)
         {
@@ -217,17 +148,6 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
             }
         }
 
-        /// <summary>
-        /// Remove um produto.
-        /// </summary>
-        /// <param name="id">ID do produto.</param>
-        /// <returns>Status da exclusão.</returns>
-        [SwaggerOperation(
-            Summary = "Excluir produto",
-            Description = "Remove um produto do sistema."
-        )]
-        [ProducesResponseType(typeof(Response<Produto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("excluirProduto/{id}")]
         public Response<Produto> DeleteProduto(string id)
         {
