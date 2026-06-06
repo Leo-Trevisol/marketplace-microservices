@@ -116,7 +116,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
                 comando.Connection = conexao;
 
                 comando.CommandText = @"
-                    SELECT id, ""nomeArquivo"", ""nomeUnico"", ""caminhoArquivo"", ""tipoArquivo"", extensao, ""dataUpload""
+                    SELECT id, nomeArquivo, nomeUnico, ""caminhoArquivo"", tipoArquivo, extensao, dataUpload
                     FROM media
                     WHERE id = @id
                 ";

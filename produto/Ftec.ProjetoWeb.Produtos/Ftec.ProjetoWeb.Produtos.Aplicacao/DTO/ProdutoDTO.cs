@@ -16,7 +16,7 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao.DTO
         public decimal Preco { get; set; }
         public int QuantidadeEstoque { get; set; }
         public int EstoqueMinimoVenda { get; set; }
-        public Guid IdCategoria { get; set; }
+        public int IdCategoria { get; set; }
         public Guid IdImagemPrincipal { get; set; }
         //public MediaDTO Media { get; set; }
         public string Descricao { get; set; }

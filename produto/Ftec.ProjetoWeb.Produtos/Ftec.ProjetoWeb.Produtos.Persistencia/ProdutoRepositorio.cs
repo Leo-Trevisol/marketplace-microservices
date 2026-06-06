@@ -201,7 +201,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia
                         produto.Preco = Convert.ToDecimal(reader["preco"]);
                         produto.QuantidadeEstoque = Convert.ToInt32(reader["quantidadeestoque"]);
                         produto.EstoqueMinimoVenda = Convert.ToInt32(reader["estoqueminimovenda"]);
-                        produto.IdCategoria = Guid.Parse(reader["idcategoria"].ToString());
+                        produto.IdCategoria = Convert.ToInt32(reader["idcategoria"]);
                         produto.IdImagemPrincipal = Guid.Parse(reader["idImagemPrincipal"].ToString());
                         produto.Descricao = reader["descricao"].ToString();
                         produto.Disponivel = Convert.ToBoolean(reader["disponivel"]);
@@ -242,7 +242,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia
                         produto.Preco = Convert.ToDecimal(reader["preco"]);
                         produto.QuantidadeEstoque = Convert.ToInt32(reader["quantidadeestoque"]);
                         produto.EstoqueMinimoVenda = Convert.ToInt32(reader["estoqueminimovenda"]);
-                        produto.IdCategoria = Guid.Parse(reader["idcategoria"].ToString());
+                        produto.IdCategoria = Convert.ToInt32(reader["idcategoria"]);
                         produto.IdImagemPrincipal = Guid.Parse(reader["idImagemPrincipal"].ToString());
                         produto.Descricao = reader["descricao"].ToString();
                         produto.Disponivel = Convert.ToBoolean(reader["disponivel"]);
@@ -284,7 +284,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia
                         produto.Preco = Convert.ToDecimal(reader["preco"]);
                         produto.QuantidadeEstoque = Convert.ToInt32(reader["quantidadeestoque"]);
                         produto.EstoqueMinimoVenda = Convert.ToInt32(reader["estoqueminimovenda"]);
-                        produto.IdCategoria = Guid.Parse(reader["idcategoria"].ToString());
+                        produto.IdCategoria = Convert.ToInt32(reader["idcategoria"]);
                         produto.IdImagemPrincipal = Guid.Parse(reader["idImagemPrincipal"].ToString());
                         produto.Descricao = reader["descricao"].ToString();
                         produto.Disponivel = Convert.ToBoolean(reader["disponivel"]);
@@ -321,7 +321,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia
                         produto.Preco = Convert.ToDecimal(reader["preco"]);
                         produto.QuantidadeEstoque = Convert.ToInt32(reader["quantidadeestoque"]);
                         produto.EstoqueMinimoVenda = Convert.ToInt32(reader["estoqueminimovenda"]);
-                        produto.IdCategoria = Guid.Parse(reader["idcategoria"].ToString());
+                        produto.IdCategoria = Convert.ToInt32(reader["idcategoria"]);
                         produto.IdImagemPrincipal = Guid.Parse(reader["idImagemPrincipal"].ToString());
                         produto.Descricao = reader["descricao"].ToString();
                         produto.Disponivel = Convert.ToBoolean(reader["disponivel"]);

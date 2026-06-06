@@ -26,7 +26,7 @@ namespace Ftec.ProjetoWeb.Produtos.Repositorio.Test
                 Preco = 100.50m,
                 QuantidadeEstoque = 5,
                 EstoqueMinimoVenda = 3,
-                IdCategoria = Guid.NewGuid(),
+                IdCategoria = 2,
                 Disponivel = true
             };
         }
