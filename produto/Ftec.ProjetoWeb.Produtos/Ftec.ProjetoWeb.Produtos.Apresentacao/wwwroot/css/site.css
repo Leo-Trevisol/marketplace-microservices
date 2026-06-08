@@ -2,14 +2,26 @@ html {
   font-size: 14px;
 }
 
+a {
+  text-decoration: none;
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
   }
 }
 
+.btn {
+    transition: filter 400ms;
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    
+}
+
+.btn:active {
+    filter: brightness(0.2);
 }
 
 html {
@@ -28,4 +40,88 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+/* Alterado */
+
+.icon-shadow {
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,.3));
+}
+
+.bg-light-blue {
+    background-color: #48CCF4;
+}
+
+.bg-markett-blue {
+    background-color: #17A4CF;
+}
+
+.menu-mobile {
+    width: 75vw !important;
+}
+
+.list-group-item {
+    background-color: transparent;
+    color: black;
+    text-decoration: none
+}
+
+.list-group-item:visited {
+    color: black;
+    text-decoration: none;
+}
+
+.banner {
+    width: 100%;
+}
+
+.banner-image {
+    width: 100%;
+}
+
+
+.product-carousel {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+
+    scrollbar-width: none;
+}
+
+.product-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.product-carousel .product-card {
+    min-width: 180px;
+    flex-shrink: 0;
+}
+
+.product-card {
+    height: 100%;
+    background: #D9D9D9;
+    padding: 8px;
+}
+
+.product-card-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.product-card-title {
+    margin-top: 4px;
+    font-size: 16px;
+    color: black;
+}
+
+.product-card-price {
+    color: green;
+    margin: 0;
+}
+
+.product-card-cart-icon {
+    border: none;
+    background: transparent;
 }
