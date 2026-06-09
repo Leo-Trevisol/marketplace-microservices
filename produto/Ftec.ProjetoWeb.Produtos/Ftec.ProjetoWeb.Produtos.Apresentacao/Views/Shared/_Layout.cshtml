@@ -41,36 +41,36 @@
     </header>
     *@
 
-    <header class="bg-markett-blue">
+    @*Header mobile*@
+    <header class="bg-markett-blue d-md-none">
         <div class="p-2">
+            <div class="d-flex align-items-center justify-content-between mb-2 px-2">
+                <button class="btn p-0 border-0"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#mainMenu"
+                        >
 
-        <div class="d-flex align-items-center justify-content-between mb-2 px-2">
-            <button class="btn p-0 border-0"
-                        data-bs-toggle="offcanvas"
-                        data-bs-target="#mainMenu"
-                    >
-
-                    <i class="bi bi-list fs-1 text-white"></i>
-            </button>
-            <img src="~/css/assets/White_slim_long.svg" alt="Logo Markett" height="32"/>
-            <button class="btn p-0 border-0">
-                <i class="bi bi-cart3 fs-1 text-white"></i>
-            </button>
-        </div>
-        <div class="my-2 mt-4">
-            <div class="input-group">
-                
-
-                <input type="text"
-                       class="form-control "
-                       placeholder="Buscar produtos">
+                        <i class="bi bi-list fs-1 text-white"></i>
+                </button>
+                <img src="~/css/assets/White_slim_long.svg" alt="Logo Markett" height="32"/>
+                <button class="btn p-0 border-0">
+                    <i class="bi bi-cart3 fs-1 text-white"></i>
+                 </button>
+            </div>
+            <div class="my-2 mt-4">
+                <div class="input-group">
+                    <input type="text"
+                           class="form-control "
+                           placeholder="Buscar produtos">
                     <span class="input-group-text">
                         <i class="bi bi-search"></i>
                     </span>
+                </div>
             </div>
         </div>
-        </div>
     </header>
+    
+    @*Menu header mobile*@
     <div class="offcanvas offcanvas-start menu-mobile bg-markett-blue"
          tabindex="-1"
          id="mainMenu">
@@ -99,34 +99,163 @@
                 </div>
             }
 
+            <div class="list-group list-group-flush mt-3">
 
-            <div class="list-group list-group-flush" >
-
-                <a href="#" class="list-group-item list-group-item-action">
-                    Início
+                <a href="#"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Eletrônicos
+                    <i class="bi bi-chevron-right"></i>
                 </a>
 
-                <a href="#" class="list-group-item list-group-item-action">
-                    Categorias
+                <a href="#"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Informática
+                    <i class="bi bi-chevron-right"></i>
                 </a>
 
-                <a href="#" class="list-group-item list-group-item-action">
-                    Minha Conta
+                <a href="#"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Casa e Decoração
+                    <i class="bi bi-chevron-right"></i>
                 </a>
 
-                <a href="#" class="list-group-item list-group-item-action">
-                    Pedidos
+                <a href="#"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Moda
+                    <i class="bi bi-chevron-right"></i>
                 </a>
 
-                <a href="#" class="list-group-item list-group-item-action">
-                    Carrinho
+                <a href="#"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Beleza
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+                <a href="#"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Esportes
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+                <a href="#"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Livros
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+                <a href="#"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Games
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+                <a href="#"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Automotivo
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+                <a href="#"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    Ferramentas
+                    <i class="bi bi-chevron-right"></i>
                 </a>
 
             </div>
-
         </div>
-
     </div>
+
+    @*Header desktop*@
+    <header class="bg-markett-blue d-none d-md-block">
+        <div class="container ">
+
+            <div class="d-flex align-items-center py-3">
+
+                <img src="~/css/assets/White_slim_long.svg"
+                     alt="Logo Markett"
+                     height="40" />
+
+                <div class="flex-grow-1 mx-4">
+
+                    <div class="input-group">
+
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Buscar produtos">
+
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="d-flex align-items-center gap-4">
+
+                    <a href="#" class="text-white text-decoration-none">
+                        <i class="bi bi-person-circle fs-3 text-white"></i>
+                    </a>
+
+                    <button class="btn p-0 border-0">
+                        <i class="bi bi-cart3 fs-3 text-white"></i>
+                    </button>
+
+                </div>
+
+            </div>
+            
+            <div class=" border-top border-light border-opacity-25">
+                <div class="d-flex align-items-center gap-4 py-2">
+                    <a href="#" class="header-category">
+                        Eletrônicos
+                    </a>
+                    <a href="#" class="header-category">
+                        Informática
+                    </a>
+                    <a href="#" class="header-category">
+                        Casa
+                    </a>
+                    <a href="#" class="header-category">
+                        Moda
+                    </a>
+                    <a href="#" class="header-category">
+                        Esportes
+                    </a>
+                    <a href="#" class="header-category">
+                        Livros
+                    </a>
+                    <a href="#" class="header-category">
+                        Beleza
+                    </a>
+                    <div class="dropdown">
+                        <button class="btn btn-link p-0 categories-dropdown" data-bs-toggle="dropdown">
+                            Mais
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    Automotivo
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    Games
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    Ferramentas
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -135,7 +264,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - Ftec.ProjetoWeb.Produtos.Apresentacao - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - Markett - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
