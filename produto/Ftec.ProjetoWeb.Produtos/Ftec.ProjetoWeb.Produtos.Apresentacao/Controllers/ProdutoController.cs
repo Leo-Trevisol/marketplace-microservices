@@ -35,6 +35,50 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                     Disponivel = true,
                     Excluido = false,
                 };
+                ViewBag.ProdutosRelacionados = new List<ProdutoModel>
+                {
+                    new ProdutoModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Codigo = "PROD002",
+                        Nome = "Smartphone Galaxy A56",
+                        Preco = 1499.90m,
+                        Disponivel = true
+                    },
+                    new ProdutoModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Codigo = "PROD003",
+                        Nome = "Fone Bluetooth JBL",
+                        Preco = 299.90m,
+                        Disponivel = true
+                    },
+                    new ProdutoModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Codigo = "PROD004",
+                        Nome = "Carregador Turbo USB-C",
+                        Preco = 89.90m,
+                        Disponivel = true
+                    },
+                    new ProdutoModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Codigo = "PROD005",
+                        Nome = "Smartwatch Xiaomi",
+                        Preco = 399.90m,
+                        Disponivel = true
+                    },
+                    new ProdutoModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Codigo = "PROD005",
+                        Nome = "Smartwatch Xiaomi",
+                        Preco = 399.90m,
+                        Disponivel = true
+                    }
+};
+
                 return View(produto);
 
 

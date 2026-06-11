@@ -134,3 +134,23 @@
         </section>
     </div>
 </div>
+
+@{
+    var produtosRelacionados = ViewBag.ProdutosRelacionados as List<ProdutoModel>;
+}
+
+<div class="mt-8">
+    <hr class="my-4" />
+
+    <h3>Produtos relacionados</h3>
+    @if (produtosRelacionados?.Any() == true)
+    {
+
+        <div class="product-list">
+            @foreach (var produto in produtosRelacionados)
+            {
+                <partial name="_ProductCard" model="produto" />
+            }
+        </div>
+    }
+</div>
