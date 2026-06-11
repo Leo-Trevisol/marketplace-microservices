@@ -4,69 +4,88 @@ using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
-namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade {
-    public class APIFacade {
+namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
+{
+    public class APIFacade
+    {
 
         private string _baseUrl;
         private readonly HttpClient _httpClient;
         private const string ContentType = "application/json";
         private IConfiguration config;
-        public APIFacade() {
+        public APIFacade()
+        {
             _httpClient = new HttpClient();
         }
 
         #region Produto
-        public List<ProdutoModel> ListarProdutos() {
-            try {
+        public List<ProdutoModel> ListarProdutos()
+        {
+            try
+            {
                 //var produtos = Get<List<ProdutoModel>>("api/Produto/listar");
                 this.obtemBaseUrl(config, TipoServico.Produto);
                 var response = Get<APIResponseModel<List<ProdutoModel>>>("api/Produto/listar");
                 var produtos = response != null && response.Sucesso && response?.Data != null ? response?.Data : new List<ProdutoModel>();
-                if (produtos != null && produtos.Count() > 0) {
-                    foreach(var item in produtos) {
-                        if (!string.IsNullOrEmpty(item.IdImagemPrincipal.ToString())) {
+                if (produtos != null && produtos.Count() > 0)
+                {
+                    foreach (var item in produtos)
+                    {
+                        if (!string.IsNullOrEmpty(item.IdImagemPrincipal.ToString()))
+                        {
                             this.obtemBaseUrl(config, TipoServico.Produto);
                             item.ImagemPrincipal = Get<MediaModel>($"api/Media/obterPorId/{item.IdImagemPrincipal}");
                         }
-                        if (item.IdCategoria.HasValue) {
+                        if (item.IdCategoria.HasValue)
+                        {
                             this.obtemBaseUrl(config, TipoServico.Categoria);
                             item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
                         }
                     }
                     return produtos;
-                } else {
+                }
+                else
+                {
                     return new List<ProdutoModel>();
                 }
-            } catch {
+            }
+            catch
+            {
                 return new List<ProdutoModel>();
             }
         }
-        public ProdutoModel ObterProduto(string id) {
+        public ProdutoModel ObterProduto(string id)
+        {
             this.obtemBaseUrl(config, TipoServico.Produto);
             var response = Get<APIResponseModel<ProdutoModel>>($"api/Produto/obtemPorId/{id}");
-            
+
             var produto = response != null && response.Sucesso && response?.Data != null ? response?.Data : new ProdutoModel();
-            
-            
-            
-            
+
+
+
+
             return produto;
         }
-        public void AdicionarProduto(ProdutoModel produto) {
+        public void AdicionarProduto(ProdutoModel produto)
+        {
             Post("api/Produto/cadastrarProduto", produto);
         }
-        public void AlterarProduto(ProdutoModel produto) {
+        public void AlterarProduto(ProdutoModel produto)
+        {
             Put("api/Produto/atualizarProduto", produto);
         }
-        public void ExcluirProduto(string id) {
+        public void ExcluirProduto(string id)
+        {
             Delete($"api/Produto/excluirProduto{id}");
         }
 
         #endregion
 
         #region Métodos privados de comunicação HTTP
-        private T Get<T>(string endpoint) {
-            using (var client = new HttpClient()) {
+        private T Get<T>(string endpoint)
+        {
+            using (var client = new HttpClient())
+            {
                 var url = string.Empty;
                 url = $"{_baseUrl}/{endpoint}";
 
@@ -75,50 +94,62 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade {
 
                 var response = client.SendAsync(request).Result;
 
-                if (response.IsSuccessStatusCode) {
+                if (response.IsSuccessStatusCode)
+                {
                     var jsonContent = response.Content.ReadAsStringAsync().Result;
                     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                     return JsonSerializer.Deserialize<T>(jsonContent, options);
-                } else {
+                }
+                else
+                {
                     var errorContent = response.Content.ReadAsStringAsync().Result;
                     throw new Exception($"Erro ao buscar dados: {errorContent}");
                 }
             }
         }
-        private void Post<T>(string endpoint, T data) {
-            using (var client = new HttpClient()) {
+        private void Post<T>(string endpoint, T data)
+        {
+            using (var client = new HttpClient())
+            {
                 var url = $"{_baseUrl}/{endpoint}";
                 var jsonContent = JsonSerializer.Serialize(data);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, ContentType);
 
                 var response = client.PostAsync(url, content).Result;
 
-                if (!response.IsSuccessStatusCode) {
+                if (!response.IsSuccessStatusCode)
+                {
                     var errorContent = response.Content.ReadAsStringAsync().Result;
                     throw new Exception($"Erro ao adicionar dados: {errorContent}");
                 }
             }
         }
-        private void Put<T>(string endpoint, T data) {
-            using (var client = new HttpClient()) {
+        private void Put<T>(string endpoint, T data)
+        {
+            using (var client = new HttpClient())
+            {
                 var url = $"{_baseUrl}/{endpoint}";
                 var jsonContent = JsonSerializer.Serialize(data);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, ContentType);
 
                 var response = client.PutAsync(url, content).Result;
 
-                if (!response.IsSuccessStatusCode) {
+                if (!response.IsSuccessStatusCode)
+                {
                     var errorContent = response.Content.ReadAsStringAsync().Result;
                     throw new Exception($"Erro ao alterar dados: {errorContent}");
                 }
             }
         }
-        private void Delete(string endpoint) {
-            using (var client = new HttpClient()) {
+        private void Delete(string endpoint)
+        {
+            using (var client = new HttpClient())
+            {
                 var url = $"{_baseUrl}/{endpoint}";
                 var response = client.DeleteAsync(url).Result;
 
-                if (!response.IsSuccessStatusCode) {
+                if (!response.IsSuccessStatusCode)
+                {
                     var errorContent = response.Content.ReadAsStringAsync().Result;
                     throw new Exception($"Erro ao excluir dados: {errorContent}");
                 }
@@ -127,9 +158,11 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade {
         #endregion
 
         #region Helpers
-        public void obtemBaseUrl(IConfiguration config, TipoServico tipo) {
+        public void obtemBaseUrl(IConfiguration config, TipoServico tipo)
+        {
             var baseUrl = string.Empty;
-            switch (tipo) {
+            switch (tipo)
+            {
                 case TipoServico.Produto:
                     this._baseUrl = config["ProdutoBaseUrl"];
                     break;

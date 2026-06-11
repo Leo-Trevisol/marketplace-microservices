@@ -4,6 +4,8 @@
     ViewData["Title"] = "Produtos";
 }
 
+@*
+
 @model List<ProdutoModel>
 
 <div class="container mt-5">
@@ -79,5 +81,56 @@
                 </div>
             }
         </div>
+    </div>
+</div>
+*@
+
+@model ProdutoModel
+
+<div class="row mt-4">
+
+    <div class="col-lg-7 col-md-6">
+        <img class="product-detail-image"
+             src="https://unifique.com.br/upload/blog/2025/02/quem-inventou-celular.jpg"
+             alt="Imagem de @Model.Nome">
+    </div>
+
+    <div class="col-lg-5 col-md-6">
+
+        <h1 class="product-detail-title">
+            @Model.Nome
+        </h1>
+
+        <h3 class="product-detail-old-price">
+            R$ @((Model.Preco * 1.1m).ToString("N2"))
+        </h3>
+
+        <h2 class="product-detail-price fw-bold">
+            R$ @Model.Preco.ToString("N2")
+        </h2>
+
+        <p class="mb-0">À vista no PIX com <span class="fw-bold">10% de desconto</span></p>
+
+        @if (Model.Disponivel)
+        {
+            <p class="mb-2 available-tag">Em estoque</p>
+        }
+
+        <div class="product-detail-buttons">
+            <button class="btn-lg btn-buy bg-markett-blue">
+                Comprar agora
+            </button>
+
+            <button class="btn-cart bg-light-blue">
+                <i class="bi bi-cart-plus text-white"></i>
+            </button>
+        </div>
+
+        <hr class="my-4" /> 
+
+        <section> 
+            <h3>Sobre o produto</h3> 
+            <p>@Model.Descricao</p> 
+        </section>
     </div>
 </div>

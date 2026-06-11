@@ -2,6 +2,8 @@
     ViewData["Title"] = "Home Page";
 }
 
+@model List<ProdutoModel>
+
 
 <div class="mt-2">
     <div class="banner">
@@ -14,15 +16,16 @@
             <a href="#">Ver todos</a>
         </div>
 
+        @if (Model.Count() > 0 && Model != null)
+        {
+            
         <div class="product-list">
-            <partial name="_ProductCard" />
-            <partial name="_ProductCard" />
-            <partial name="_ProductCard" />
-            <partial name="_ProductCard" />
-            <partial name="_ProductCard" />
-            <partial name="_ProductCard" />
-            <partial name="_ProductCard" />
-            <partial name="_ProductCard" />
+            @foreach (var prod in Model.OrderBy(x => x.Nome))
+            {
+                <partial name="_ProductCard" model="prod" />
+            }
         </div>
+        }
+
     </section>
 </div>
