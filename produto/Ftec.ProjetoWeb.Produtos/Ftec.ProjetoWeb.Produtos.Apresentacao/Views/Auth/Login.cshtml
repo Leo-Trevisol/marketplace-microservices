@@ -1,0 +1,71 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    Layout = "_AuthLayout";
+    ViewData["Title"] = "Entrar";
+}
+
+@model LoginModel
+
+<div class="container">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-5 col-lg-4">
+
+            <div class="login-card">
+
+                <h2 class="text-center mb-4">
+                    Entrar
+                </h2>
+
+                <form method="post">
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            E-mail
+                        </label>
+
+                        <input type="email"
+                               class="form-control"
+                               asp-for="Email" />
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            Senha
+                        </label>
+
+                        <input type="password"
+                               class="form-control"
+                               asp-for="Senha" />
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-buy bg-markett-blue w-100">
+                        Entrar
+                    </button>
+
+                </form>
+
+                <hr />
+
+                <p class="text-center mb-0">
+                    Não possui conta?
+                </p>
+
+                <a asp-controller="Auth"
+                   asp-action="Cadastro"
+                   class="btn btn-outline-primary w-100 mt-2">
+                    Criar conta
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

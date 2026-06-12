@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Ftec.ProjetoWeb.Produtos.Apresentacao</title>
+    <script type="importmap"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Ftec.ProjetoWeb.Produtos.Apresentacao.styles.css" asp-append-version="true" />
+    <link rel="icon"
+          type="image/svg+xml"
+          href="@Url.Content("~/css/assets/White_strong_icon.svg")" />
+</head>
+<body>
+
+    <header class="bg-markett-blue ">
+        <div class="p-2">
+            <div class="d-flex w-100 align-items-center justify-content-center my-2 px-2">
+               
+                <a asp-controller="Home" asp-action="Index"> <img src="~/css/assets/White_slim_long.svg" alt="Logo Markett" height="32" /></a>
+               
+            </div>
+            
+        </div>
+    </header>
+ 
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - Markett - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

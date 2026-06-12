@@ -332,3 +332,19 @@ body {
         display: block;
     }
 }
+
+/* LOGIN */
+
+.login-card {
+    margin-top: 60px;
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+}
+
+@media (min-width: 768px) {
+    .login-card {
+        margin-top: 100px;
+    }
+}
