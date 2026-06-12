@@ -9,13 +9,14 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
     public class APIFacade
     {
 
-        private string _baseUrl;
+        private string _baseUrl = string.Empty;
         private readonly HttpClient _httpClient;
         private const string ContentType = "application/json";
-        private IConfiguration config;
-        public APIFacade()
+        private IConfiguration _config;
+        public APIFacade(IConfiguration config)
         {
             _httpClient = new HttpClient();
+            _config = config;
         }
 
         #region Produto
@@ -24,7 +25,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             try
             {
                 //var produtos = Get<List<ProdutoModel>>("api/Produto/listar");
-                this.obtemBaseUrl(config, TipoServico.Produto);
+                this.obtemBaseUrl(_config, TipoServico.Produto);
                 var response = Get<APIResponseModel<List<ProdutoModel>>>("api/Produto/listar");
                 var produtos = response != null && response.Sucesso && response?.Data != null ? response?.Data : new List<ProdutoModel>();
                 if (produtos != null && produtos.Count() > 0)
@@ -33,12 +34,12 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                     {
                         if (!string.IsNullOrEmpty(item.IdImagemPrincipal.ToString()))
                         {
-                            this.obtemBaseUrl(config, TipoServico.Produto);
+                            this.obtemBaseUrl(_config, TipoServico.Produto);
                             item.ImagemPrincipal = Get<MediaModel>($"api/Media/obterPorId/{item.IdImagemPrincipal}");
                         }
                         if (item.IdCategoria.HasValue)
                         {
-                            this.obtemBaseUrl(config, TipoServico.Categoria);
+                            this.obtemBaseUrl(_config, TipoServico.Categoria);
                             item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
                         }
                     }
@@ -56,7 +57,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         }
         public ProdutoModel ObterProduto(string id)
         {
-            this.obtemBaseUrl(config, TipoServico.Produto);
+            this.obtemBaseUrl(_config, TipoServico.Produto);
             var response = Get<APIResponseModel<ProdutoModel>>($"api/Produto/obtemPorId/{id}");
 
             var produto = response != null && response.Sucesso && response?.Data != null ? response?.Data : new ProdutoModel();
@@ -87,7 +88,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             using (var client = new HttpClient())
             {
                 var url = string.Empty;
-                url = $"{_baseUrl}/{endpoint}";
+                url = $"{_baseUrl}{endpoint}";
 
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(ContentType));
