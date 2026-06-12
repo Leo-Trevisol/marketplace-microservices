@@ -1,0 +1,161 @@
+﻿@{
+    ViewData["Title"] = "Pedido Confirmado";
+
+    var numeroPedido   = TempData["NumeroPedido"]?.ToString();
+    var nomeCompleto   = TempData["NomeCompleto"]?.ToString();
+    var email          = TempData["Email"]?.ToString();
+    var produtoNome    = TempData["ProdutoNome"]?.ToString();
+    var produtoPreco   = TempData["ProdutoPreco"]?.ToString();
+    var totalFinal     = TempData["TotalFinal"]?.ToString();
+    var formaPagamento = TempData["FormaPagamento"]?.ToString();
+    var endereco       = TempData["Endereco"]?.ToString();
+    var produtoPrecoRaw = TempData["ProdutoPrecoRaw"]?.ToString();
+
+
+    var formaPagamentoLabel = formaPagamento switch {
+        "pix"     => "PIX",
+        "credito" => "Cartão de Crédito",
+        "boleto"  => "Boleto Bancário",
+        _         => formaPagamento
+    };
+
+    var iconePagamento = formaPagamento switch {
+        "pix"     => "bi-qr-code",
+        "credito" => "bi-credit-card",
+        "boleto"  => "bi-upc",
+        _         => "bi-cash"
+    };
+
+    // Estimativa de entrega: +5 dias úteis
+    var previsao = DateTime.Now.AddDays(7).ToString("dd/MM/yyyy");
+}
+
+<div class="confirmacao-page">
+
+    <div class="confirmacao-header">
+        <div class="confirmacao-header-inner">
+            <i class="bi bi-check-circle-fill confirmacao-check-icon"></i>
+            <div>
+                <h4 class="confirmacao-header-title">
+                    Pedido realizado com sucesso, @nomeCompleto?.Split(' ')[0]!
+                </h4>
+                <p class="confirmacao-header-sub mb-0">
+                    Confirmação enviada para <strong>@email</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="confirmacao-grid">
+
+        <div>
+
+            <div class="confirmacao-section">
+                <p class="text-muted small mb-1">Número do pedido</p>
+                <p class="fw-bold fs-5 mb-0">#@numeroPedido</p>
+            </div>
+
+            <div class="confirmacao-section">
+                <h6 class="confirmacao-section-title">
+                    <i class="bi bi-box-seam me-2"></i>Itens do pedido
+                </h6>
+                <div class="d-flex align-items-center gap-3">
+                    <img src="https://unifique.com.br/upload/blog/2025/02/quem-inventou-celular.jpg"
+                         alt="@produtoNome"
+                         class="confirmacao-produto-img" />
+                    <div class="flex-grow-1">
+                        <p class="fw-semibold mb-1">@produtoNome</p>
+                        <p class="text-muted small mb-0">Qtd: 1</p>
+                    </div>
+                    <p class="fw-bold text-success mb-0">R$ @produtoPreco</p>
+                </div>
+            </div>
+
+            <div class="confirmacao-section">
+                <h6 class="confirmacao-section-title">
+                    <i class="bi bi-truck me-2"></i>Endereço de entrega
+                </h6>
+                <p class="mb-1">@nomeCompleto</p>
+                <p class="text-muted small mb-0">@endereco</p>
+                <div class="confirmacao-previsao mt-3">
+                    <i class="bi bi-calendar-check me-2 text-success"></i>
+                    <span>Previsão de entrega: <strong>@previsao</strong></span>
+                </div>
+            </div>
+
+        </div>
+
+        <div>
+
+            <div class="confirmacao-section">
+                <h6 class="confirmacao-section-title">
+                    <i class="bi bi-receipt me-2"></i>Resumo do pagamento
+                </h6>
+
+                <div class="resumo-linha">
+                    <span class="text-muted">Subtotal</span>
+                    <span>R$ @produtoPreco</span>
+                </div>
+                <div class="resumo-linha">
+                    <span class="text-muted">Frete</span>
+                    <span class="text-success fw-semibold">Grátis</span>
+                </div>
+
+                @if (formaPagamento == "pix")
+                {
+                    var desconto = decimal.Parse(produtoPrecoRaw, System.Globalization.CultureInfo.InvariantCulture) * 0.1m;
+
+                    <div class="resumo-linha text-success">
+                        <span>Desconto PIX (10%)</span>
+                        <span>- R$ @desconto.ToString("N2")</span>
+                    </div>
+                }
+
+                <hr />
+
+                <div class="resumo-linha fw-bold fs-5">
+                    <span>Total</span>
+                    <span class="text-success">R$ @totalFinal</span>
+                </div>
+
+                <hr />
+
+                <div class="d-flex align-items-center gap-2 mt-2">
+                    <i class="bi @iconePagamento fs-4 text-muted"></i>
+                    <div>
+                        <p class="mb-0 small text-muted">Pago com</p>
+                        <p class="mb-0 fw-semibold">@formaPagamentoLabel</p>
+                    </div>
+                </div>
+
+                @if (formaPagamento == "pix")
+                {
+                    <div class="alert alert-success mt-3 mb-0 small">
+                        <i class="bi bi-qr-code me-1"></i>
+                        QR Code enviado para o seu e-mail. Válido por <strong>30 minutos</strong>.
+                    </div>
+                }
+                @if (formaPagamento == "boleto")
+                {
+                    <div class="alert alert-secondary mt-3 mb-0 small">
+                        <i class="bi bi-upc me-1"></i>
+                        Boleto enviado para o seu e-mail. Vencimento em <strong>3 dias úteis</strong>.
+                    </div>
+                }
+            </div>
+
+            <a asp-controller="Home" asp-action="Index"
+               class="btn-buy bg-markett-blue mt-3 w-100">
+                <i class="bi bi-arrow-left me-2"></i>Continuar comprando
+            </a>
+
+            <a asp-controller="Produto" asp-action="Index"
+               class="btn btn-outline-secondary w-100 mt-2">
+                Ver mais produtos
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

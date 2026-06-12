@@ -117,9 +117,14 @@
         }
 
         <div class="product-detail-buttons">
-            <button class="btn-lg btn-buy bg-markett-blue">
+            <a asp-controller="Pagamento"
+               asp-action="Index"
+               asp-route-codigo="@Model.Codigo"
+               asp-route-nome="@Model.Nome"
+               asp-route-preco="@Model.Preco"
+               class="btn-buy bg-markett-blue">
                 Comprar agora
-            </button>
+            </a>
 
             <button class="btn-cart bg-light-blue">
                 <i class="bi bi-cart-plus text-white"></i>
