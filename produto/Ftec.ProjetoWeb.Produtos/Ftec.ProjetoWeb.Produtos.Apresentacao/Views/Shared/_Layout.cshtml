@@ -105,6 +105,15 @@
                 </div>
             }
 
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Pedido"
+                   asp-action="MeusPedidos"
+                   class="btn bg-white py-1 px-2 mt-2">
+                    <i class="bi bi-bag me-1"></i>Meus Pedidos
+                </a>
+            }
+
             <div class="list-group list-group-flush mt-3">
 
                 <a href="#"
@@ -225,6 +234,14 @@
                                        asp-controller="Auth"
                                        asp-action="Cadastro">
                                         Cadastrar
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item"
+                                       asp-controller="Pedido"
+                                       asp-action="MeusPedidos">
+                                        <i class="bi bi-bag me-2"></i>Meus Pedidos
                                     </a>
                                 </li>
 

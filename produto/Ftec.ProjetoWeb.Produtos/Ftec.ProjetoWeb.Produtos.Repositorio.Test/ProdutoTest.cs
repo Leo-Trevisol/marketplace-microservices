@@ -1,9 +1,6 @@
 using Ftec.ProjetoWeb.Produtos.Dominio.Entidade;
-using Ftec.ProjetoWeb.Produtos.Dominio.Interfaces;
 using Ftec.ProjetoWeb.Produtos.Persistencia;
 using Microsoft.Testing.Platform.Configurations;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace Ftec.ProjetoWeb.Produtos.Repositorio.Test
 {

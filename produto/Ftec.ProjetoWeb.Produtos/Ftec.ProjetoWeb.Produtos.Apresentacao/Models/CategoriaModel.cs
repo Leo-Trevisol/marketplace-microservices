@@ -1,7 +1,10 @@
-﻿namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models {
-    public class CategoriaModel {
+﻿namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
+{
+    public class CategoriaModel
+    {
 
-        public CategoriaModel() {
+        public CategoriaModel()
+        {
 
         }
         public int Id { get; set; }

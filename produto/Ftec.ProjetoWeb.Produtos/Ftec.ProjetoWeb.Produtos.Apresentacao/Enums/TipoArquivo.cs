@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
 
-namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Enums {
-    public enum TipoArquivo {
+namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Enums
+{
+    public enum TipoArquivo
+    {
         [Description("Imagem")]
         Imagem = 0,
         [Description("Arquivo")]

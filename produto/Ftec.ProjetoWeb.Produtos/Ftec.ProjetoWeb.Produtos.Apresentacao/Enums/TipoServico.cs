@@ -1,5 +1,7 @@
-﻿namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Enums {
-    public enum TipoServico {
+﻿namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Enums
+{
+    public enum TipoServico
+    {
         Produto = 1,
         Categoria = 2,
         Avaliacao = 3,

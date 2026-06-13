@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
-namespace Ftec.ProjetoWeb.Produtos.Dominio.Enum {
-    public enum TipoArquivo {
+namespace Ftec.ProjetoWeb.Produtos.Dominio.Enum
+{
+    public enum TipoArquivo
+    {
         [Description("Imagem")]
         Imagem = 0,
         [Description("Arquivo")]

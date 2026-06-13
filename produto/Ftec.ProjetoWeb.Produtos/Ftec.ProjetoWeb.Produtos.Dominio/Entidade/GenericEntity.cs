@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Ftec.ProjetoWeb.Produtos.Dominio.Entidade {
-    public class GenericEntity {
+﻿namespace Ftec.ProjetoWeb.Produtos.Dominio.Entidade
+{
+    public class GenericEntity
+    {
         public Guid Id { get; set; }
 
     }

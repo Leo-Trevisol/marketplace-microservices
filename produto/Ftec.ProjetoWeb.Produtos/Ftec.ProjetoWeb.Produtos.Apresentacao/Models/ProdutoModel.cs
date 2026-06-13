@@ -1,7 +1,10 @@
-﻿namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models {
-    public class ProdutoModel {
+﻿namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
+{
+    public class ProdutoModel
+    {
 
-        public ProdutoModel() {
+        public ProdutoModel()
+        {
 
         }
         public Guid Id { get; set; }

@@ -1,11 +1,11 @@
 ﻿using Ftec.ProjetoWeb.Produtos.Dominio.Enum;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Ftec.ProjetoWeb.Produtos.Dominio.Entidade {
-    public class Media : GenericEntity{
-        public Media() {
+namespace Ftec.ProjetoWeb.Produtos.Dominio.Entidade
+{
+    public class Media : GenericEntity
+    {
+        public Media()
+        {
             Id = Guid.NewGuid();
             DataUpload = DateTime.UtcNow;
         }
@@ -18,7 +18,8 @@ namespace Ftec.ProjetoWeb.Produtos.Dominio.Entidade {
         public DateTime DataUpload { get; set; }
 
     }
-    public class MediaResponse {
+    public class MediaResponse
+    {
         public Guid Id { get; set; }
         public string Caminho { get; set; }
 

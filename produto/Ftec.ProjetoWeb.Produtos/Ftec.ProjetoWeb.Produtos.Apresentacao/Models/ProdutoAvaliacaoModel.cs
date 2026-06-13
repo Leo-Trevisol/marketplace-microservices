@@ -1,6 +1,9 @@
-﻿namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models {
-    public class ProdutoAvaliacaoModel {
-        public ProdutoAvaliacaoModel() {
+﻿namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
+{
+    public class ProdutoAvaliacaoModel
+    {
+        public ProdutoAvaliacaoModel()
+        {
 
         }
         public Guid Id { get; set; }

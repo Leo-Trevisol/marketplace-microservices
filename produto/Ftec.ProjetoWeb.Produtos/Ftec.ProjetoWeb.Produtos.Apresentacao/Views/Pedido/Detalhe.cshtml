@@ -1,0 +1,118 @@
+﻿@model Ftec.ProjetoWeb.Produtos.Apresentacao.Models.PedidoModel
+
+@{
+    ViewData["Title"] = $"Pedido #{Model.NumeroPedido}";
+    var previsao = Model.DataPedido.AddDays(7).ToString("dd/MM/yyyy");
+}
+
+<div class="confirmacao-page">
+
+    <div class="confirmacao-header">
+        <div class="confirmacao-header-inner">
+            <i class="bi bi-@Model.StatusIcone confirmacao-check-icon"
+               style="color: @(Model.Status == "Cancelado" ? "#dc3545" : "#198754")"></i>
+            <div>
+                <h4 class="confirmacao-header-title">
+                    Pedido #@Model.NumeroPedido
+                </h4>
+                <p class="confirmacao-header-sub mb-0">
+                    Realizado em <strong>@Model.DataPedido.ToString("dd/MM/yyyy")</strong>
+                    &nbsp;·&nbsp;
+                    <span class="badge @Model.StatusBadgeClass">@Model.Status</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="confirmacao-grid">
+
+        <div>
+
+            <div class="confirmacao-section">
+                <h6 class="confirmacao-section-title">
+                    <i class="bi bi-box-seam me-2"></i>Itens do pedido
+                </h6>
+
+                @foreach (var item in Model.Itens)
+                {
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        @*{{trocar src por item.ProdutoImagem}} *@
+                        <img src="https://unifique.com.br/upload/blog/2025/02/quem-inventou-celular.jpg"
+                             alt="@item.ProdutoNome"
+                             class="confirmacao-produto-img" />
+                        <div class="flex-grow-1">
+                            <p class="fw-semibold mb-1">@item.ProdutoNome</p>
+                            <p class="text-muted small mb-0">Qtd: @item.Quantidade</p>
+                        </div>
+                        <p class="fw-bold text-success mb-0">R$ @item.Subtotal.ToString("N2")</p>
+                    </div>
+                }
+            </div>
+
+            <div class="confirmacao-section">
+                <h6 class="confirmacao-section-title">
+                    <i class="bi bi-truck me-2"></i>Endereço de entrega
+                </h6>
+                <p class="mb-1 fw-semibold">@Model.NomeCompleto</p>
+                <p class="text-muted small mb-0">@Model.EnderecoCompleto</p>
+                <div class="confirmacao-previsao mt-3">
+                    <i class="bi bi-calendar-check me-2 text-success"></i>
+                    <span>Previsão de entrega: <strong>@previsao</strong></span>
+                </div>
+            </div>
+
+        </div>
+
+        <div>
+
+            <div class="confirmacao-section">
+                <h6 class="confirmacao-section-title">
+                    <i class="bi bi-receipt me-2"></i>Resumo do pagamento
+                </h6>
+
+                @foreach (var item in Model.Itens)
+                {
+                    <div class="resumo-linha">
+                        <span class="text-muted">@item.ProdutoNome</span>
+                        <span>R$ @item.Subtotal.ToString("N2")</span>
+                    </div>
+                }
+
+                <div class="resumo-linha">
+                    <span class="text-muted">Frete</span>
+                    <span class="text-success fw-semibold">Grátis</span>
+                </div>
+
+                <hr />
+
+                <div class="resumo-linha fw-bold fs-5">
+                    <span>Total</span>
+                    <span class="text-success">R$ @Model.TotalPago.ToString("N2")</span>
+                </div>
+
+                <hr />
+
+                <div class="d-flex align-items-center gap-2 mt-2">
+                    <i class="bi @Model.IconePagamento fs-4 text-muted"></i>
+                    <div>
+                        <p class="mb-0 small text-muted">Pago com</p>
+                        <p class="mb-0 fw-semibold">@Model.FormaPagamentoLabel</p>
+                    </div>
+                </div>
+            </div>
+
+            <a asp-controller="Pedido" asp-action="MeusPedidos"
+               class="btn btn-outline-secondary w-100 mt-3">
+                <i class="bi bi-arrow-left me-2"></i>Voltar para meus pedidos
+            </a>
+
+            <a asp-controller="Home" asp-action="Index"
+               class="btn-buy bg-markett-blue mt-2 w-100">
+                Continuar comprando
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

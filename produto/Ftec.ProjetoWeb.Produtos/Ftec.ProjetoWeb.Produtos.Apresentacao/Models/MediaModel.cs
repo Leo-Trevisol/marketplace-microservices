@@ -1,9 +1,12 @@
 ﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Enums;
 
-namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models {
-    public class MediaModel {
+namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
+{
+    public class MediaModel
+    {
 
-        public MediaModel() {
+        public MediaModel()
+        {
 
         }
 

@@ -2,25 +2,29 @@
 using Ftec.ProjetoWeb.Produtos.Dominio.Enum;
 using Ftec.ProjetoWeb.Produtos.Dominio.Interfaces;
 using Npgsql;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Ftec.ProjetoWeb.Produtos.Persistencia {
-    public class MediaRepositorio : IMediaRepositorio{
+namespace Ftec.ProjetoWeb.Produtos.Persistencia
+{
+    public class MediaRepositorio : IMediaRepositorio
+    {
         private string stringConexao;
         private string _caminhoUpload;
-        public MediaRepositorio(string strConexao, string caminhoUpload) {
+        public MediaRepositorio(string strConexao, string caminhoUpload)
+        {
             stringConexao = strConexao;
             _caminhoUpload = caminhoUpload;
         }
 
-        public Response<Media> InserirMedia(Media media) {
-            try {
-                using (var conexao = new NpgsqlConnection(stringConexao)) {
+        public Response<Media> InserirMedia(Media media)
+        {
+            try
+            {
+                using (var conexao = new NpgsqlConnection(stringConexao))
+                {
                     conexao.Open();
 
-                    using (var transacao = conexao.BeginTransaction()) {
+                    using (var transacao = conexao.BeginTransaction())
+                    {
                         var comando = new NpgsqlCommand();
                         comando.Connection = conexao;
                         comando.Transaction = transacao;
@@ -44,24 +48,31 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
 
                         transacao.Commit();
 
-                        return new Response<Media> {
+                        return new Response<Media>
+                        {
                             Sucesso = true,
                             Data = media,
                             Message = "Mídia salva com sucesso"
                         };
                     }
                 }
-            } catch (Exception ex) {
-                return new Response<Media> {
+            }
+            catch (Exception ex)
+            {
+                return new Response<Media>
+                {
                     Sucesso = false,
                     Data = null,
                     Message = $"Erro ao salvar mídia: {ex.Message}"
                 };
             }
         }
-        public Response<Media> DeletarMedia(Guid idMedia) {
-            try {
-                using (var conexao = new NpgsqlConnection(stringConexao)) {
+        public Response<Media> DeletarMedia(Guid idMedia)
+        {
+            try
+            {
+                using (var conexao = new NpgsqlConnection(stringConexao))
+                {
                     conexao.Open();
 
                     var comandoSelect = new NpgsqlCommand();
@@ -77,17 +88,22 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
 
                     string caminhoArquivo = string.Empty;
 
-                    using (var reader = comandoSelect.ExecuteReader()) {
-                        if (reader.Read()) {
+                    using (var reader = comandoSelect.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
                             caminhoArquivo = reader.GetString(0);
-                        } else {
+                        }
+                        else
+                        {
                             return new Response<Media>(false, null, "Media inexistente");
                         }
                     }
 
                     var caminhoFisico = Path.Combine(_caminhoUpload, caminhoArquivo.TrimStart('/'));
 
-                    if (File.Exists(caminhoFisico)) {
+                    if (File.Exists(caminhoFisico))
+                    {
                         File.Delete(caminhoFisico);
                     }
 
@@ -101,15 +117,19 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
 
                     return new Response<Media>(true, null, "Sucesso ao excluir media!");
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return new Response<Media>(false, null, $"ERRO ao excluir media! {ex.Message}"); ;
             }
         }
-        public Media ObterMedia(Guid idMedia) {
+        public Media ObterMedia(Guid idMedia)
+        {
             if (idMedia == Guid.Empty)
                 return null;
 
-            using (var conexao = new NpgsqlConnection(stringConexao)) {
+            using (var conexao = new NpgsqlConnection(stringConexao))
+            {
                 conexao.Open();
 
                 var comando = new NpgsqlCommand();
@@ -123,9 +143,12 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia {
 
                 comando.Parameters.AddWithValue("@id", idMedia);
 
-                using (var reader = comando.ExecuteReader()) {
-                    if (reader.Read()) {
-                        return new Media {
+                using (var reader = comando.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new Media
+                        {
                             Id = reader.GetGuid(0),
                             NomeArquivo = reader.GetString(1),
                             NomeUnico = reader.GetString(2),

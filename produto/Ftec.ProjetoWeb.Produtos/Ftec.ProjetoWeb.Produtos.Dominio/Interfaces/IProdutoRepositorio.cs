@@ -1,7 +1,4 @@
 ﻿using Ftec.ProjetoWeb.Produtos.Dominio.Entidade;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Ftec.ProjetoWeb.Produtos.Dominio.Interfaces
 {

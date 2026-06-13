@@ -3,7 +3,6 @@ using Ftec.ProjetoWeb.Produtos.Aplicacao.DTO;
 using Ftec.ProjetoWeb.Produtos.Dominio.Entidade;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Net.NetworkInformation;
 
 namespace Ftec.ProjetoWeb.Produtos.Controllers
 {

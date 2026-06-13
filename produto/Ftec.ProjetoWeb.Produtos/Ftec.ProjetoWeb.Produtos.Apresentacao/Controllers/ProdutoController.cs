@@ -27,13 +27,17 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 return View(new List<ProdutoModel>());
             }
         }
-        public IActionResult Detalhe(string idProduto) {
-            try {
+        public IActionResult Detalhe(string idProduto)
+        {
+            try
+            {
                 var produto = _apiFacade.ObterProduto(idProduto);
                 return View(produto);
 
 
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 ViewBag.Erro = $"Erro ao carregar produto: {ex.Message}";
                 return View(new List<ProdutoModel>());
             }

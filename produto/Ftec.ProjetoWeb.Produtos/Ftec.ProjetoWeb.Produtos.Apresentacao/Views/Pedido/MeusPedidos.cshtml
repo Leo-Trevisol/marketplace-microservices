@@ -1,0 +1,91 @@
+﻿@model List<Ftec.ProjetoWeb.Produtos.Apresentacao.Models.PedidoModel>
+
+@{
+    ViewData["Title"] = "Meus Pedidos";
+}
+
+<div class="meus-pedidos-container">
+
+    <h2 class="meus-pedidos-title">Meus Pedidos</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="meus-pedidos-vazio">
+            <i class="bi bi-bag-x meus-pedidos-vazio-icone"></i>
+            <h5>Você ainda não fez nenhum pedido</h5>
+            <p class="text-muted">Explore nossos produtos e faça seu primeiro pedido!</p>
+            <a asp-controller="Home" asp-action="Index"
+               class="btn-buy bg-markett-blue mt-2"
+               style="max-width:220px;margin:0 auto">
+                Ver produtos
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="meus-pedidos-lista">
+            @foreach (var pedido in Model.OrderByDescending(p => p.DataPedido))
+            {
+                <div class="pedido-card">
+
+                    <div class="pedido-card-header">
+                        <div class="pedido-card-header-info">
+                            <span class="text-muted small">Pedido</span>
+                            <span class="fw-bold">#@pedido.NumeroPedido</span>
+                        </div>
+                        <div class="pedido-card-header-info">
+                            <span class="text-muted small">Data</span>
+                            <span>@pedido.DataPedido.ToString("dd/MM/yyyy")</span>
+                        </div>
+                        <div class="pedido-card-header-info">
+                            <span class="text-muted small">Total</span>
+                            <span class="fw-bold text-success">R$ @pedido.TotalPago.ToString("N2")</span>
+                        </div>
+                        <div class="pedido-card-header-info">
+                            <span class="text-muted small">Status</span>
+                            <span class="badge @pedido.StatusBadgeClass">
+                                <i class="bi @pedido.StatusIcone me-1"></i>@pedido.Status
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="pedido-card-body">
+                        @foreach (var item in pedido.Itens)
+                        {
+                            <div class="pedido-item">
+                              @*{{trocar src por item.ProdutoImagem}} *@
+                                <img src="https://unifique.com.br/upload/blog/2025/02/quem-inventou-celular.jpg"
+                                     alt="@item.ProdutoNome"
+                                     class="pedido-item-img" />
+                                <div class="pedido-item-info">
+                                    <p class="fw-semibold mb-0">@item.ProdutoNome</p>
+                                    <p class="text-muted small mb-0">
+                                        Qtd: @item.Quantidade &nbsp;·&nbsp;
+                                        R$ @item.PrecoUnitario.ToString("N2") cada
+                                    </p>
+                                </div>
+                                <p class="fw-bold mb-0">R$ @item.Subtotal.ToString("N2")</p>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="pedido-card-footer">
+                        <div class="d-flex align-items-center gap-2 text-muted small">
+                            <i class="bi @pedido.IconePagamento"></i>
+                            <span>@pedido.FormaPagamentoLabel</span>
+                        </div>
+                        <a asp-controller="Pedido"
+                           asp-action="Detalhe"
+                           asp-route-numero="@pedido.NumeroPedido"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver detalhes
+                            <i class="bi bi-chevron-right ms-1"></i>
+                        </a>
+                    </div>
+
+                </div>
+            }
+        </div>
+    }
+
+</div>
