@@ -37,11 +37,11 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                             this.obtemBaseUrl(_config, TipoServico.Produto);
                             item.ImagemPrincipal = Get<MediaModel>($"api/Media/obterPorId/{item.IdImagemPrincipal}");
                         }
-                        if (item.IdCategoria.HasValue)
-                        {
-                            this.obtemBaseUrl(_config, TipoServico.Categoria);
-                            item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
-                        }
+                        //if (item.IdCategoria.HasValue)
+                        //{
+                        //    this.obtemBaseUrl(_config, TipoServico.Categoria);
+                        //    item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
+                        //}
                     }
                     return produtos;
                 }
