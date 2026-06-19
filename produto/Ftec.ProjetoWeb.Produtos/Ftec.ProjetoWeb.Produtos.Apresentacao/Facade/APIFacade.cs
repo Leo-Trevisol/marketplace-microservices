@@ -42,6 +42,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                         //    this.obtemBaseUrl(_config, TipoServico.Categoria);
                         //    item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
                         //}
+
                     }
                     return produtos;
                 }
@@ -60,10 +61,18 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             this.obtemBaseUrl(_config, TipoServico.Produto);
             var response = Get<APIResponseModel<ProdutoModel>>($"api/Produto/obtemPorId/{id}");
 
-            var produto = response != null && response.Sucesso && response?.Data != null ? response?.Data : new ProdutoModel();
-
-
-
+            var produto = response != null && response.Sucesso && response?.Data != null ? response.Data : new ProdutoModel();
+            if(produto != null) {
+                //if (produto.IdCategoria.HasValue)
+                //{
+                //    this.obtemBaseUrl(_config, TipoServico.Categoria);
+                //    produto.Categoria = Get<CategoriaModel>($"api/Categoria/{produto.IdCategoria.Value}");
+                //}
+                //if (!string.IsNullOrEmpty(produto.Id.ToString())) {
+                //    this.obtemBaseUrl(_config, TipoServico.Avaliacao);
+                //    produto.Avaliacoes = Get<List<ProdutoAvaliacaoModel>>($"api/ProdutoAvaliacao/GetAvaliacoesProduto/{produto.Id}");
+                //}
+            }
 
             return produto;
         }

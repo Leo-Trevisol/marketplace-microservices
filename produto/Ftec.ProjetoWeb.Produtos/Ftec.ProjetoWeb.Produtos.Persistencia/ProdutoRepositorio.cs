@@ -39,8 +39,8 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia
                         comando.Parameters.AddWithValue("idImagemPrincipal", produto.IdImagemPrincipal);
                         comando.Parameters.AddWithValue("descricao", produto.Descricao);
                         comando.Parameters.AddWithValue("disponivel", produto.Disponivel);
-                        comando.Parameters.AddWithValue("excluido", false);
                         comando.Parameters.AddWithValue("destaque", produto.Destaque);
+                        comando.Parameters.AddWithValue("excluido", false);
                         comando.ExecuteNonQuery();
 
                         transacao.Commit();

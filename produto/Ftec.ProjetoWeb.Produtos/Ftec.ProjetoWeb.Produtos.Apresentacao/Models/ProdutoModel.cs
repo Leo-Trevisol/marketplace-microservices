@@ -22,6 +22,7 @@
 
         #region Model Members
         public CategoriaModel Categoria { get; set; }
+        public List<ProdutoAvaliacaoModel> Avaliacoes { get; set; }
         public MediaModel ImagemPrincipal { get; set; }
         #endregion
 

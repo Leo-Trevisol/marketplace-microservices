@@ -27,6 +27,7 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao.Adapter
             entity.IdImagemPrincipal = model.IdImagemPrincipal;
             entity.Descricao = model.Descricao;
             entity.Disponivel = model.Disponivel;
+            entity.Destaque = model.Destaque;
             entity.Excluido = model.Excluido;
 
             return entity;
@@ -52,6 +53,7 @@ namespace Ftec.ProjetoWeb.Produtos.Aplicacao.Adapter
             model.IdImagemPrincipal = entity.IdImagemPrincipal;
             model.Descricao = entity.Descricao;
             model.Disponivel = entity.Disponivel;
+            model.Destaque = entity.Destaque;
             model.Excluido = entity.Excluido;
 
             return model;
