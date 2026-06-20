@@ -8,7 +8,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
     public class HomeController : Controller
     {
         private readonly APIFacade _apiFacade;
-        public HomeController(IConfiguration config) {
+        public HomeController(IConfiguration config)
+        {
             _apiFacade = new APIFacade(config);
         }
         public IActionResult Index()
@@ -32,15 +33,22 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 
         #region Functions
         [NonAction]
-        public List<ProdutoModel> ObterProdutosDestaque() {
+        public List<ProdutoModel> ObterProdutosDestaque()
+        {
             var destaques = new List<ProdutoModel>();
             var produtos = _apiFacade.ListarProdutos();
 
-            if(produtos != null && produtos.Count() > 0) {
-                foreach(var item in produtos) {
-                    if (item.Destaque) {
+
+            if (produtos != null && produtos.Count() > 0)
+            {
+                foreach (var item in produtos)
+                {
+                    if (item.Destaque)
+                    {
                         destaques.Add(item);
-                    } else {
+                    }
+                    else
+                    {
                         continue;
                     }
                 }
