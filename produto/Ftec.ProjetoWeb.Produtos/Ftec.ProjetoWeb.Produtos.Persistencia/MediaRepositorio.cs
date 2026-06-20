@@ -59,6 +59,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return new Response<Media>
                 {
                     Sucesso = false,

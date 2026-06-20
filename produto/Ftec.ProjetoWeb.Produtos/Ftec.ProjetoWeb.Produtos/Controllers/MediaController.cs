@@ -15,13 +15,25 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
     public class MediaController : ControllerBase
     {
 
-        MediaRepositorio _mediaRepositorio;
-        string caminhoUpload;
+        private readonly IWebHostEnvironment _env;
+        private readonly MediaRepositorio _mediaRepositorio;
+        private readonly string _caminhoUpload;
 
-        public MediaController(IConfiguration config)
+        public MediaController(IConfiguration config, IWebHostEnvironment env)
         {
-            caminhoUpload = config["uploadPath"];
-            _mediaRepositorio = new MediaRepositorio(config["strConexao"], caminhoUpload);
+            _env = env;
+
+            _caminhoUpload = Path.Combine(_env.ContentRootPath, "_uploads");
+
+            if (!Directory.Exists(_caminhoUpload))
+            {
+                Directory.CreateDirectory(_caminhoUpload);
+            }
+
+            _mediaRepositorio = new MediaRepositorio(
+                config["strConexao"],
+                _caminhoUpload
+            );
         }
 
         /// <summary>
@@ -39,52 +51,36 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
         [HttpPost("upload")]
         public async Task<IActionResult> Upload(IFormFile arquivo)
         {
-
-            if (arquivo == null || arquivo.Length == 0)
-                return BadRequest(new { sucesso = false, message = "Arquivo inválido" });
-
-            var extensao = Path.GetExtension(arquivo.FileName);
-            var nomeUnico = Guid.NewGuid() + extensao;
-
-            var caminhoFisico = Path.Combine(caminhoUpload, nomeUnico);
-            var caminhoVirtual = $"{caminhoUpload}/{nomeUnico}";
-
-            using (var stream = new FileStream(caminhoFisico, FileMode.Create))
+            try
             {
-                await arquivo.CopyToAsync(stream);
-            }
+                if (arquivo == null || arquivo.Length == 0)
+                    return BadRequest(new { sucesso = false, message = "Arquivo inválido" });
 
-            var media = new Media
-            {
-                NomeArquivo = arquivo.FileName,
-                NomeUnico = nomeUnico,
-                CaminhoArquivo = caminhoVirtual,
-                Extensao = extensao,
-                TipoArquivo = TipoArquivo.Imagem
-            };
+                var extensao = Path.GetExtension(arquivo.FileName);
+                var nomeUnico = Guid.NewGuid() + extensao;
 
-            var response = _mediaRepositorio.InserirMedia(media);
+                var caminhoFisico = Path.Combine(_caminhoUpload, nomeUnico);
+                var caminhoVirtual = $"/_uploads/{nomeUnico}";
 
-            if (response.Sucesso)
-            {
+                using (var stream = new FileStream(caminhoFisico, FileMode.Create))
+                {
+                    await arquivo.CopyToAsync(stream);
+                }
+
                 return Ok(new
                 {
                     sucesso = true,
-                    data = new MediaResponse
-                    {
-                        Id = media.Id,
-                        Caminho = media.CaminhoArquivo
-                    },
-                    message = "Upload realizado com sucesso"
+                    data = caminhoVirtual,
+                    message = "Upload realizado"
                 });
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest(new
+                return StatusCode(500, new
                 {
                     sucesso = false,
-                    data = "",
-                    message = "Erro ao realizar Upload"
+                    message = ex.Message,
+                    stack = ex.ToString()
                 });
             }
         }

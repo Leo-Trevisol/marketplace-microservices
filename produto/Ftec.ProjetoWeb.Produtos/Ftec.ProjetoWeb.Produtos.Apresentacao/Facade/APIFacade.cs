@@ -26,8 +26,11 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             {
                 //var produtos = Get<List<ProdutoModel>>("api/Produto/listar");
                 this.obtemBaseUrl(_config, TipoServico.Produto);
-                var response = Get<APIResponseModel<List<ProdutoModel>>>("api/Produto/listar");
+                var response = Get<APIResponseModel<List<ProdutoModel>>>("api/produto/listar");
+
                 var produtos = response != null && response.Sucesso && response?.Data != null ? response?.Data : new List<ProdutoModel>();
+
+
                 if (produtos != null && produtos.Count() > 0)
                 {
                     foreach (var item in produtos)
@@ -51,8 +54,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                     return new List<ProdutoModel>();
                 }
             }
-            catch
+            catch (Exception e)
             {
+                Console.WriteLine(e.ToString());
                 return new List<ProdutoModel>();
             }
         }
@@ -62,7 +66,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             var response = Get<APIResponseModel<ProdutoModel>>($"api/Produto/obtemPorId/{id}");
 
             var produto = response != null && response.Sucesso && response?.Data != null ? response.Data : new ProdutoModel();
-            if(produto != null) {
+            if (produto != null)
+            {
                 //if (produto.IdCategoria.HasValue)
                 //{
                 //    this.obtemBaseUrl(_config, TipoServico.Categoria);
