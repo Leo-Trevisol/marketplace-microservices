@@ -29,7 +29,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 var response = Get<APIResponseModel<List<ProdutoModel>>>("api/produto/listar");
 
                 var produtos = response != null && response.Sucesso && response?.Data != null ? response?.Data : new List<ProdutoModel>();
+                Console.WriteLine("antes");
 
+                Console.WriteLine(produtos);
 
                 if (produtos != null && produtos.Count() > 0)
                 {
@@ -38,6 +40,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                         if (!string.IsNullOrEmpty(item.IdImagemPrincipal.ToString()))
                         {
                             this.obtemBaseUrl(_config, TipoServico.Produto);
+                            Console.WriteLine(item.IdImagemPrincipal);
                             item.ImagemPrincipal = Get<MediaModel>($"api/Media/obterPorId/{item.IdImagemPrincipal}");
                         }
                         //if (item.IdCategoria.HasValue)

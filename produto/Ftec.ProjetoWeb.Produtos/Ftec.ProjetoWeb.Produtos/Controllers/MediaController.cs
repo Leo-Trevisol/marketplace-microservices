@@ -54,24 +54,65 @@ namespace Ftec.ProjetoWeb.Produtos.Controllers
             try
             {
                 if (arquivo == null || arquivo.Length == 0)
-                    return BadRequest(new { sucesso = false, message = "Arquivo inválido" });
+                {
+                    return BadRequest(new
+                    {
+                        sucesso = false,
+                        message = "Arquivo inválido"
+                    });
+                }
 
                 var extensao = Path.GetExtension(arquivo.FileName);
-                var nomeUnico = Guid.NewGuid() + extensao;
+                var nomeUnico = $"{Guid.NewGuid()}{extensao}";
 
                 var caminhoFisico = Path.Combine(_caminhoUpload, nomeUnico);
                 var caminhoVirtual = $"/_uploads/{nomeUnico}";
+
+                if (!Directory.Exists(_caminhoUpload))
+                {
+                    Directory.CreateDirectory(_caminhoUpload);
+                }
 
                 using (var stream = new FileStream(caminhoFisico, FileMode.Create))
                 {
                     await arquivo.CopyToAsync(stream);
                 }
 
+                var media = new Media
+                {
+                    Id = Guid.NewGuid(),
+                    NomeArquivo = arquivo.FileName,
+                    NomeUnico = nomeUnico,
+                    CaminhoArquivo = caminhoVirtual,
+                    Extensao = extensao,
+                    TipoArquivo = TipoArquivo.Imagem
+                };
+
+                var response = _mediaRepositorio.InserirMedia(media);
+
+                if (!response.Sucesso)
+                {
+                    return BadRequest(new
+                    {
+                        sucesso = false,
+                        data = (object)null,
+                        message = response.Message
+                    });
+                }
+
                 return Ok(new
                 {
                     sucesso = true,
-                    data = caminhoVirtual,
-                    message = "Upload realizado"
+                    data = new
+                    {
+                        id = media.Id,
+                        nomeArquivo = media.NomeArquivo,
+                        nomeUnico = media.NomeUnico,
+                        caminhoArquivo = media.CaminhoArquivo,
+                        extensao = media.Extensao,
+                        tipoArquivo = media.TipoArquivo.ToString()
+                    },
+                    message = "Upload realizado com sucesso"
                 });
             }
             catch (Exception ex)

@@ -31,7 +31,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia
 
                         comando.CommandText = @"
                         INSERT INTO media
-                        (id, nomeArquivo, nomeUnico, caminhoArquivo, tipoArquivo, extensao)
+                        (id, nomearquivo, nomeunico, caminhoarquivo, tipoarquivo, extensao)
                         VALUES
                         (@id, @nomearquivo, @nomeunico, @caminhoarquivo, @tipoarquivo, @extensao)
                     ";
@@ -80,7 +80,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia
                     comandoSelect.Connection = conexao;
 
                     comandoSelect.CommandText = @"
-                        SELECT ""caminhoArquivo""
+                        SELECT caminhoarquivo
                         FROM media
                         WHERE id = @id
                     ";
@@ -137,7 +137,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia
                 comando.Connection = conexao;
 
                 comando.CommandText = @"
-                    SELECT id, nomeArquivo, nomeUnico, ""caminhoArquivo"", tipoArquivo, extensao, dataUpload
+                    SELECT id, nomearquivo, nomeunico, caminhoarquivo, tipoarquivo, extensao, dataupload
                     FROM media
                     WHERE id = @id
                 ";
