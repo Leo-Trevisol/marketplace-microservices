@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var nomeUsuario = Context.Session.GetString("Nome");
+    var estaLogado = !string.IsNullOrEmpty(nomeUsuario);
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -52,7 +57,9 @@
 
                         <i class="bi bi-list fs-1 text-white"></i>
                 </button>
-                <a asp-controller="Home"> <img src="~/css/assets/White_slim_long.svg" alt="Logo Markett" height="32" /></a>
+                <a asp-controller="Home" asp-action="Index">
+                    <img src="~/css/assets/White_slim_long.svg" alt="Logo Markett" height="40" />
+                </a>
                 <button class="btn p-0 border-0 cart-header-button">
                     @*Trocar o número pelo de itens no carrinho. Sumir se não tiver nada.*@
                     <span class="cart-items-count">2</span>
@@ -83,12 +90,16 @@
 
         <div class="offcanvas-body">
 
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-person-circle fs-1 text-white"></i>
-                <h5 class="text-white mx-2 my-0"> Olá, @(User.Identity?.Name ?? "acesse sua conta!")</h5>
+                <h5 class="text-white my-2 ">
+                    Olá, @((nomeUsuario+"!") ?? "acesse sua conta!")
+                </h5>
             </div>
 
-            @if (User.Identity?.IsAuthenticated != true)
+            
+
+            @if (!estaLogado)
             {
                 <div class="d-flex align-items-center gap-2 w-50 my-2">
                     <a asp-controller="Auth"
@@ -104,15 +115,7 @@
                     </a>
                 </div>
             }
-
-            @if (User.Identity?.IsAuthenticated == true)
-            {
-                <a asp-controller="Pedido"
-                   asp-action="MeusPedidos"
-                   class="btn bg-white py-1 px-2 mt-2">
-                    <i class="bi bi-bag me-1"></i>Meus Pedidos
-                </a>
-            }
+            
 
             <div class="list-group list-group-flush mt-3">
 
@@ -177,7 +180,32 @@
                 </a>
 
             </div>
-        </div>
+       
+            @if(estaLogado)
+                {
+                <div class="d-flex flex-column gap-2 w-100 my-2">
+
+
+                    
+
+                    <a asp-controller="Pedido"
+                       asp-action="MeusPedidos"
+                       class="btn bg-white py-1 px-2">
+                        <i class="bi bi-bag me-1"></i>Meus Pedidos
+                    </a>
+
+                    <form asp-controller="Auth"
+                          asp-action="Logout"
+                          method="post">
+                        <button type="submit"
+                                class="btn btn-danger py-1 px-2 w-100">
+                            Sair
+                        </button>
+                    </form>
+
+                </div>
+                }
+            </div>
     </div>
 
     @*Header desktop*@
@@ -186,7 +214,9 @@
 
             <div class="d-flex align-items-center py-3">
 
-                <a asp-controller="Home"> <img src="~/css/assets/White_slim_long.svg" alt="Logo Markett" height="40" /></a>
+                <a asp-controller="Home" asp-action="Index">
+                    <img src="~/css/assets/White_slim_long.svg" alt="Logo Markett" height="40" />
+                </a>
 
                 <div class="flex-grow-1 mx-4">
 
@@ -221,29 +251,51 @@
 
                             <ul class="dropdown-menu dropdown-menu-end">
 
-                                <li>
-                                    <a class="dropdown-item"
-                                       asp-controller="Auth"
-                                       asp-action="Login">
-                                        Entrar
-                                    </a>
-                                </li>
+                                @if (!estaLogado)
+                                {
+                                    <li>
+                                        <a class="dropdown-item"
+                                           asp-controller="Auth"
+                                           asp-action="Login">
+                                            Entrar
+                                        </a>
+                                    </li>
 
-                                <li>
-                                    <a class="dropdown-item"
-                                       asp-controller="Auth"
-                                       asp-action="Cadastro">
-                                        Cadastrar
-                                    </a>
-                                </li>
+                                    <li>
+                                        <a class="dropdown-item"
+                                           asp-controller="Auth"
+                                           asp-action="Cadastro">
+                                            Cadastrar
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="dropdown-item-text">
+                                        <i class="bi bi-person-circle me-2"></i>
+                                        @nomeUsuario
+                                    </li>
 
-                                <li>
-                                    <a class="dropdown-item"
-                                       asp-controller="Pedido"
-                                       asp-action="MeusPedidos">
-                                        <i class="bi bi-bag me-2"></i>Meus Pedidos
-                                    </a>
-                                </li>
+                                    <li><hr class="dropdown-divider" /></li>
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                           asp-controller="Pedido"
+                                           asp-action="MeusPedidos">
+                                            <i class="bi bi-bag me-2"></i>Meus Pedidos
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <form asp-controller="Auth"
+                                              asp-action="Logout"
+                                              method="post">
+                                            <button class="dropdown-item text-danger" type="submit">
+                                                Sair
+                                            </button>
+                                        </form>
+                                    </li>
+                                }
 
                             </ul>
 

@@ -21,6 +21,13 @@
                     Entrar
                 </h2>
 
+                @if (ViewBag.Erro != null)
+                {
+                    <div class="alert alert-danger">
+                        @ViewBag.Erro
+                    </div>
+                }
+
                 <form method="post">
 
                     <div class="mb-3">

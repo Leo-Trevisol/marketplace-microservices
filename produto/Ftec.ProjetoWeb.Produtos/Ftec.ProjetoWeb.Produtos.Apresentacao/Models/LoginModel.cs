@@ -1,9 +1,11 @@
-﻿namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
-{
-    public class LoginModel
-    {
-        public string Email { get; set; }
+﻿using System.ComponentModel.DataAnnotations;
 
-        public string Senha { get; set; }
-    }
+public class LoginModel
+{
+    [Required(ErrorMessage = "E-mail é obrigatório")]
+    [EmailAddress(ErrorMessage = "E-mail inválido")]
+    public string Email { get; set; }
+
+    [Required(ErrorMessage = "Senha é obrigatória")]
+    public string Senha { get; set; }
 }
