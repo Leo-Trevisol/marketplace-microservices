@@ -1,4 +1,8 @@
-﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.Auth;
+﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API;
+using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.Auth;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Text.Json;
 
 namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Services
@@ -19,8 +23,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Services
                 _configuration["AuthApi:BaseUrl"]!);
         }
 
-        public async Task<string> CadastrarUsuarioAsync(UsuarioModel usuario)
+        public async Task<APIResponseModel<string>> CadastrarUsuarioAsync(UsuarioModel usuario)
         {
+            bool success = false;
             var response = await _httpClient.PostAsJsonAsync(
                 "/api/usuario",
                 new
@@ -31,13 +36,21 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Services
                     documento = usuario.Documento,
                     tipoPessoa = usuario.TipoPessoa,
                     funcao = usuario.Funcao,
-                    dataNascimento = usuario.DataNascimento,
+                    dataNascimento = usuario.DataNascimento.ToString("yyyy-MM-dd"),
                     telefone = usuario.Telefone
                 });
 
+            if (response.StatusCode == HttpStatusCode.Created) {
+                success = true;
+            }
+
             var conteudo = await response.Content.ReadAsStringAsync();
 
-            return $"Status: {(int)response.StatusCode}\n{conteudo}";
+            return new APIResponseModel<string>() {
+                Sucesso = success,
+                Data = $"Status: {(int)response.StatusCode}\n{conteudo}",
+                Message = ""
+            };
         }
 
         public async Task<LoginResponseDto?> LoginAsync(string email, string senha)

@@ -63,7 +63,13 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             var resultado = await _authApiService
                 .CadastrarUsuarioAsync(model);
 
-            return Content(resultado);
+            if (resultado.Sucesso) {
+                return RedirectToAction("Index", "Home");
+            } else {
+                return Content(resultado.Data);
+            }
+
+
         }
 
         #endregion

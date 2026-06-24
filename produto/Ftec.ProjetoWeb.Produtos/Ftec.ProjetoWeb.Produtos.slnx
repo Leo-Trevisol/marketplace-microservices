@@ -2,7 +2,7 @@
   <Folder Name="/Aplicacao/">
     <Project Path="Ftec.ProjetoWeb.Produtos.Aplicacao/Ftec.ProjetoWeb.Produtos.Aplicacao.csproj" />
   </Folder>
-  <Folder Name="/Aplicacao/Apresentacao/">
+  <Folder Name="/Apresentacao/">
     <Project Path="Ftec.ProjetoWeb.Produtos.Apresentacao/Ftec.ProjetoWeb.Produtos.Apresentacao.csproj" Id="f36dae6c-7ef7-4f40-a81e-bb9868126d54" />
   </Folder>
   <Folder Name="/Dominio/">

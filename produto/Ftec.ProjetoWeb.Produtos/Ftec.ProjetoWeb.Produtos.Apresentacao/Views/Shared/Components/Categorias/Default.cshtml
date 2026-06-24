@@ -1,0 +1,9 @@
+﻿@model List<CategoriaModel>
+
+@if (Model != null && Model.Any()) {
+    @foreach (var categoria in Model) {
+        <a href="#" class="header-category" asp-controller="Produto" asp-action="Index" asp-route-categoriaId="@categoria.Id">
+            @categoria.Nome
+        </a>
+    }
+}

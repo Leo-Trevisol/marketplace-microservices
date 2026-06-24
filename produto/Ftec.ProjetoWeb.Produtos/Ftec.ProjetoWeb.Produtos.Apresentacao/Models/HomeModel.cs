@@ -1,5 +1,5 @@
 ﻿namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models {
-    public class HomeModel {
+    public class HomeModel{
         public HomeModel() {
             ProdutosDestaque = new List<ProdutoModel>();
             Categorias = new List<CategoriaModel>();

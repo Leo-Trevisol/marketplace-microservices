@@ -24,14 +24,10 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         {
             try
             {
-                //var produtos = Get<List<ProdutoModel>>("api/Produto/listar");
                 this.obtemBaseUrl(_config, TipoServico.Produto);
                 var response = Get<APIResponseModel<List<ProdutoModel>>>("api/produto/listar");
 
                 var produtos = response != null && response.Sucesso && response?.Data != null ? response?.Data : new List<ProdutoModel>();
-                Console.WriteLine("antes");
-
-                Console.WriteLine(produtos);
 
                 if (produtos != null && produtos.Count() > 0)
                 {
@@ -40,11 +36,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                         if (!string.IsNullOrEmpty(item.IdImagemPrincipal.ToString()))
                         {
                             this.obtemBaseUrl(_config, TipoServico.Produto);
-                            Console.WriteLine(item.IdImagemPrincipal);
                             item.ImagemPrincipal = Get<MediaModel>($"api/Media/obterPorId/{item.IdImagemPrincipal}");
                         }
-                        //if (item.IdCategoria.HasValue)
-                        //{
+                        //if (item.IdCategoria.HasValue) {
                         //    this.obtemBaseUrl(_config, TipoServico.Categoria);
                         //    item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
                         //}
@@ -59,7 +53,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
                 return new List<ProdutoModel>();
             }
         }
@@ -71,8 +64,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             var produto = response != null && response.Sucesso && response?.Data != null ? response.Data : new ProdutoModel();
             if (produto != null)
             {
-                //if (produto.IdCategoria.HasValue)
-                //{
+                //if (produto.IdCategoria.HasValue) {
                 //    this.obtemBaseUrl(_config, TipoServico.Categoria);
                 //    produto.Categoria = Get<CategoriaModel>($"api/Categoria/{produto.IdCategoria.Value}");
                 //}
@@ -96,7 +88,34 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         {
             Delete($"api/Produto/excluirProduto{id}");
         }
+        #endregion
 
+        #region Categorias
+        public List<CategoriaModel> ListarCategorias() {
+            try {
+                this.obtemBaseUrl(_config, TipoServico.Categoria);
+                var response = Get<APIResponseModel<List<CategoriaModel>>>("api/categoria");
+
+                var categorias = response != null && response.Sucesso && response?.Data != null ? response?.Data : new List<CategoriaModel>();
+
+                if (categorias != null && categorias.Count() > 0) {
+                    return categorias;
+                } else {
+                    return new List<CategoriaModel>();
+                }
+            } catch (Exception e) {
+                return new List<CategoriaModel>();
+            }
+        }
+        #endregion
+
+        #region Avaliacoes
+        public void AdicionarAvaliacao(ProdutoAvaliacaoModel modelo) {
+            if(modelo != null) {
+                this.obtemBaseUrl(_config, TipoServico.Avaliacao);
+                Post($"api/ProdutoAvaliacao/post/", modelo);
+            }
+        }
         #endregion
 
         #region Métodos privados de comunicação HTTP

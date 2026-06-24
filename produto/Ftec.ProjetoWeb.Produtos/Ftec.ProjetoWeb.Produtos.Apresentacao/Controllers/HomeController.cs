@@ -16,6 +16,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
         {
             var model = new HomeModel();
             model.ProdutosDestaque = this.ObterProdutosDestaque();
+            model.Categorias = this.ObterCategorias();
 
             return View(model);
         }
@@ -37,8 +38,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
         {
             var destaques = new List<ProdutoModel>();
             var produtos = _apiFacade.ListarProdutos();
-
-
             if (produtos != null && produtos.Count() > 0)
             {
                 foreach (var item in produtos)
@@ -53,9 +52,15 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                     }
                 }
             }
-
             return destaques;
-
+        }
+        public List<CategoriaModel> ObterCategorias() {
+            var categorias = _apiFacade.ListarCategorias();
+            if (categorias != null && categorias.Count() > 0) {
+                return categorias;
+            } else {
+                return new List<CategoriaModel>();
+            }
         }
         #endregion
     }
