@@ -1,0 +1,81 @@
+﻿@{
+    ViewData["Title"] = "Resultado do Cadastro";
+
+    var sucesso = TempData["StatusApi"]?.ToString() == "sucesso";
+    var mensagem = TempData["Sucesso"]?.ToString();
+    var respostaApi = TempData["RespostaApi"]?.ToString();
+    var produtoJson = TempData["ProdutoJson"]?.ToString();
+}
+
+<div class="confirmacao-page">
+
+    <div class="confirmacao-header" style="background: @(sucesso ? "#e6f4ea" : "#fdecea"); border-color: @(sucesso ? "#c3e6cb" : "#f5c6cb")">
+        <div class="confirmacao-header-inner">
+            <i class="bi @(sucesso ? "bi-check-circle-fill" : "bi-x-circle-fill") confirmacao-check-icon"
+               style="color: @(sucesso ? "#198754" : "#dc3545")"></i>
+            <div>
+                <h4 class="confirmacao-header-title" style="color: @(sucesso ? "#155724" : "#721c24")">
+                    @(sucesso ? "Produto cadastrado!" : "Erro ao cadastrar")
+                </h4>
+                <p class="confirmacao-header-sub mb-0" style="color: @(sucesso ? "#155724" : "#721c24")">
+                    @mensagem
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="confirmacao-grid">
+
+        <div>
+            <div class="confirmacao-section">
+                <h6 class="confirmacao-section-title">
+                    <i class="bi bi-send me-2"></i>Dados enviados para a API
+                </h6>
+                @if (!string.IsNullOrEmpty(produtoJson))
+                {
+                    <pre class="api-debug-box">@produtoJson</pre>
+                }
+                else
+                {
+                    <p class="text-muted small">Nenhum dado registrado.</p>
+                }
+            </div>
+
+            <div class="confirmacao-section">
+                <h6 class="confirmacao-section-title">
+                    <i class="bi bi-arrow-return-left me-2"></i>Resposta da API
+                </h6>
+                <div class="d-flex align-items-start gap-2">
+                    <span class="badge @(sucesso ? "bg-success" : "bg-danger") mt-1">
+                        @(sucesso ? "200 OK" : "ERRO")
+                    </span>
+                    <pre class="api-debug-box flex-grow-1">@respostaApi</pre>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="confirmacao-section">
+                <h6 class="confirmacao-section-title">
+                    <i class="bi bi-lightning me-2"></i>Próximos passos
+                </h6>
+                <div class="d-flex flex-column gap-2">
+                    <a asp-controller="Produto" asp-action="Cadastrar"
+                       class="btn-buy bg-markett-blue w-100">
+                        <i class="bi bi-plus-circle me-2"></i>Cadastrar outro produto
+                    </a>
+                    <a asp-controller="Produto" asp-action="Index"
+                       class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-grid me-2"></i>Ver todos os produtos
+                    </a>
+                    <a asp-controller="Home" asp-action="Index"
+                       class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-house me-2"></i>Ir para Home
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

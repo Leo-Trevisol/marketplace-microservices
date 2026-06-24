@@ -1,0 +1,225 @@
+﻿@model Ftec.ProjetoWeb.Produtos.Apresentacao.Models.CadastroProdutoModel
+
+@{
+    ViewData["Title"] = "Cadastrar Produto";
+}
+
+<div class="cadastro-produto-container">
+
+    <div class="cadastro-produto-header">
+        <div>
+            <h2 class="cadastro-produto-title">Cadastrar Produto</h2>
+            <p class="text-muted mb-0">Preencha as informações do novo produto</p>
+        </div>
+        <a asp-controller="Produto" asp-action="Index"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Ver produtos
+        </a>
+    </div>
+
+    @if (ViewBag.Erro != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@ViewBag.Erro
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <form method="post" asp-controller="Produto" asp-action="Cadastrar">
+
+        <div class="cadastro-produto-grid">
+
+            <div>
+
+                <div class="pagamento-section">
+                    <h5 class="pagamento-section-title">
+                        <i class="bi bi-tag-fill me-2"></i>Identificação
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Código <span class="text-danger">*</span></label>
+                            <input asp-for="Codigo" class="form-control" placeholder="ex: PROD-001" />
+                            <span asp-validation-for="Codigo" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">Nome do produto <span class="text-danger">*</span></label>
+                            <input asp-for="Nome" class="form-control" placeholder="ex: iPhone 13 128GB" />
+                            <span asp-validation-for="Nome" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Descrição <span class="text-danger">*</span></label>
+                            <textarea asp-for="Descricao"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Descreva o produto detalhadamente..."></textarea>
+                            <span asp-validation-for="Descricao" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pagamento-section">
+                    <h5 class="pagamento-section-title">
+                        <i class="bi bi-box-seam me-2"></i>Preço e Estoque
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Preço (R$) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input asp-for="Preco"
+                                       class="form-control"
+                                       placeholder="0,00"
+                                       step="0.01" />
+                            </div>
+                            <span asp-validation-for="Preco" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Qtd. em estoque <span class="text-danger">*</span></label>
+                            <input asp-for="QuantidadeEstoque"
+                                   class="form-control"
+                                   type="number"
+                                   min="0"
+                                   placeholder="0" />
+                            <span asp-validation-for="QuantidadeEstoque" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Estoque mínimo <span class="text-danger">*</span></label>
+                            <input asp-for="EstoqueMinimoVenda"
+                                   class="form-control"
+                                   type="number"
+                                   min="0"
+                                   placeholder="0" />
+                            <span asp-validation-for="EstoqueMinimoVenda" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pagamento-section">
+                    <h5 class="pagamento-section-title">
+                        <i class="bi bi-grid me-2"></i>Categoria
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Categoria <span class="text-danger">*</span></label>
+                            <select asp-for="IdCategoria" class="form-select">
+                                <option value="">Selecione uma categoria</option>
+                               @* @foreach (var cat in ViewBag.Categorias as List<CategoriaModel>)
+                                {
+                                    <option value="@cat.Id">@cat.Nome</option>
+                                }*@
+                                <option value="1">Eletrônicos</option>
+                                <option value="2">Informática</option>
+                                <option value="3">Casa e Decoração</option>
+                                <option value="4">Moda</option>
+                                <option value="5">Beleza</option>
+                                <option value="6">Esportes</option>
+                                <option value="7">Livros</option>
+                                <option value="8">Games</option>
+                                <option value="9">Automotivo</option>
+                                <option value="10">Ferramentas</option>
+                            </select>
+                            <span asp-validation-for="IdCategoria" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div>
+
+                <div class="pagamento-section">
+                    <h5 class="pagamento-section-title">
+                        <i class="bi bi-toggles me-2"></i>Opções
+                    </h5>
+
+                    <div class="cadastro-toggle-item">
+                        <div>
+                            <p class="fw-semibold mb-0">Disponível para venda</p>
+                            <p class="text-muted small mb-0">Produto visível na loja</p>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input asp-for="Disponivel"
+                                   class="form-check-input cadastro-toggle"
+                                   type="checkbox"
+                                   role="switch" />
+                        </div>
+                    </div>
+
+                    <hr class="my-3" />
+
+                    <div class="cadastro-toggle-item">
+                        <div>
+                            <p class="fw-semibold mb-0">Produto em destaque</p>
+                            <p class="text-muted small mb-0">Aparece na seção de destaques</p>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input asp-for="Destaque"
+                                   class="form-check-input cadastro-toggle"
+                                   type="checkbox"
+                                   role="switch" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pagamento-section">
+                    <h5 class="pagamento-section-title">
+                        <i class="bi bi-image me-2"></i>Imagem
+                    </h5>
+
+                    <div class="cadastro-imagem-preview" id="preview-container">
+                        <i class="bi bi-image cadastro-imagem-icone"></i>
+                        <p class="text-muted small mt-2 mb-0">Nenhuma imagem selecionada</p>
+                    </div>
+
+                    <div class="mt-3">
+                        <label class="form-label small text-muted">URL da imagem</label>
+                        <input type="text"
+                               id="input-imagem-url"
+                               class="form-control form-control-sm"
+                               placeholder="https://..." />
+                      @*  <p class="text-muted small mt-1 mb-0">
+                            <input type="file" asp-for="Imagem" accept="image/*" />
+                        </p>*@
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-buy bg-markett-blue w-100 mt-2">
+                    <i class="bi bi-check-circle me-2"></i>Cadastrar Produto
+                </button>
+
+                <a asp-controller="Produto" asp-action="Index"
+                   class="btn btn-outline-secondary w-100 mt-2">
+                    Cancelar
+                </a>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    <script>
+        // Preview da imagem por URL
+        document.getElementById('input-imagem-url').addEventListener('input', function () {
+            const url = this.value.trim();
+            const container = document.getElementById('preview-container');
+
+            if (url) {
+                container.innerHTML = `
+                    <img src="${url}"
+                         alt="Preview"
+                         class="cadastro-imagem-preview-img"
+                         onerror="this.parentElement.innerHTML='<i class=\\'bi bi-exclamation-circle text-danger fs-3\\'></i><p class=\\'text-danger small mt-2 mb-0\\'>URL inválida</p>'" />
+                `;
+            } else {
+                container.innerHTML = `
+                    <i class="bi bi-image cadastro-imagem-icone"></i>
+                    <p class="text-muted small mt-2 mb-0">Nenhuma imagem selecionada</p>
+                `;
+            }
+        });
+    </script>
+}

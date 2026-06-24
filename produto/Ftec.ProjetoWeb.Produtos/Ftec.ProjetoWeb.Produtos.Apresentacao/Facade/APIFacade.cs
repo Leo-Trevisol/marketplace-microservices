@@ -13,6 +13,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         private readonly HttpClient _httpClient;
         private const string ContentType = "application/json";
         private IConfiguration _config;
+
         public APIFacade(IConfiguration config)
         {
             _httpClient = new HttpClient();
@@ -42,7 +43,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                         //    this.obtemBaseUrl(_config, TipoServico.Categoria);
                         //    item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
                         //}
-
                     }
                     return produtos;
                 }
@@ -56,6 +56,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 return new List<ProdutoModel>();
             }
         }
+
         public ProdutoModel ObterProduto(string id)
         {
             this.obtemBaseUrl(_config, TipoServico.Produto);
@@ -76,42 +77,57 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
 
             return produto;
         }
+
         public void AdicionarProduto(ProdutoModel produto)
         {
+            this.obtemBaseUrl(_config, TipoServico.Produto); // garante que _baseUrl está setada
             Post("api/Produto/cadastrarProduto", produto);
         }
+
         public void AlterarProduto(ProdutoModel produto)
         {
+            this.obtemBaseUrl(_config, TipoServico.Produto);
             Put("api/Produto/atualizarProduto", produto);
         }
+
         public void ExcluirProduto(string id)
         {
-            Delete($"api/Produto/excluirProduto{id}");
+            this.obtemBaseUrl(_config, TipoServico.Produto);
+            Delete($"api/Produto/excluirProduto/{id}");
         }
         #endregion
 
         #region Categorias
-        public List<CategoriaModel> ListarCategorias() {
-            try {
+        public List<CategoriaModel> ListarCategorias()
+        {
+            try
+            {
                 this.obtemBaseUrl(_config, TipoServico.Categoria);
                 var response = Get<APIResponseModel<List<CategoriaModel>>>("api/categoria");
 
                 var categorias = response != null && response.Sucesso && response?.Data != null ? response?.Data : new List<CategoriaModel>();
 
-                if (categorias != null && categorias.Count() > 0) {
+                if (categorias != null && categorias.Count() > 0)
+                {
                     return categorias;
-                } else {
+                }
+                else
+                {
                     return new List<CategoriaModel>();
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return new List<CategoriaModel>();
             }
         }
         #endregion
 
         #region Avaliacoes
-        public void AdicionarAvaliacao(ProdutoAvaliacaoModel modelo) {
-            if(modelo != null) {
+        public void AdicionarAvaliacao(ProdutoAvaliacaoModel modelo)
+        {
+            if (modelo != null)
+            {
                 this.obtemBaseUrl(_config, TipoServico.Avaliacao);
                 Post($"api/ProdutoAvaliacao/post/", modelo);
             }
@@ -123,8 +139,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         {
             using (var client = new HttpClient())
             {
-                var url = string.Empty;
-                url = $"{_baseUrl}{endpoint}";
+                var url = $"{_baseUrl.TrimEnd('/')}/{endpoint}";
 
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(ContentType));
@@ -144,11 +159,12 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 }
             }
         }
+
         private void Post<T>(string endpoint, T data)
         {
             using (var client = new HttpClient())
             {
-                var url = $"{_baseUrl}/{endpoint}";
+                var url = $"{_baseUrl.TrimEnd('/')}/{endpoint}";
                 var jsonContent = JsonSerializer.Serialize(data);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, ContentType);
 
@@ -161,11 +177,12 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 }
             }
         }
+
         private void Put<T>(string endpoint, T data)
         {
             using (var client = new HttpClient())
             {
-                var url = $"{_baseUrl}/{endpoint}";
+                var url = $"{_baseUrl.TrimEnd('/')}/{endpoint}";
                 var jsonContent = JsonSerializer.Serialize(data);
                 var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, ContentType);
 
@@ -178,11 +195,12 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 }
             }
         }
+
         private void Delete(string endpoint)
         {
             using (var client = new HttpClient())
             {
-                var url = $"{_baseUrl}/{endpoint}";
+                var url = $"{_baseUrl.TrimEnd('/')}/{endpoint}";
                 var response = client.DeleteAsync(url).Result;
 
                 if (!response.IsSuccessStatusCode)
@@ -197,7 +215,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #region Helpers
         public void obtemBaseUrl(IConfiguration config, TipoServico tipo)
         {
-            var baseUrl = string.Empty;
             switch (tipo)
             {
                 case TipoServico.Produto:

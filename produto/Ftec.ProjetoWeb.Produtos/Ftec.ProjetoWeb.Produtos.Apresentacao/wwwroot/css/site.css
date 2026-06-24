@@ -674,3 +674,80 @@ body {
     border-top: 1px solid #f0f0f0;
     background: #fafafa;
 }
+
+
+/* CADASTRO DE PRODUTO */
+.cadastro-produto-container {
+    padding: 24px 0 48px;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.cadastro-produto-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.cadastro-produto-title {
+    margin-bottom: 4px;
+}
+
+.cadastro-produto-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0 24px;
+}
+
+@media (min-width: 992px) {
+    .cadastro-produto-grid {
+        grid-template-columns: 1fr 320px;
+        align-items: start;
+    }
+}
+
+.cadastro-toggle-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.cadastro-toggle {
+    width: 48px;
+    height: 26px;
+    cursor: pointer;
+}
+
+    .cadastro-toggle:checked {
+        background-color: #17A4CF;
+        border-color: #17A4CF;
+    }
+
+.cadastro-imagem-preview {
+    width: 100%;
+    aspect-ratio: 4/3;
+    border: 2px dashed #e0e0e0;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+    overflow: hidden;
+}
+
+.cadastro-imagem-icone {
+    font-size: 3rem;
+    color: #ccc;
+}
+
+.cadastro-imagem-preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
