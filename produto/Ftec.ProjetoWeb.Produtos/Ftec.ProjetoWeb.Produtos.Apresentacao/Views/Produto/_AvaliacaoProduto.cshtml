@@ -1,0 +1,142 @@
+﻿@model ProdutoModel
+
+@{
+    var nomeUsuario = Context.Session.GetString("Nome");
+    var idUsuario = Context.Session.GetString("UsuarioId");
+    var logado = !string.IsNullOrEmpty(nomeUsuario);
+}
+
+<div class="mt-8">
+    <hr class="my-4" />
+
+    <h3 class="mb-3">Avaliações dos clientes</h3>
+
+    @if (Model.Avaliacoes != null && Model.Avaliacoes.Count() > 0)
+    {
+        var avaliacoesList = Model.Avaliacoes.ToList();
+        var totalGrupos = (int)Math.Ceiling(avaliacoesList.Count / 3.0);
+
+        <div id="carrosselAvaliacoes" class="carousel slide avaliacoes-carousel" data-bs-ride="false">
+
+            <div class="carousel-inner">
+                @for (int g = 0; g < totalGrupos; g++)
+                {
+                    var grupo = avaliacoesList.Skip(g * 3).Take(3).ToList();
+
+                    <div class="carousel-item @(g == 0 ? "active" : "")">
+                        <div class="avaliacao-grupo">
+                            @foreach (var avaliacao in grupo)
+                            {
+                                <div class="avaliacao-card-item">
+
+                                    <div class="avaliacao-card-estrelas mb-2">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="bi @(i <= avaliacao.Nota ? "bi-star-fill estrela-ativa" : "bi-star")"></i>
+                                        }
+                                        <span class="ms-2 fw-bold">@avaliacao.Nota.ToString()/5</span>
+                                    </div>
+
+                                    <p class="avaliacao-card-descricao">
+                                        "@avaliacao.Descricao"
+                                    </p>
+
+                                    <p class="avaliacao-card-cliente fw-semibold mb-0">
+                                        @avaliacao.idCliente
+                                    </p>
+
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (totalGrupos > 1)
+            {
+                <button class="carousel-control-prev" type="button" data-bs-target="#carrosselAvaliacoes" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carrosselAvaliacoes" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Próximo</span>
+                </button>
+            }
+
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">Este produto ainda não possui avaliações.</p>
+    }
+</div>
+@if (logado)
+{
+    <div class="mt-8">
+
+        <hr class="my-4" />
+
+        <div class="avaliacao-container">
+            <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080">
+                <div id="toastAvaliacao" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+                    <div class="d-flex">
+                        <div class="toast-body" id="toastAvaliacaoBody"></div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+            <h3 class="mb-3">Avaliar Produto</h3>
+
+            <form id="formAvaliacao" method="post" asp-controller="Produto" asp-action="RegistrarAvaliacao">
+
+                <input type="hidden" name="idProduto" value="@Model.Id" />
+                <input type="hidden" name="idCliente" value="@idUsuario" />
+
+                <div class="avaliacao-card">
+
+                    <div class="avaliacao-section">
+
+                        <div class="row g-3">
+
+                            <div class="col-12">
+                                <label class="form-label d-block">Nota</label>
+
+                                <div class="avaliacao-estrelas">
+                                    <input type="radio" name="Nota" value="5" id="nota5" class="d-none" />
+                                    <label for="nota5" class="bi bi-star estrela" data-valor="5"></label>
+
+                                    <input type="radio" name="Nota" value="4" id="nota4" class="d-none" />
+                                    <label for="nota4" class="bi bi-star estrela" data-valor="4"></label>
+
+                                    <input type="radio" name="Nota" value="3" id="nota3" class="d-none" />
+                                    <label for="nota3" class="bi bi-star estrela" data-valor="3"></label>
+
+                                    <input type="radio" name="Nota" value="2" id="nota2" class="d-none" />
+                                    <label for="nota2" class="bi bi-star estrela" data-valor="2"></label>
+
+                                    <input type="radio" name="Nota" value="1" id="nota1" class="d-none" />
+                                    <label for="nota1" class="bi bi-star estrela" data-valor="1"></label>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Comentário</label>
+                                <textarea name="Descricao" class="form-control" rows="4"
+                                          placeholder="Conte como foi sua experiência com o produto..."></textarea>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-buy bg-markett-blue mt-4 w-100">
+                        <i class="bi bi-send-fill me-2"></i>Enviar Avaliação
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+}

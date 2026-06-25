@@ -69,10 +69,10 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 //    this.obtemBaseUrl(_config, TipoServico.Categoria);
                 //    produto.Categoria = Get<CategoriaModel>($"api/Categoria/{produto.IdCategoria.Value}");
                 //}
-                //if (!string.IsNullOrEmpty(produto.Id.ToString())) {
-                //    this.obtemBaseUrl(_config, TipoServico.Avaliacao);
-                //    produto.Avaliacoes = Get<List<ProdutoAvaliacaoModel>>($"api/ProdutoAvaliacao/GetAvaliacoesProduto/{produto.Id}");
-                //}
+                if (!string.IsNullOrEmpty(produto.Id.ToString())) {
+                    this.obtemBaseUrl(_config, TipoServico.Avaliacao);
+                    produto.Avaliacoes = Get<List<ProdutoAvaliacaoModel>>($"api/avaliacao/produto/{produto.Id}");
+                }
             }
 
             return produto;
@@ -81,7 +81,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         public void AdicionarProduto(ProdutoModel produto)
         {
             this.obtemBaseUrl(_config, TipoServico.Produto); // garante que _baseUrl está setada
-            Post("api/Produto/cadastrarProduto", produto);
+            var status = Post("api/Produto/cadastrarProduto", produto);
         }
 
         public void AlterarProduto(ProdutoModel produto)
@@ -124,12 +124,15 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Avaliacoes
-        public void AdicionarAvaliacao(ProdutoAvaliacaoModel modelo)
+        public bool AdicionarAvaliacao(ProdutoAvaliacaoModel modelo)
         {
             if (modelo != null)
             {
                 this.obtemBaseUrl(_config, TipoServico.Avaliacao);
-                Post($"api/ProdutoAvaliacao/post/", modelo);
+                var status = Post($"api/avaliacao", modelo);
+                return status;
+            } else {
+                return false;
             }
         }
         #endregion
@@ -160,7 +163,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             }
         }
 
-        private void Post<T>(string endpoint, T data)
+        private bool Post<T>(string endpoint, T data)
         {
             using (var client = new HttpClient())
             {
@@ -174,7 +177,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 {
                     var errorContent = response.Content.ReadAsStringAsync().Result;
                     throw new Exception($"Erro ao adicionar dados: {errorContent}");
+                    return false;
                 }
+                return true;
             }
         }
 

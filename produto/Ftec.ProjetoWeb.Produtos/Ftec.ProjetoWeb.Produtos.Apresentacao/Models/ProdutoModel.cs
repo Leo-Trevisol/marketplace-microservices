@@ -5,7 +5,8 @@
 
         public ProdutoModel()
         {
-
+            Avaliacoes = new List<ProdutoAvaliacaoModel>();
+            Relacionados = new List<ProdutoModel>();
         }
         public Guid Id { get; set; }
         public string Codigo { get; set; }
@@ -24,6 +25,7 @@
         public CategoriaModel Categoria { get; set; }
         public List<ProdutoAvaliacaoModel> Avaliacoes { get; set; }
         public MediaModel ImagemPrincipal { get; set; }
+        public List<ProdutoModel> Relacionados { get; set; }
         #endregion
 
     }

@@ -19,8 +19,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             {
                 var produtos = _apiFacade.ListarProdutos();
                 return View(produtos);
-
-
             }
             catch (Exception ex)
             {
@@ -33,6 +31,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             try
             {
                 var produto = _apiFacade.ObterProduto(idProduto);
+                produto.Relacionados = this.ObterProdutosRelacionados(produto.IdCategoria.Value, produto.Id);
                 return View(produto);
             }
             catch (Exception ex)
@@ -41,16 +40,21 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 return View(new List<ProdutoModel>());
             }
         }
-        public IActionResult RegistrarAvaliacao(ProdutoAvaliacaoModel model) {
+        public APIResponseModel<ProdutoAvaliacaoModel> RegistrarAvaliacao(ProdutoAvaliacaoModel model) {
+            var response = new APIResponseModel<ProdutoAvaliacaoModel>();
             try {
-                
-                _apiFacade.AdicionarAvaliacao(model);
-                return Ok();
-
-
+                if (model.Id == Guid.Empty) {
+                    model.Id = Guid.NewGuid();
+                }
+                response.Sucesso = _apiFacade.AdicionarAvaliacao(model);
+                response.Message = response != null && response.Sucesso
+                    ? "Sucesso ao registrar avaliação!"
+                    : "Não foi possível registrar avaliação. Tente novamente!";
+                return response;
             } catch (Exception ex) {
-                ViewBag.Erro = $"Erro ao cadastrar avaliação: {ex.Message}";
-                return BadRequest();
+                response.Sucesso = false;
+                response.Message = $"ERRO! {ex.Message}";
+                return response;
             }
 
         }
@@ -98,7 +102,21 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
         }
 
         #region Functions
-
+        [NonAction]
+        public List<ProdutoModel> ObterProdutosRelacionados(int idCategoria, Guid idProduto) {
+            var relacionados = new List<ProdutoModel>();
+            var produtos = _apiFacade.ListarProdutos();
+            if (produtos != null && produtos.Count() > 0) {
+                foreach (var item in produtos) {
+                    if (item.IdCategoria == idCategoria && item.Id != idProduto) {
+                        relacionados.Add(item);
+                    } else {
+                        continue;
+                    }
+                }
+            }
+            return relacionados;
+        }
         #endregion
     }
 }

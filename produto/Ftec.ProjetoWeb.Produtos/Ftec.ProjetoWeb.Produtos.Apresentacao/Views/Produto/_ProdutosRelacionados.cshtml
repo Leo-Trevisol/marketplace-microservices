@@ -1,0 +1,11 @@
+﻿@model ProdutoModel
+
+<div class="mt-8">
+    <hr class="my-4" />
+    <h3>Produtos relacionados</h3>
+    <div class="product-list">
+        @foreach (var produto in Model.Relacionados) {
+            <partial name="_ProductCard" model="produto" />
+        }
+    </div>
+</div>
