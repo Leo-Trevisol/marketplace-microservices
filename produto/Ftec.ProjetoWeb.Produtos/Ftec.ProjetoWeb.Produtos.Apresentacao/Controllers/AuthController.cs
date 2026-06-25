@@ -1,6 +1,8 @@
 ﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Models;
+using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API;
 using Ftec.ProjetoWeb.Produtos.Apresentacao.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 {
@@ -60,16 +62,44 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var resultado = await _authApiService
-                .CadastrarUsuarioAsync(model);
+            var resultado = await _authApiService.CadastrarUsuarioAsync(model);
 
-            if (resultado.Sucesso) {
+            if (resultado.Sucesso)
+            {
                 return RedirectToAction("Index", "Home");
-            } else {
-                return Content(resultado.Data);
             }
 
+            // Tratamento de Erro da API
+            if (!string.IsNullOrEmpty(resultado.Data))
+            {
+                try
+                {
+                    // Desserializa o JSON de erro da API
+                    var apiErros = JsonSerializer.Deserialize<ApiErroResponse>(
+                        resultado.Data,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
 
+                    if (apiErros?.Erros != null && apiErros.Erros.Any())
+                    {
+                        foreach (var erro in apiErros.Erros)
+                        {
+                            // O ASP.NET Core mapeia os erros usando Case-Insensitive,
+                            // então "Senha" ou "senha" vincularão corretamente ao input!
+                            ModelState.AddModelError(erro.Campo ?? string.Empty, erro.Mensagem ?? "Valor inválido");
+                        }
+                        return View(model);
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignora erro de JSON e cai no erro genérico abaixo
+                }
+            }
+
+            // Fallback: Se a API falhou mas não mandou a lista de erros esperada
+            ModelState.AddModelError(string.Empty, "Não foi possível realizar o cadastro. Verifique os dados e tente novamente.");
+            return View(model);
         }
 
         #endregion

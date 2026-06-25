@@ -25,7 +25,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Services
 
         public async Task<APIResponseModel<string>> CadastrarUsuarioAsync(UsuarioModel usuario)
         {
-            bool success = false;
             var response = await _httpClient.PostAsJsonAsync(
                 "/api/usuario",
                 new
@@ -40,16 +39,25 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Services
                     telefone = usuario.Telefone
                 });
 
-            if (response.StatusCode == HttpStatusCode.Created) {
-                success = true;
-            }
-
             var conteudo = await response.Content.ReadAsStringAsync();
 
-            return new APIResponseModel<string>() {
-                Sucesso = success,
-                Data = $"Status: {(int)response.StatusCode}\n{conteudo}",
-                Message = ""
+            // Retorna true apenas se for criado com sucesso (201)
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+                return new APIResponseModel<string>()
+                {
+                    Sucesso = true,
+                    Data = conteudo,
+                    Message = "Usuário cadastrado com sucesso."
+                };
+            }
+
+            // Se falhou, retorna falso e o JSON puro no campo Data
+            return new APIResponseModel<string>()
+            {
+                Sucesso = false,
+                Data = conteudo, // Aqui estará o JSON {"erros":[...]} da API
+                Message = "Erro ao cadastrar usuário."
             };
         }
 
