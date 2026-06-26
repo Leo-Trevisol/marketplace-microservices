@@ -1,18 +1,33 @@
-﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Models;
+﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Facade;
+using Ftec.ProjetoWeb.Produtos.Apresentacao.Models;
+using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 {
-    public class PedidoController : Controller
-    {
-        // ─────────────────────────────────────────────────────────────
-        // private readonly IPedidoService _pedidoService;
-        // public PedidoController(IPedidoService pedidoService)
-        // {
-        //     _pedidoService = pedidoService;
-        // }
-        // ─────────────────────────────────────────────────────────────
-
+    public class PedidoController : Controller {
+        private readonly APIFacade _apiFacade;
+        public PedidoController(IConfiguration config) {
+            _apiFacade = new APIFacade(config);
+        }
+        [HttpPost]
+        public IActionResult RegistrarPedido(APIPedidoModel model) {
+            var response = new APIResponseModel<APIPedidoModel>();
+            try {
+                if (model.id == Guid.Empty) {
+                    model.id = Guid.NewGuid();
+                }
+                response.Sucesso = _apiFacade.AdicionarPedido(model);
+                if (response.Sucesso) {
+                    return RedirectToRoute($"pagamento/index/{model}");
+                } else {
+                    return RedirectToRoute("carrinho/index");
+                }
+            } catch (Exception ex) {
+                return RedirectToRoute("carrinho/index");
+            }
+        }
         [HttpGet]
         public IActionResult MeusPedidos()
         {
