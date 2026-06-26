@@ -1,10 +1,10 @@
 ﻿@{
-    ViewData["Title"] = "Resultado do Cadastro";
+    ViewData["Title"] = "Resultado da ação";
 
     var sucesso = TempData["StatusApi"]?.ToString() == "sucesso";
     var mensagem = TempData["Sucesso"]?.ToString();
-    var respostaApi = TempData["RespostaApi"]?.ToString();
-    var produtoJson = TempData["ProdutoJson"]?.ToString();
+    // var respostaApi = TempData["RespostaApi"]?.ToString();
+    // var produtoJson = TempData["ProdutoJson"]?.ToString();
 }
 
 <div class="confirmacao-page">
@@ -26,7 +26,7 @@
 
     <div class="confirmacao-grid">
 
-        <div>
+        @* <div>
             <div class="confirmacao-section">
                 <h6 class="confirmacao-section-title">
                     <i class="bi bi-send me-2"></i>Dados enviados para a API
@@ -52,7 +52,7 @@
                     <pre class="api-debug-box flex-grow-1">@respostaApi</pre>
                 </div>
             </div>
-        </div>
+        </div> *@
 
         <div>
             <div class="confirmacao-section">
@@ -60,11 +60,11 @@
                     <i class="bi bi-lightning me-2"></i>Próximos passos
                 </h6>
                 <div class="d-flex flex-column gap-2">
-                    <a asp-controller="Produto" asp-action="Cadastrar"
+                    <a asp-controller="ProdutoGerenciar" asp-action="Cadastrar"
                        class="btn-buy bg-markett-blue w-100">
                         <i class="bi bi-plus-circle me-2"></i>Cadastrar outro produto
                     </a>
-                    <a asp-controller="Produto" asp-action="Index"
+                    <a asp-controller="ProdutoGerenciar" asp-action="Index"
                        class="btn btn-outline-secondary w-100">
                         <i class="bi bi-grid me-2"></i>Ver todos os produtos
                     </a>

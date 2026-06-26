@@ -40,8 +40,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 return View(new List<ProdutoModel>());
             }
         }
-        public APIResponseModel<ProdutoAvaliacaoModel> RegistrarAvaliacao(ProdutoAvaliacaoModel model) {
-            var response = new APIResponseModel<ProdutoAvaliacaoModel>();
+        public APIResponseModel<APIProdutoAvaliacaoModel> RegistrarAvaliacao(APIProdutoAvaliacaoModel model) {
+            var response = new APIResponseModel<APIProdutoAvaliacaoModel>();
             try {
                 if (model.Id == Guid.Empty) {
                     model.Id = Guid.NewGuid();
@@ -57,48 +57,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 return response;
             }
 
-        }
-
-        public IActionResult Cadastrar()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Cadastrar(CadastroProdutoModel model)
-        {
-            try
-            {
-                var produto = new ProdutoModel
-                {
-                    Id = Guid.NewGuid(),
-                    Codigo = model.Codigo,
-                    Nome = model.Nome,
-                    Descricao = model.Descricao,
-                    Preco = model.Preco,
-                    QuantidadeEstoque = model.QuantidadeEstoque,
-                    EstoqueMinimoVenda = model.EstoqueMinimoVenda,
-                    IdCategoria = model.IdCategoria,
-                    Disponivel = model.Disponivel,
-                    Destaque = model.Destaque,
-                    Excluido = false
-                };
-
-                _apiFacade.AdicionarProduto(produto);
-
-                TempData["Sucesso"] = $"Produto \"{model.Nome}\" cadastrado com sucesso!";
-                return RedirectToAction("CadastroConfirmado");
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Erro = $"Erro ao cadastrar produto: {ex.Message}";
-                return View(model);
-            }
-        }
-
-        public IActionResult CadastroConfirmado()
-        {
-            return View();
         }
 
         #region Functions

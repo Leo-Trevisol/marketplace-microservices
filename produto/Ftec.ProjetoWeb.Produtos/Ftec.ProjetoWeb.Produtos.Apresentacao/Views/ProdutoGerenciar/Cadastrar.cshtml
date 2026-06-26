@@ -1,4 +1,4 @@
-﻿@model Ftec.ProjetoWeb.Produtos.Apresentacao.Models.CadastroProdutoModel
+﻿@model Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API.APIProdutoModel
 
 @{
     ViewData["Title"] = "Cadastrar Produto";
@@ -25,7 +25,7 @@
         </div>
     }
 
-    <form method="post" asp-controller="Produto" asp-action="Cadastrar">
+    <form method="post" asp-controller="ProdutoGerenciar" asp-action="Cadastrar">
 
         <div class="cadastro-produto-grid">
 

@@ -97,13 +97,17 @@
             </div>
 
             @*Cadastrar Produto fixo*@
-            <div class="d-flex flex-column gap-2 w-100 my-2">
-                <a asp-controller="Produto"
-                   asp-action="Cadastrar"
-                   class="btn bg-white py-1 px-2">
-                    <i class="bi bi-plus-circle me-1"></i>Cadastrar Produto
-                </a>
-            </div>
+            @if (estaLogado)
+            {
+                    
+                <div class="d-flex flex-column gap-2 w-100 my-2">
+                    <a asp-controller="ProdutoGerenciar"
+                       asp-action="Index"
+                       class="btn bg-white py-1 px-2">
+                        <i class="bi bi-layers me-1"></i>Gerenciar Produtos
+                    </a>
+                </div>
+            }
 
             @if (estaLogado)
             {
@@ -114,15 +118,6 @@
                        class="btn bg-white py-1 px-2">
                         <i class="bi bi-bag me-1"></i>Meus Pedidos
                     </a>
-
-                    @*Cadastrar Produto*@
-                    @*
-                    <a asp-controller="Produto"
-                       asp-action="Cadastrar"
-                       class="btn bg-white py-1 px-2">
-                        <i class="bi bi-plus-circle me-1"></i>Cadastrar Produto
-                    </a>
-                    *@
 
                     <form asp-controller="Auth"
                           asp-action="Logout"
@@ -245,11 +240,14 @@
                         </div>
 
                         @*Cadastrar Produto fixo*@
-                        <a class="text-white text-decoration-none"
-                           asp-controller="Produto"
-                           asp-action="Cadastrar">
-                            <i class="bi bi-plus-circle me-1"></i>Cadastrar Produto
-                        </a>
+                        @if (estaLogado)
+                        {
+                            <a class="text-white text-decoration-none"
+                               asp-controller="ProdutoGerenciar"
+                               asp-action="Index">
+                                <i class="bi bi-layers me-1"></i>Gerenciar Produtos
+                            </a>
+                        }
 
                         <a class="btn p-0 border-0 cart-header-button" asp-controller="Carrinho" asp-action="Index">
                             @*Trocar o número pelo de itens no carrinho. Sumir se não tiver nada.*@

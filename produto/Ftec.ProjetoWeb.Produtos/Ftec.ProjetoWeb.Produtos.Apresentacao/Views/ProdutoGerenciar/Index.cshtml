@@ -1,0 +1,79 @@
+﻿@using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API;
+@{
+    ViewData["Title"] = "Produtos";
+}
+
+@model List<ProdutoModel>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Listagem de Produtos cadastrados</h2>
+                <a class="btn btn-primary" asp-controller="ProdutoGerenciar" asp-action="Cadastrar">
+                    <i class="bi bi-plus-circle"></i> Cadastrar Produto
+                </a>
+            </div>
+
+            @if (Model.Any()) {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>Preço</th>
+                                <th>Estoque</th>
+                                <th>Estoque Mínimo de venda</th>
+                                <th>Destaque</th>
+                                <th>Disponível</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var prod in Model) {
+                                <tr>
+                                    <td><strong>@prod.Codigo</strong></td>
+                                    <td>@prod.Nome</td>
+                                    <td>@prod.Preco.ToString("C")</td>
+                                    <td>
+                                        <span class="badge @(prod.QuantidadeEstoque > 0 ? "bg-success" : "bg-danger")">
+                                            @prod.QuantidadeEstoque
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge @(prod.EstoqueMinimoVenda > 0 ? "bg-success" : "bg-danger")">
+                                            @prod.EstoqueMinimoVenda
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge @(prod.Destaque ? "bg-success" : "bg-danger")">
+                                            @(prod.Destaque ? "Sim" : "Não")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge @(prod.Disponivel ? "bg-success" : "bg-danger")">
+                                            @(prod.Disponivel ? "Sim" : "Não")
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="btn btn-sm btn-warning" asp-controller="ProdutoGerenciar" asp-action="Editar" asp-route-id="@prod.Id">
+                                            <i class="bi bi-pencil-square me-1"></i>
+                                        </a>
+                                        <a class="btn btn-sm btn-danger" asp-controller="ProdutoGerenciar" asp-action="Excluir" asp-route-id="@prod.Id">
+                                            <i class="bi bi-trash me-1"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            } else {
+                <div class="alert alert-info">
+                    Nenhum produto cadastrado.
+                </div>
+            }
+        </div>
+    </div>
+</div>

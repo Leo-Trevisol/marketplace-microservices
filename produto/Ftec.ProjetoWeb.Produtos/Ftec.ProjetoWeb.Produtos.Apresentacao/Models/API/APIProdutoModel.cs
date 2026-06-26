@@ -1,9 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
+namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API
 {
-    public class CadastroProdutoModel
+    public class APIProdutoModel
     {
+        public APIProdutoModel() {
+
+        }
+        public Guid Id { get; set; }
         [Required(ErrorMessage = "Código obrigatório")]
         public string Codigo { get; set; }
 
@@ -24,6 +28,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
 
         [Required(ErrorMessage = "Categoria obrigatória")]
         public int IdCategoria { get; set; }
+        public Guid IdImagemPrincipal { get; set; }
 
         [Required(ErrorMessage = "Descrição obrigatória")]
         public string Descricao { get; set; }

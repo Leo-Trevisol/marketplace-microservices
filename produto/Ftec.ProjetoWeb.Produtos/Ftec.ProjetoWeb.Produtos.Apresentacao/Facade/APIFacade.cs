@@ -34,15 +34,19 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 {
                     foreach (var item in produtos)
                     {
-                        if (!string.IsNullOrEmpty(item.IdImagemPrincipal.ToString()))
-                        {
-                            this.obtemBaseUrl(_config, TipoServico.Produto);
-                            item.ImagemPrincipal = Get<MediaModel>($"api/Media/obterPorId/{item.IdImagemPrincipal}");
+                        try {
+                            if (!string.IsNullOrEmpty(item.IdImagemPrincipal.ToString()))
+                            {
+                                this.obtemBaseUrl(_config, TipoServico.Produto);
+                                item.ImagemPrincipal = Get<MediaModel>($"api/Media/obterPorId/{item.IdImagemPrincipal}");
+                            }
+                            //if (item.IdCategoria.HasValue) {
+                            //    this.obtemBaseUrl(_config, TipoServico.Categoria);
+                            //    item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
+                            //}
+                        }catch(Exception ex) {
+                            continue;
                         }
-                        //if (item.IdCategoria.HasValue) {
-                        //    this.obtemBaseUrl(_config, TipoServico.Categoria);
-                        //    item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
-                        //}
                     }
                     return produtos;
                 }
@@ -77,23 +81,42 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
 
             return produto;
         }
+        public APIProdutoModel ObterProdutoGerenciar(string id)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Produto);
+            var response = Get<APIResponseModel<APIProdutoModel>>($"api/Produto/obtemPorId/{id}");
 
-        public void AdicionarProduto(ProdutoModel produto)
+            var produto = response != null && response.Sucesso && response?.Data != null ? response.Data : new APIProdutoModel();
+            if (produto != null)
+            {
+                //if (produto.IdCategoria.HasValue) {
+                //    this.obtemBaseUrl(_config, TipoServico.Categoria);
+                //    produto.Categoria = Get<CategoriaModel>($"api/Categoria/{produto.IdCategoria.Value}");
+                //}
+            }
+
+            return produto;
+        }
+
+        public bool AdicionarProduto(APIProdutoModel produto)
         {
             this.obtemBaseUrl(_config, TipoServico.Produto); // garante que _baseUrl está setada
             var status = Post("api/Produto/cadastrarProduto", produto);
+            return status;
         }
 
-        public void AlterarProduto(ProdutoModel produto)
+        public bool AlterarProduto(APIProdutoModel produto)
         {
             this.obtemBaseUrl(_config, TipoServico.Produto);
-            Put("api/Produto/atualizarProduto", produto);
+            var status = Put("api/Produto/atualizarProduto", produto);
+            return status;
         }
 
-        public void ExcluirProduto(string id)
+        public bool ExcluirProduto(Guid id)
         {
             this.obtemBaseUrl(_config, TipoServico.Produto);
-            Delete($"api/Produto/excluirProduto/{id}");
+            var status = Delete($"api/Produto/excluirProduto/{id}");
+            return status;
         }
         #endregion
 
@@ -124,7 +147,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Avaliacoes
-        public bool AdicionarAvaliacao(ProdutoAvaliacaoModel modelo)
+        public bool AdicionarAvaliacao(APIProdutoAvaliacaoModel modelo)
         {
             if (modelo != null)
             {
@@ -183,7 +206,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             }
         }
 
-        private void Put<T>(string endpoint, T data)
+        private bool Put<T>(string endpoint, T data)
         {
             using (var client = new HttpClient())
             {
@@ -198,10 +221,11 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                     var errorContent = response.Content.ReadAsStringAsync().Result;
                     throw new Exception($"Erro ao alterar dados: {errorContent}");
                 }
+                return true;
             }
         }
 
-        private void Delete(string endpoint)
+        private bool Delete(string endpoint)
         {
             using (var client = new HttpClient())
             {
@@ -213,6 +237,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                     var errorContent = response.Content.ReadAsStringAsync().Result;
                     throw new Exception($"Erro ao excluir dados: {errorContent}");
                 }
+                return true;
             }
         }
         #endregion
