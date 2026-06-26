@@ -239,15 +239,59 @@
 
                         </div>
 
-                        @*Cadastrar Produto fixo*@
+                        @*Cadastrar Produto e Categoria fixo*@
                         @if (estaLogado)
                         {
-                            <a class="text-white text-decoration-none"
-                               asp-controller="ProdutoGerenciar"
-                               asp-action="Index">
-                                <i class="bi bi-layers me-1"></i>Gerenciar Produtos
-                            </a>
+                            <div class="d-flex flex-column">
+                                <a class="text-white text-decoration-none"
+                                   asp-controller="ProdutoGerenciar"
+                                   asp-action="Index">
+                                    <i class="bi bi-layers me-1"></i>Gerenciar Produtos
+                                </a>
+                                <a class="text-white text-decoration-none"
+                                   asp-controller="CategoriaGerenciar"
+                                   asp-action="Index">
+                                    <i class="bi bi-tag me-1"></i>Gerenciar Categorias
+                                </a>
+                            </div>
                         }
+                        
+                            @if (estaLogado)
+                            {
+                                <div class="dropdown">
+
+                                <a href="#"
+                                   class="text-white text-decoration-none"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+
+                                    <i class="bi bi-gear fs-3 text-white"></i>
+
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item"
+                                        asp-controller="ProdutoGerenciar"
+                                            asp-action="Index">
+                                        <i class="bi bi-layers me-2"></i>Cadastrar Produtos
+                                        </a>
+                                     </li>
+
+                                        <li><hr class="dropdown-divider" /></li>
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                           asp-controller="CategoriaGerenciar"
+                                           asp-action="Index">
+                                            <i class="bi bi-tag me-2"></i>Cadastrar Categorias
+                                        </a>
+                                    </li>
+
+                                </ul>
+
+                            </div>
+                            }
 
                         <a class="btn p-0 border-0 cart-header-button" asp-controller="Carrinho" asp-action="Index">
                             @*Trocar o número pelo de itens no carrinho. Sumir se não tiver nada.*@

@@ -1,0 +1,62 @@
+﻿@using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API;
+@{
+    ViewData["Title"] = "Categorias";
+}
+
+@model List<CategoriaListaViewModel>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Categorias</h2>
+                <a class="btn btn-primary" asp-controller="CategoriaGerenciar" asp-action="Cadastrar">
+                    <i class="bi bi-plus-circle"></i> Cadastrar Categoria
+                </a>
+            </div>
+
+            @if (Model.Any()) {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model) {
+                                <tr>
+                                    <td>
+                                        <span style="display: inline-block; margin-left: @(item.Nivel * 24)px;">
+                                            @if (item.Nivel > 0)
+                                            {
+                                                <span class="text-muted">↳</span>
+                                            }
+                                            <strong>@item.Nome</strong>
+                                        </span>
+                                    </td>
+                                    <td>@item.Descricao</td>
+                                   
+                                    <td class="text-center">
+                                        <a class="btn btn-sm btn-warning" asp-controller="CategoriaGerenciar" asp-action="Editar" asp-route-id="@item.Id">
+                                            <i class="bi bi-pencil-square me-1"></i>
+                                        </a>
+                                        <a class="btn btn-sm btn-danger" asp-controller="CategoriaGerenciar" asp-action="Excluir" asp-route-id="@item.Id">
+                                            <i class="bi bi-trash me-1"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            } else {
+                <div class="alert alert-info">
+                    Nenhuma categoria cadastrada.
+                </div>
+            }
+        </div>
+    </div>
+</div>

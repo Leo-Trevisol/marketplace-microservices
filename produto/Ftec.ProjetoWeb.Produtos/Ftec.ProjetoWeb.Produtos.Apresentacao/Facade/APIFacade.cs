@@ -34,7 +34,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 {
                     foreach (var item in produtos)
                     {
-                        try {
+                        try
+                        {
                             if (!string.IsNullOrEmpty(item.IdImagemPrincipal.ToString()))
                             {
                                 this.obtemBaseUrl(_config, TipoServico.Produto);
@@ -44,7 +45,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                             //    this.obtemBaseUrl(_config, TipoServico.Categoria);
                             //    item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
                             //}
-                        }catch(Exception ex) {
+                        }
+                        catch (Exception ex)
+                        {
                             continue;
                         }
                     }
@@ -73,7 +76,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 //    this.obtemBaseUrl(_config, TipoServico.Categoria);
                 //    produto.Categoria = Get<CategoriaModel>($"api/Categoria/{produto.IdCategoria.Value}");
                 //}
-                if (!string.IsNullOrEmpty(produto.Id.ToString())) {
+                if (!string.IsNullOrEmpty(produto.Id.ToString()))
+                {
                     this.obtemBaseUrl(_config, TipoServico.Avaliacao);
                     produto.Avaliacoes = Get<List<ProdutoAvaliacaoModel>>($"api/avaliacao/produto/{produto.Id}");
                 }
@@ -121,29 +125,126 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Categorias
+
         public List<CategoriaModel> ListarCategorias()
         {
             try
             {
                 this.obtemBaseUrl(_config, TipoServico.Categoria);
-                var response = Get<APIResponseModel<List<CategoriaModel>>>("api/categoria");
-
-                var categorias = response != null && response.Sucesso && response?.Data != null ? response?.Data : new List<CategoriaModel>();
-
-                if (categorias != null && categorias.Count() > 0)
-                {
-                    return categorias;
-                }
-                else
-                {
-                    return new List<CategoriaModel>();
-                }
+                var response = Get<List<CategoriaModel>>("api/categoria");
+                return response ?? new List<CategoriaModel>();
             }
             catch (Exception e)
             {
                 return new List<CategoriaModel>();
             }
         }
+
+        public APICategoriaModel ObterCategoriaGerenciar(string id)
+        {
+            //this.obtemBaseUrl(_config, TipoServico.Categoria);
+            //var response = Get<APICategoriaModel>($"api/Categoria/{id}");
+
+            int.TryParse(id, out int idPretendido);
+            if (idPretendido == 0) idPretendido = 2; // Fallback caso venha nulo/vazio
+
+            // Simula o retorno com base no ID solicitado
+            var categoria = new APICategoriaModel
+            {
+                Id = idPretendido,
+                Nome = idPretendido == 1 ? "Eletrônicos" : idPretendido == 2 ? "Computadores" : "Smartphones",
+                Descricao = idPretendido == 1
+                    ? "Aparelhos e dispositivos eletrônicos em geral"
+                    : "Notebooks, desktops e servidores de alta performance",
+                ParentId = idPretendido == 1 ? null : 1 // Se for 1 é raiz, senão o pai é o id 1
+            };
+
+            return categoria;
+        }
+
+        public bool AdicionarCategoria(APICategoriaModel categoria)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Categoria); // garante que _baseUrl está setada
+            var status = Post("api/Categoria", categoria);
+            return status;
+        }
+
+        public bool AlterarCategoria(APICategoriaModel categoria)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Categoria);
+            var status = Put($"api/Produto/{categoria.Id}", categoria);
+            return status;
+        }
+
+        public bool ExcluirCategoria(Guid id)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Categoria);
+            var status = Delete($"api/Produto/{id}");
+            return status;
+        }
+
+        public List<CategoriaListaViewModel> ListarCategoriasView()
+        {
+            try
+            {
+                this.obtemBaseUrl(_config, TipoServico.Categoria);
+
+                // 1. Busca a lista plana vinda da API
+                var response = Get<List<CategoriaModel>>("api/categoria");
+                var listaPlana = response ?? new List<CategoriaModel>();
+
+                var listaOrganizada = new List<CategoriaListaViewModel>();
+
+                // 2. Filtra as categorias "Raiz" (que não têm pai)
+                var raizes = listaPlana
+                    .Where(c => c.ParentId == null || c.ParentId == 0)
+                    .OrderBy(c => c.Nome)
+                    .ToList();
+
+                // 3. Dispara a organização recursiva para cada raiz encontrada
+                foreach (var raiz in raizes)
+                {
+                    MapearFilhosRecursivo(raiz, listaPlana, listaOrganizada, nivel: 0);
+                }
+
+                return listaOrganizada;
+            }
+            catch (Exception e)
+            {
+                // Em caso de erro, retorna a lista vazia no formato correto da View
+                return new List<CategoriaListaViewModel>();
+            }
+        }
+
+        private void MapearFilhosRecursivo(CategoriaModel atual, List<CategoriaModel> todas, List<CategoriaListaViewModel> resultado, int nivel)
+        {
+            // Busca o nome do pai direto na lista original
+            var nomePai = todas.FirstOrDefault(p => p.Id == atual.ParentId)?.Nome ?? "Nenhum";
+
+            // Transforma no seu ViewModel populando o nível atual de indentação
+            resultado.Add(new CategoriaListaViewModel
+            {
+                Id = atual.Id,
+                Nome = atual.Nome,
+                Descricao = atual.Descricao,
+                ParentId = atual.ParentId,
+                Nivel = nivel,
+                CategoriaPaiNome = nomePai
+            });
+
+            // Busca os filhos que apontam para o Id da categoria atual
+            var filhos = todas
+                .Where(c => c.ParentId == atual.Id)
+                .OrderBy(c => c.Nome)
+                .ToList();
+
+            // Entra no próximo nível (aumentando o nível do recuo)
+            foreach (var filho in filhos)
+            {
+                MapearFilhosRecursivo(filho, todas, resultado, nivel + 1);
+            }
+        }
+
         #endregion
 
         #region Avaliacoes
@@ -154,7 +255,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 this.obtemBaseUrl(_config, TipoServico.Avaliacao);
                 var status = Post($"api/avaliacao", modelo);
                 return status;
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }
