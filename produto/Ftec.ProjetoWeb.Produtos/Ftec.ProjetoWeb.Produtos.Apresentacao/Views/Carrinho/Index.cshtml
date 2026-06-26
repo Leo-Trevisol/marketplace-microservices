@@ -1,0 +1,90 @@
+﻿@model List<Ftec.ProjetoWeb.Produtos.Apresentacao.Models.CarrinhoModel>
+
+@{
+    ViewData["Title"] = "Meu Carrinho";
+    var nomeUsuario = Context.Session.GetString("Nome");
+    var estaLogado = !string.IsNullOrEmpty(nomeUsuario);
+    var total = Model.Sum(i => i.Preco);
+}
+
+
+<div class="meus-pedidos-container">
+
+    <h2 class="meus-pedidos-title">Meu Carrinho</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="meus-pedidos-vazio">
+            <i class="bi bi-cart-x meus-pedidos-vazio-icone"></i>
+            <h5>Seu carrinho está vazio</h5>
+            <p class="text-muted">Adicione produtos para continuar sua compra!</p>
+            <a asp-controller="Home" asp-action="Index"
+               class="btn-buy bg-markett-blue mt-2"
+               style="max-width:220px;margin:0 auto">
+                Ver produtos
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="meus-pedidos-lista">
+            @foreach (var item in Model)
+            {
+                <div class="pedido-card">
+
+                    <div class="pedido-card-body">
+                        <div class="pedido-item">
+                            @* <img src="@item.ImagemUrl"
+                                 alt="@item.Nome"
+                                 class="pedido-item-img"
+                                 onerror="this.src='https://via.placeholder.com/80?text=Sem+imagem'" /> *@
+
+                            <div class="pedido-item-info">
+                                <p class="text-muted small mb-0">Código: @item.Codigo</p>
+                                <p class="fw-semibold mb-0">@item.Nome</p>
+                                <p class="text-muted small mb-0">
+                                    Qtd: @item.Quantidade &nbsp;·&nbsp;
+                                    R$ @item.Preco.ToString("N2") cada
+                                </p>
+                            </div>
+
+                            <p class="fw-bold mb-0 me-3">R$ @item.Preco.ToString("N2")</p>
+
+                            <form asp-controller="Carrinho" asp-action="Remover" method="post">
+                                <input type="hidden" name="produtoId" value="@item.IdProduto" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Remover item">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div>
+
+        <div class="pedido-card-footer mt-3" style="background:#fff; border-radius:12px; padding:16px;">
+            <div class="fs-5">
+                <span class="text-muted">Total:</span>
+                <span class="fw-bold text-success">R$ @total.ToString("N2")</span>
+            </div>
+            @if (estaLogado)
+            {
+                <form asp-controller="Pedido" asp-action="RegistrarPedido" method="post">
+                    <button type="submit" class="btn-buy bg-markett-blue">
+                        <i class="bi bi-check-circle me-2"></i>Fechar pedido
+                    </button>
+                </form>
+            }
+            else
+            {                
+                <form asp-controller="Auth" asp-action="Login" method="get">
+                    <button type="submit" class="btn-buy bg-markett-blue">
+                        <i class="bi bi-check-circle me-2"></i>Logue para continuar
+                    </button>
+                </form>
+            }
+        </div>
+    }
+
+</div>

@@ -48,9 +48,18 @@
                 Comprar agora
             </a>
 
-            <button class="btn-cart bg-light-blue">
-                <i class="bi bi-cart-plus text-white"></i>
-            </button>
+            <form asp-controller="Carrinho" asp-action="Adicionar" method="post" class="d-inline">
+                <input type="hidden" name="produtoId" value="@Model.Id" />
+                <input type="hidden" name="codigo" value="@Model.Codigo" />
+                <input type="hidden" name="nome" value="@Model.Nome" />
+                <input type="hidden" name="preco" value="@Model.Preco" />
+                @* <input type="hidden" name="imagemUrl" value="@Model.Imagem" /> *@
+                <input type="hidden" name="quantidade" value="1" />
+
+                <button type="submit" class="btn-cart bg-light-blue">
+                    <i class="bi bi-cart-plus text-white"></i>
+                </button>
+            </form>
         </div>
 
         <hr class="my-4" /> 

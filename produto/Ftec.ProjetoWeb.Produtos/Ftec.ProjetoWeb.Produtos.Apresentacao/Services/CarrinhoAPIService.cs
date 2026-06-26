@@ -1,12 +1,7 @@
-﻿using System.Text.Json;
+﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Models;
+using System.Text.Json;
 
 namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Services {
-    public class CarrinhoItem {
-        public Guid IdProduto { get; set; }
-        public string Nome { get; set; }
-        public decimal Preco { get; set; }
-        public int Quantidade { get; set; }
-    }
     public class CarrinhoAPIService {
         private const string CarrinhoSessionKey = "Carrinho";
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -17,14 +12,14 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Services {
 
         private ISession Session => _httpContextAccessor.HttpContext.Session;
 
-        public List<CarrinhoItem> ObterCarrinho() {
+        public List<CarrinhoModel> ObterCarrinho() {
             var json = Session.GetString(CarrinhoSessionKey);
             return json == null
-                ? new List<CarrinhoItem>()
-                : JsonSerializer.Deserialize<List<CarrinhoItem>>(json);
+                ? new List<CarrinhoModel>()
+                : JsonSerializer.Deserialize<List<CarrinhoModel>>(json);
         }
 
-        public void AdicionarItem(CarrinhoItem item) {
+        public void AdicionarItem(CarrinhoModel item) {
             var carrinho = ObterCarrinho();
             var existente = carrinho.FirstOrDefault(i => i.IdProduto == item.IdProduto);
 
@@ -42,8 +37,11 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Services {
             SalvarCarrinho(carrinho);
         }
 
-        private void SalvarCarrinho(List<CarrinhoItem> carrinho) {
+        private void SalvarCarrinho(List<CarrinhoModel> carrinho) {
             Session.SetString(CarrinhoSessionKey, JsonSerializer.Serialize(carrinho));
+        }
+        public void LimparCarrinho() {
+            Session.Remove(CarrinhoSessionKey);
         }
     }
 }

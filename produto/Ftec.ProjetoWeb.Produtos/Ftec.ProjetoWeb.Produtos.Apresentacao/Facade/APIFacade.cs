@@ -2,6 +2,7 @@
 using Ftec.ProjetoWeb.Produtos.Apresentacao.Models;
 using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text.Json;
 
 namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
@@ -153,6 +154,18 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             {
                 this.obtemBaseUrl(_config, TipoServico.Avaliacao);
                 var status = Post($"api/avaliacao", modelo);
+                return status;
+            } else {
+                return false;
+            }
+        }
+        #endregion
+
+        #region Pedidos
+        public bool AdicionarPedido(APIPedidoModel modelo) {
+            if (modelo != null) {
+                this.obtemBaseUrl(_config, TipoServico.PedidosCarrinho);
+                var status = Post($"api/Pedido", modelo);
                 return status;
             } else {
                 return false;
