@@ -9,69 +9,11 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-12">
-            @if (TempData["Sucesso"] != null){
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    @TempData["Sucesso"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            }
-
-            @if (ViewBag.Erro != null){
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    @ViewBag.Erro
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            }
-
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2>Listagem de Produtos</h2>
-                <a class="btn btn-primary" asp-controller="Produto" asp-action="NovoProduto">
-                    <i class="bi bi-plus-circle"></i> Novo Produto
-                </a>
             </div>
 
             @if (Model.Count() > 0 && Model != null){
-                @* <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Código</th>
-                                <th>Produto</th>
-                                <th>Descrição</th>
-                                <th>Preço</th>
-                                <th>Categoria</th>
-                                <th>Estoque</th>
-                                <th class="text-center">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var prod in Model.OrderBy(x => x.Nome)){
-                                if(prod.Disponivel && !prod.Excluido){
-                                    <tr>
-                                        <td><strong>@prod.Codigo</strong></td>
-                                        <td>@prod.Nome</td>
-                                        <td>@prod.Descricao</td>
-                                        <td>@prod.Preco.ToString("C")</td>
-                                        <td>@prod.Categoria.Nome</td>
-                                        <td>
-                                            <span class="badge @(prod.EstoqueMinimoVenda > prod.QuantidadeEstoque ? "bg-success" : "bg-danger")">
-                                                @prod.QuantidadeEstoque
-                                            </span>
-                                        </td>
-                                        <td class="text-center">
-                                            <a class="btn btn-sm btn-warning" asp-controller="Produto" asp-action="EditarProduto" asp-route-codigo="@prod.Codigo">
-                                                Editar
-                                            </a>
-                                            <form method="post" asp-action="Excluir" asp-route-codigo="@prod.Codigo" style="display:inline;" onsubmit="return confirm('Deseja realmente excluir?');">
-                                                <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
-                </div> *@
                 <div class="product-list">
                     @foreach (var prod in Model.OrderBy(x => x.Nome))
                     {

@@ -1,7 +1,7 @@
 ﻿namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
 {
-    public class PedidoModel
-    {
+    public class PedidoModel {
+         
         public int Id { get; set; }
         public string NumeroPedido { get; set; }
         public DateTime DataPedido { get; set; }
@@ -28,24 +28,21 @@
         public string EnderecoCompleto =>
             $"{Endereco}, {Numero}{(string.IsNullOrEmpty(Complemento) ? "" : " - " + Complemento)}, {Bairro}, {Cidade} - {Estado}, CEP {Cep}";
 
-        public string FormaPagamentoLabel => FormaPagamento switch
-        {
+        public string FormaPagamentoLabel => FormaPagamento switch {
             "pix" => "PIX",
             "credito" => "Cartão de Crédito",
             "boleto" => "Boleto Bancário",
             _ => FormaPagamento
         };
 
-        public string IconePagamento => FormaPagamento switch
-        {
+        public string IconePagamento => FormaPagamento switch {
             "pix" => "bi-qr-code",
             "credito" => "bi-credit-card",
             "boleto" => "bi-upc",
             _ => "bi-cash"
         };
 
-        public string StatusBadgeClass => Status switch
-        {
+        public string StatusBadgeClass => Status switch {
             "Aguardando pagamento" => "bg-warning text-dark",
             "Pago" => "bg-success",
             "Enviado" => "bg-primary",
@@ -54,8 +51,7 @@
             _ => "bg-secondary"
         };
 
-        public string StatusIcone => Status switch
-        {
+        public string StatusIcone => Status switch {
             "Aguardando pagamento" => "bi-clock",
             "Pago" => "bi-check-circle",
             "Enviado" => "bi-truck",

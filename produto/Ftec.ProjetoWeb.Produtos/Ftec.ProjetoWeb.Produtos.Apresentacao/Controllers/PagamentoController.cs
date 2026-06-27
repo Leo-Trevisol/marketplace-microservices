@@ -1,21 +1,34 @@
-﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Models;
+﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Facade;
+using Ftec.ProjetoWeb.Produtos.Apresentacao.Models;
+using Ftec.ProjetoWeb.Produtos.Apresentacao.Services;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 {
     public class PagamentoController : Controller
     {
+        private readonly CarrinhoAPIService _carrinhoService;
+        private readonly APIFacade _apiFacade;
+        public PagamentoController(IConfiguration config, CarrinhoAPIService carrinhoService) {
+            _apiFacade = new APIFacade(config);
+            _carrinhoService = carrinhoService;
+        }
         [HttpGet]
-        public IActionResult Index(int codigo, string nome, decimal preco)
+        public IActionResult Index(Guid idPedido)
         {
-            var model = new PagamentoModel
-            {
-                ProdutoCodigo = codigo,
-                ProdutoNome = nome,
-                ProdutoPreco = preco
-            };
+            var pedido = _apiFacade.ObterPedidoPorId(idPedido);
+            if (pedido != null && pedido.Sucesso) {
 
-            return View(model);
+                var model = new PagamentoModel
+                {
+                    Pedido = pedido.Data,
+                };
+                return View(model);
+            } else {
+                return RedirectToAction("Index", "Home");
+            }
+
         }
 
         [HttpPost]
@@ -50,5 +63,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 
             return View();
         }
+
+        #region Functions
+        #endregion
     }
 }

@@ -60,9 +60,12 @@
                                         <a class="btn btn-sm btn-warning" asp-controller="ProdutoGerenciar" asp-action="Editar" asp-route-id="@prod.Id">
                                             <i class="bi bi-pencil-square me-1"></i>
                                         </a>
-                                        <a class="btn btn-sm btn-danger" asp-controller="ProdutoGerenciar" asp-action="Excluir" asp-route-id="@prod.Id">
-                                            <i class="bi bi-trash me-1"></i>
-                                        </a>
+                                        <form method="post" asp-controller="ProdutoGerenciar" asp-action="Excluir" asp-route-id="@prod.Id" style="display:inline;" onsubmit="return confirm('Deseja realmente excluir?');">
+                                            <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash me-1"></i></button>
+                                        </form>
+                                        @* <a class="btn btn-sm btn-danger" asp-controller="ProdutoGerenciar" asp-action="Excluir" asp-route-id="@prod.Id">
+                                            
+                                        </a> *@
                                     </td>
                                 </tr>
                             }

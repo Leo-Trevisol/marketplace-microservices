@@ -210,40 +210,46 @@
                         <i class="bi bi-bag-fill me-2"></i>Resumo do Pedido
                     </h5>
 
-                    <div class="d-flex gap-3 mb-3 align-items-center">
-                        <img src="https://unifique.com.br/upload/blog/2025/02/quem-inventou-celular.jpg"
-                             alt="@Model.ProdutoNome"
-                             class="resumo-produto-img" />
-                        <div>
-                            <p class="fw-semibold mb-1">@Model.ProdutoNome</p>
-                            <p class="text-muted small mb-0">Qtd: 1</p>
+                    @if(Model.Pedido != null && Model.Pedido.produtosModel.Count() > 0)
+                    {
+                        foreach(var produto in Model.Pedido.produtosModel)
+                        {   
+                            @* <div class="d-flex gap-3 mb-3 align-items-center">
+                                <img src="https://unifique.com.br/upload/blog/2025/02/quem-inventou-celular.jpg"
+                                        alt="@produto.Nome"
+                                        class="resumo-produto-img" />
+                                <div>
+                                    <p class="fw-semibold mb-1">@produto.Nome</p>
+                                    <p class="text-muted small mb-0">Qtd: 1</p>
+                                </div> 
+                            </div>*@
+
+                        <hr />
+
+                        <div class="resumo-linha">
+                            <span>Subtotal</span>
+                            <span>R$ @produto.preco.ToString("N2")</span>
                         </div>
-                    </div>
-
-                    <hr />
-
-                    <div class="resumo-linha">
-                        <span>Subtotal</span>
-                        <span>R$ @Model.ProdutoPreco.ToString("N2")</span>
-                    </div>
-                    <div class="resumo-linha">
-                        <span>Frete</span>
-                        <span class="text-success fw-semibold">Grátis</span>
-                    </div>
-
-                    <div id="desconto-pix" style="display:none">
-                        <div class="resumo-linha text-success">
-                            <span>Desconto PIX (10%)</span>
-                            <span>- R$ @((Model.ProdutoPreco * 0.1m).ToString("N2"))</span>
+                        <div class="resumo-linha">
+                            <span>Frete</span>
+                            <span class="text-success fw-semibold">Grátis</span>
                         </div>
-                    </div>
 
-                    <hr />
+                        <div id="desconto-pix" style="display:none">
+                            <div class="resumo-linha text-success">
+                                <span>Desconto PIX (10%)</span>
+                                <span>- R$ @((produto.preco * 0.1m).ToString("N2"))</span>
+                            </div>
+                        </div>
+                        }
+                        <hr />
 
-                    <div class="resumo-linha fw-bold fs-5">
-                        <span>Total</span>
-                        <span id="total-final" class="text-success">R$ @Model.ProdutoPreco.ToString("N2")</span>
-                    </div>
+                        <div class="resumo-linha fw-bold fs-5">
+                            <span>Total</span>
+                            <span id="total-final" class="text-success">R$ @(Model.Pedido.produtosModel.Sum(x => x.preco * x.quantidade)).ToString("N2")</span>
+                        </div>
+                    }
+
 
                     <button type="submit" class="btn-buy bg-markett-blue mt-4 w-100">
                         <i class="bi bi-lock-fill me-2"></i>Confirmar Pedido

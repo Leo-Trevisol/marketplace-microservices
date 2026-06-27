@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Meu Carrinho";
     var nomeUsuario = Context.Session.GetString("Nome");
+    var idUsuario = Context.Session.GetString("UsuarioId");
     var estaLogado = !string.IsNullOrEmpty(nomeUsuario);
     var total = Model.Sum(i => i.Preco);
 }
@@ -18,7 +19,7 @@
             <i class="bi bi-cart-x meus-pedidos-vazio-icone"></i>
             <h5>Seu carrinho está vazio</h5>
             <p class="text-muted">Adicione produtos para continuar sua compra!</p>
-            <a asp-controller="Home" asp-action="Index"
+            <a asp-controller="Produto" asp-action="Index"
                class="btn-buy bg-markett-blue mt-2"
                style="max-width:220px;margin:0 auto">
                 Ver produtos
@@ -68,14 +69,15 @@
                 <span class="text-muted">Total:</span>
                 <span class="fw-bold text-success">R$ @total.ToString("N2")</span>
             </div>
-            @if (estaLogado)
-            {
-                <form asp-controller="Pedido" asp-action="RegistrarPedido" method="post">
-                    <button type="submit" class="btn-buy bg-markett-blue">
-                        <i class="bi bi-check-circle me-2"></i>Fechar pedido
-                    </button>
-                </form>
-            }
+           @if (estaLogado)
+           {
+               <form asp-controller="Pedido" asp-action="RegistrarPedido" method="post">
+                   <input type="hidden" name="usuarioId" value="@idUsuario" />
+                   <button type="submit" class="btn-buy bg-markett-blue">
+                       <i class="bi bi-check-circle me-2"></i>Fechar pedido
+                   </button>
+               </form>
+           }
             else
             {                
                 <form asp-controller="Auth" asp-action="Login" method="get">

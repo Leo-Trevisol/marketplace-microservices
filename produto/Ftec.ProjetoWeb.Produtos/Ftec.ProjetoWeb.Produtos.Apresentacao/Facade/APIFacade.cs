@@ -265,7 +265,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Pedidos
-        public bool AdicionarPedido(APIPedidoModel modelo) {
+        public bool AdicionarPedido(APIPedidoRegistrarModel modelo) {
             if (modelo != null) {
                 this.obtemBaseUrl(_config, TipoServico.PedidosCarrinho);
                 var status = Post($"api/Pedido", modelo);
@@ -273,6 +273,11 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             } else {
                 return false;
             }
+        }
+        public APIResponseModel<APIPedidoModel> ObterPedidoPorId(Guid Id) {
+            this.obtemBaseUrl(_config, TipoServico.PedidosCarrinho);
+            var pedido = Get<APIResponseModel<APIPedidoModel>>($"api/Pedido/{Id}");
+            return pedido;
         }
         #endregion
 
@@ -312,7 +317,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
 
                 var response = client.PostAsync(url, content).Result;
 
-                if (!response.IsSuccessStatusCode)
+                    if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = response.Content.ReadAsStringAsync().Result;
                     throw new Exception($"Erro ao adicionar dados: {errorContent}");

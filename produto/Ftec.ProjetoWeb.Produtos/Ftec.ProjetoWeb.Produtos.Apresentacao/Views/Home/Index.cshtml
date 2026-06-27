@@ -13,7 +13,8 @@
     <section class="home-section">
         <div class="section-header">
             <h3>Destaques</h3>
-            <a href="#">Ver todos</a>
+            <a asp-controller="Produto"
+               asp-action="Index">Ver todos</a>
         </div>
 
         @if (Model.ProdutosDestaque.Count() > 0 && Model.ProdutosDestaque != null)

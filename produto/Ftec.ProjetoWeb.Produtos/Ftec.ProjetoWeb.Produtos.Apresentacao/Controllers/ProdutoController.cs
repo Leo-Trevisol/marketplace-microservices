@@ -13,11 +13,15 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
         {
             _apiFacade = new APIFacade(config);
         }
-        public IActionResult Index()
+        public IActionResult Index(long? categoriaId = null)
         {
             try
             {
                 var produtos = _apiFacade.ListarProdutos();
+
+                if (produtos != null && produtos.Count > 0 && categoriaId.HasValue) {
+                    produtos = this.ObterPorCategoria(produtos, categoriaId.Value);
+                }
                 return View(produtos);
             }
             catch (Exception ex)
@@ -74,6 +78,17 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 }
             }
             return relacionados;
+        }
+        [NonAction]
+        public List<ProdutoModel> ObterPorCategoria(List<ProdutoModel> produtos, long idCategoria) {
+            var lista = new List<ProdutoModel>();
+            foreach(var produto in produtos) {
+                if(produto.IdCategoria == idCategoria) {
+                    lista.Add(produto);
+                }
+            }
+
+            return lista;
         }
         #endregion
     }

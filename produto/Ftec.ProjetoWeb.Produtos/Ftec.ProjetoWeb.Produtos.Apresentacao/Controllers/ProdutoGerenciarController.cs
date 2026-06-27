@@ -69,7 +69,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers {
             }
         }
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult Excluir(Guid id) {
             var status = _apiFacade.ExcluirProduto(id);
             if (status) {
