@@ -18,27 +18,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
         {
             try
             {
-                //var categorias = _apiFacade.ListarCategoriasView();
-                var categorias = new List<CategoriaListaViewModel>
-                {
-                    // Raiz: Eletrônicos (Nível 0)
-                    new CategoriaListaViewModel { Id = 1, Nome = "Eletrônicos", Descricao = "Aparelhos e dispositivos eletrônicos", ParentId = null, Nivel = 0, CategoriaPaiNome = "Nenhum" },
-        
-                    // Filhos de Eletrônicos (Nível 1)
-                    new CategoriaListaViewModel { Id = 2, Nome = "Computadores", Descricao = "Notebooks, desktops e servidores", ParentId = 1, Nivel = 1, CategoriaPaiNome = "Eletrônicos" },
-                    new CategoriaListaViewModel { Id = 3, Nome = "Smartphones", Descricao = "Celulares e smart devices", ParentId = 1, Nivel = 1, CategoriaPaiNome = "Eletrônicos" },
-        
-                    // Netos de Eletrônicos / Filhos de Smartphones (Nível 2)
-                    new CategoriaListaViewModel { Id = 4, Nome = "Android", Descricao = "Dispositivos com sistema operacional Google", ParentId = 3, Nivel = 2, CategoriaPaiNome = "Smartphones" },
-                    new CategoriaListaViewModel { Id = 5, Nome = "iOS", Descricao = "Dispositivos do ecossistema Apple", ParentId = 3, Nivel = 2, CategoriaPaiNome = "Smartphones" },
-        
-                    // Raiz: Moda (Nível 0)
-                    new CategoriaListaViewModel { Id = 6, Nome = "Moda", Descricao = "Vestuário, calçados e acessórios", ParentId = null, Nivel = 0, CategoriaPaiNome = "Nenhum" },
-        
-                    // Filhos de Moda (Nível 1)
-                    new CategoriaListaViewModel { Id = 7, Nome = "Calçados", Descricao = "Tênis, sapatos e botas", ParentId = 6, Nivel = 1, CategoriaPaiNome = "Moda" },
-                    new CategoriaListaViewModel { Id = 8, Nome = "Vestuário", Descricao = "Camisas, calças e casacos", ParentId = 6, Nivel = 1, CategoriaPaiNome = "Moda" }
-                };
+                var categorias = _apiFacade.ListarCategoriasView();
+
 
                 return View(categorias);
             }

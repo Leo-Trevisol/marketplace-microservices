@@ -192,6 +192,16 @@ body {
     box-shadow: 0 4px 16px rgba(0,0,0,.12);
 }
 
+.product-card-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
 .product-card-title {
     font-size: 14px;
     color: #222;

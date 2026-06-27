@@ -23,7 +23,9 @@
         <div class="product-list">
             @foreach (var prod in Model.ProdutosDestaque.OrderBy(x => x.Nome))
             {
-                <partial name="_ProductCard" model="prod" />
+                    
+
+                    <partial name="_ProductCard" model="prod" />
             }
         </div>
         }

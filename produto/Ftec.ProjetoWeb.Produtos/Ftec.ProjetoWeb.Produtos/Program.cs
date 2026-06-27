@@ -1,4 +1,5 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.Extensions.FileProviders;
+var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer(); // descobre os endpoints
 builder.Services.AddSwaggerGen(options =>
@@ -17,6 +18,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger(); // serve JSON da spec em /swagger/v1/swagger.json
     app.UseSwaggerUI(); // serve a interface visual em /swagger
 }
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "_uploads")),
+    RequestPath = "/arquivos"
+});
+
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
