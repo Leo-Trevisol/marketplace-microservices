@@ -1,20 +1,35 @@
 ﻿@using Ftec.ProjetoWeb.Produtos.Apresentacao.Models;
+@inject IConfiguration Configuration
 
 @{
     var nomeUsuario = Context.Session.GetString("Nome");
     var idUsuario = Context.Session.GetString("UsuarioId");
     var logado = !string.IsNullOrEmpty(nomeUsuario);
     ViewData["Title"] = "Produtos";
+    var produtoUrl = Configuration["ProdutoBaseUrl"];
 }
+
+
+
 
 @model ProdutoModel
 
 <div class="row mt-4">
 
     <div class="col-lg-7 col-md-6">
-        <img class="product-detail-image"
-             src="https://unifique.com.br/upload/blog/2025/02/quem-inventou-celular.jpg"
-             alt="Imagem de @Model.Nome">
+        @if (Model.ImagemPrincipal != null)
+        {
+            <img class="product-detail-image"
+                 src="@($"{produtoUrl}arquivos/{Model.ImagemPrincipal.NomeUnico}")"
+                 alt="@Model.Nome" />
+        }
+        else
+        {
+            <img class="product-detail-image"
+                 src="~/images/sem-imagem.png"
+                 alt="Sem imagem" />
+        }
+     
     </div>
 
     <div class="col-lg-5 col-md-6">

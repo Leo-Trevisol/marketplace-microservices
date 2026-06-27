@@ -40,7 +40,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                             if (!string.IsNullOrEmpty(item.IdImagemPrincipal.ToString()))
                             {
                                 this.obtemBaseUrl(_config, TipoServico.Produto);
-                                item.ImagemPrincipal = Get<MediaModel>($"api/Media/obterPorId/{item.IdImagemPrincipal}");
+                                var mediaResponse = Get<APIResponseModel<MediaModel>>($"api/Media/obterPorId/{item.IdImagemPrincipal}");
+                                item.ImagemPrincipal = mediaResponse.Data;
+
                             }
                             //if (item.IdCategoria.HasValue) {
                             //    this.obtemBaseUrl(_config, TipoServico.Categoria);
@@ -73,6 +75,14 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             var produto = response != null && response.Sucesso && response?.Data != null ? response.Data : new ProdutoModel();
             if (produto != null)
             {
+
+                if (!string.IsNullOrEmpty(produto.IdImagemPrincipal.ToString()))
+                {
+                    this.obtemBaseUrl(_config, TipoServico.Produto);
+                    var mediaResponse = Get<APIResponseModel<MediaModel>>($"api/Media/obterPorId/{produto.IdImagemPrincipal}");
+                    produto.ImagemPrincipal = mediaResponse.Data;
+
+                }
                 //if (produto.IdCategoria.HasValue) {
                 //    this.obtemBaseUrl(_config, TipoServico.Categoria);
                 //    produto.Categoria = Get<CategoriaModel>($"api/Categoria/{produto.IdCategoria.Value}");
@@ -265,12 +275,16 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Pedidos
-        public bool AdicionarPedido(APIPedidoModel modelo) {
-            if (modelo != null) {
+        public bool AdicionarPedido(APIPedidoModel modelo)
+        {
+            if (modelo != null)
+            {
                 this.obtemBaseUrl(_config, TipoServico.PedidosCarrinho);
                 var status = Post($"api/Pedido", modelo);
                 return status;
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }
