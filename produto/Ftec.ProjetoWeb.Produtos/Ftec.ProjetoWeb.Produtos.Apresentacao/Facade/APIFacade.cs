@@ -375,6 +375,45 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         }
         #endregion
 
+        #region Pagamento
+        public bool RegistrarPagamento(APIPagamentoModel modelo)
+        {
+            if (modelo != null)
+            {
+                this.obtemBaseUrl(_config, TipoServico.Pagamento);
+                var status = Post("api/pagamento", modelo);
+                return status;
+            }
+            return false;
+        }
+        #endregion
+
+        public Guid? AdicionarPedidoRetornando(APIPedidoRegistrarModel modelo)
+        {
+            if (modelo != null)
+            {
+                this.obtemBaseUrl(_config, TipoServico.PedidosCarrinho);
+                using (var client = new HttpClient())
+                {
+                    var url = $"{_baseUrl.TrimEnd('/')}/api/Pedido";
+                    var jsonContent = JsonSerializer.Serialize(modelo);
+                    var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, ContentType);
+
+                    var response = client.PostAsync(url, content).Result;
+
+                    if (response.IsSuccessStatusCode)
+                        return modelo.id;
+                    else
+                    {
+                        var erro = response.Content.ReadAsStringAsync().Result;
+                        throw new Exception($"Erro ao adicionar pedido: {erro}");
+                    }
+                }
+            }
+            return null;
+        }
+
+
         #region Helpers
         public void obtemBaseUrl(IConfiguration config, TipoServico tipo)
         {
@@ -394,6 +433,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                     break;
                 case TipoServico.PedidosCarrinho:
                     this._baseUrl = config["PedidoCarrinhoBaseUrl"];
+                    break;
+                case TipoServico.Pagamento:
+                    this._baseUrl = config["PagamentoBaseUrl"];
                     break;
                 default:
                     this._baseUrl = config["ProdutoBaseUrl"];

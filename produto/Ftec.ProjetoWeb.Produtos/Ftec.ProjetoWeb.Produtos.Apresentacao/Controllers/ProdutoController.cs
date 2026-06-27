@@ -41,7 +41,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             catch (Exception ex)
             {
                 ViewBag.Erro = $"Erro ao carregar produto: {ex.Message}";
-                return View(new List<ProdutoModel>());
+                return View(new ProdutoModel());
             }
         }
         public APIResponseModel<APIProdutoAvaliacaoModel> RegistrarAvaliacao(APIProdutoAvaliacaoModel model) {

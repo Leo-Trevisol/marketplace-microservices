@@ -6,6 +6,7 @@
         Categoria = 2,
         Avaliacao = 3,
         Usuarios = 4,
-        PedidosCarrinho = 5
+        PedidosCarrinho = 5,
+        Pagamento = 6
     }
 }

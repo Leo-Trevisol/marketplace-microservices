@@ -9,21 +9,22 @@
     <h2 class="pagamento-title">Finalizar Compra</h2>
 
     <div class="resumo-fixo-topo">
-        <img src="https://unifique.com.br/upload/blog/2025/02/quem-inventou-celular.jpg"
-             alt="Produto"
-             class="resumo-fixo-img" />
-        <div class="resumo-fixo-info">
-            <p class="resumo-fixo-nome">iPhone 13 128GB Meia-Noite</p>
-            <p class="text-muted small mb-0">Qtd: 1</p>
-        </div>
-        <span class="text-success fw-bold fs-5">R$ 3.999,00</span>
+        @if (Model.Pedido != null && Model.Pedido.produtosModel.Any())
+        {
+            var totalItens = Model.Pedido.produtosModel.Sum(x => x.quantidade);
+            var totalValor = Model.Pedido.produtosModel.Sum(x => x.preco * x.quantidade);
+            <div class="resumo-fixo-info">
+                <p class="resumo-fixo-nome">@totalItens item(ns) no pedido</p>
+                <p class="text-muted small mb-0">Qtd total: @totalItens</p>
+            </div>
+            <span class="text-success fw-bold fs-5">R$ @totalValor.ToString("N2")</span>
+        }
     </div>
 
     <form method="post" asp-controller="Pagamento" asp-action="Index">
 
-        <input asp-for="ProdutoCodigo" type="hidden" />
-        <input asp-for="ProdutoNome" type="hidden" />
         <input asp-for="ProdutoPreco" type="hidden" />
+        <input asp-for="PedidoId" type="hidden" />
 
         <div class="pagamento-grid">
 
@@ -246,7 +247,7 @@
 
                         <div class="resumo-linha fw-bold fs-5">
                             <span>Total</span>
-                            <span id="total-final" class="text-success">R$ @(Model.Pedido.produtosModel.Sum(x => x.preco * x.quantidade)).ToString("N2")</span>
+                            <span id="total-final" class="text-success">R$ @(Model.Pedido.produtosModel.Sum(x => x.preco * x.quantidade).ToString("N2"))</span>
                         </div>
                     }
 
@@ -268,7 +269,9 @@
 
 @section Scripts {
     <script>
-        const preco = @Model.ProdutoPreco.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            const preco = @(Model.Pedido != null
+            ? Model.Pedido.produtosModel.Sum(x => x.preco * x.quantidade).ToString(System.Globalization.CultureInfo.InvariantCulture)
+            : "0");
         const precoComDesconto = (preco * 0.9).toFixed(2);
 
         const radios = document.querySelectorAll('.pagamento-metodo-radio');

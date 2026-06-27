@@ -1,5 +1,6 @@
 ﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Facade;
 using Ftec.ProjetoWeb.Produtos.Apresentacao.Models;
+using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API;
 using Ftec.ProjetoWeb.Produtos.Apresentacao.Services;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -17,18 +18,28 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
         [HttpGet]
         public IActionResult Index(Guid idPedido)
         {
-            var pedido = _apiFacade.ObterPedidoPorId(idPedido);
-            if (pedido != null && pedido.Sucesso) {
+            var carrinho = _carrinhoService.ObterCarrinho();
 
-                var model = new PagamentoModel
+            if (!carrinho.Any())
+                return RedirectToAction("Index", "Carrinho");
+
+            var model = new PagamentoModel
+            {
+                PedidoId = idPedido,
+                Pedido = new APIPedidoModel
                 {
-                    Pedido = pedido.Data,
-                };
-                return View(model);
-            } else {
-                return RedirectToAction("Index", "Home");
-            }
+                    id = idPedido,
+                    valorTotal = carrinho.Sum(x => x.Preco * x.Quantidade),
+                    produtosModel = carrinho.Select(x => new APIPedidoIntemModel
+                    {
+                        produtoId = Guid.Parse(x.IdProduto.ToString()),
+                        preco = x.Preco,
+                        quantidade = x.Quantidade
+                    }).ToList()
+                }
+            };
 
+            return View(model);
         }
 
         [HttpPost]
@@ -37,22 +48,47 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var numeroPedido = new Random().Next(100000000, 999999999);
+            var carrinho = _carrinhoService.ObterCarrinho();
+            var valorTotal = carrinho.Sum(x => x.Preco * x.Quantidade);
 
-            TempData["NumeroPedido"] = numeroPedido.ToString();
-            TempData["NomeCompleto"] = model.NomeCompleto;
-            TempData["Email"] = model.Email;
-            TempData["ProdutoNome"] = model.ProdutoNome;
-            TempData["ProdutoPreco"] = model.ProdutoPreco.ToString("N2");
-            TempData["ProdutoPrecoRaw"] = model.ProdutoPreco.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            TempData["FormaPagamento"] = model.FormaPagamento;
-            TempData["Endereco"] = $"{model.Endereco}, {model.Numero}{(string.IsNullOrEmpty(model.Complemento) ? "" : " - " + model.Complemento)}, {model.Bairro}, {model.Cidade} - {model.Estado}, CEP {model.Cep}";
+            var metodoPagamento = model.FormaPagamento switch
+            {
+                "credito" => 0,
+                "pix" => 1,
+                "boleto" => 2,
+                _ => 0
+            };
 
             var total = model.FormaPagamento == "pix"
-                ? model.ProdutoPreco * 0.9m
-                : model.ProdutoPreco;
-            TempData["TotalFinal"] = total.ToString("N2");
+                ? valorTotal * 0.9m
+                : valorTotal;
 
+            try
+            {
+                var pagamentoModel = new APIPagamentoModel
+                {
+                    pedidoId = model.PedidoId,
+                    cpfCliente = model.Cpf.Replace(".", "").Replace("-", ""),
+                    valorTotal = total,
+                    metodoPagamento = metodoPagamento
+                };
+
+                _apiFacade.RegistrarPagamento(pagamentoModel);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Aviso = ex.Message;
+            }
+            TempData["NumeroPedido"] = model.PedidoId.ToString();
+            TempData["NomeCompleto"] = model.NomeCompleto;
+            TempData["Email"] = model.Email;
+            TempData["FormaPagamento"] = model.FormaPagamento;
+            TempData["TotalFinal"] = total.ToString("N2");
+            TempData["ProdutoPrecoRaw"] = valorTotal.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            TempData["ProdutoPreco"] = valorTotal.ToString("N2");
+            TempData["Endereco"] = $"{model.Endereco}, {model.Numero}{(string.IsNullOrEmpty(model.Complemento) ? "" : " - " + model.Complemento)}, {model.Bairro}, {model.Cidade} - {model.Estado}, CEP {model.Cep}";
+
+            _carrinhoService.LimparCarrinho();
             return RedirectToAction("Confirmacao");
         }
 

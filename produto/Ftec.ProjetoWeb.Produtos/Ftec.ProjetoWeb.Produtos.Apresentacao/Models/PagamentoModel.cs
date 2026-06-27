@@ -8,7 +8,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
         public PagamentoModel() {
         }
         public int ProdutoCodigo { get; set; }
-        public string ProdutoNome { get; set; }
+        public string? ProdutoNome { get; set; }
         public decimal ProdutoPreco { get; set; }
 
         [Required(ErrorMessage = "Nome obrigatório")]
@@ -52,6 +52,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
         public string? Validade { get; set; }
         public string? Cvv { get; set; }
         public int Parcelas { get; set; } = 1;
-        public APIPedidoModel Pedido { get; set; } 
+        public APIPedidoModel? Pedido { get; set; }
+        public Guid PedidoId { get; set; }
+
     }
 }
