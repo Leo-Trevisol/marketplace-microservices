@@ -67,6 +67,54 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             }
         }
 
+
+        public List<ProdutoModel> BuscarProdutosPorTexto(string texto)
+        {
+            try
+            {
+                this.obtemBaseUrl(_config, TipoServico.Produto);
+                var response = Get<APIResponseModel<List<ProdutoModel>>>($"api/produto/buscar/{texto}");
+
+                var produtos = response != null && response.Sucesso && response?.Data != null ? response?.Data : new List<ProdutoModel>();
+
+                if (produtos != null && produtos.Count() > 0)
+                {
+                    foreach (var item in produtos)
+                    {
+                        try
+                        {
+                            if (!string.IsNullOrEmpty(item.IdImagemPrincipal.ToString()))
+                            {
+                                this.obtemBaseUrl(_config, TipoServico.Produto);
+                                var mediaResponse = Get<APIResponseModel<MediaModel>>($"api/Media/obterPorId/{item.IdImagemPrincipal}");
+                                item.ImagemPrincipal = mediaResponse.Data;
+
+                            }
+                            //if (item.IdCategoria.HasValue) {
+                            //    this.obtemBaseUrl(_config, TipoServico.Categoria);
+                            //    item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
+                            //}
+                        }
+                        catch (Exception ex)
+                        {
+                            continue;
+                        }
+                    }
+                    return produtos;
+                }
+                else
+                {
+                    return new List<ProdutoModel>();
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new List<ProdutoModel>();
+            }
+
+        }
         public ProdutoModel ObterProduto(string id)
         {
             this.obtemBaseUrl(_config, TipoServico.Produto);
@@ -275,8 +323,10 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Pedidos
-        public bool AdicionarPedido(APIPedidoRegistrarModel modelo) {
-            if (modelo != null) {
+        public bool AdicionarPedido(APIPedidoRegistrarModel modelo)
+        {
+            if (modelo != null)
+            {
                 this.obtemBaseUrl(_config, TipoServico.PedidosCarrinho);
                 var status = Post($"api/Pedido", modelo);
                 return status;
@@ -286,7 +336,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 return false;
             }
         }
-        public APIResponseModel<APIPedidoModel> ObterPedidoPorId(Guid Id) {
+        public APIResponseModel<APIPedidoModel> ObterPedidoPorId(Guid Id)
+        {
             this.obtemBaseUrl(_config, TipoServico.PedidosCarrinho);
             var pedido = Get<APIResponseModel<APIPedidoModel>>($"api/Pedido/{Id}");
             return pedido;
@@ -329,7 +380,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
 
                 var response = client.PostAsync(url, content).Result;
 
-                    if (!response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
                 {
                     var errorContent = response.Content.ReadAsStringAsync().Result;
                     throw new Exception($"Erro ao adicionar dados: {errorContent}");

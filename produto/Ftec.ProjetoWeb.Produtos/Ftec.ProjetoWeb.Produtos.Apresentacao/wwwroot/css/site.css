@@ -148,6 +148,24 @@ body {
     right: -8px;
 }
 
+.search-button {
+    background-color: white;
+    border-left: 1px solid black;
+    transition: 400ms;
+}
+
+.search-button:hover {
+    background: #48CCF4;
+}
+
+.search-button i {
+    transition: 400ms;
+}
+
+.search-button:hover i {
+    color: white;
+}
+
 
 /* HOME */
 .banner {

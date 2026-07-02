@@ -47,16 +47,24 @@
                     <i class="bi bi-cart3 fs-1 text-white"></i>
                 </button>
             </div>
-            <div class="my-2 mt-4">
+            <form asp-controller="Produto" asp-action="Index" method="get" class="flex-grow-1 mx-4">
+
                 <div class="input-group">
+
                     <input type="text"
-                           class="form-control "
-                           placeholder="Buscar produtos">
-                    <span class="input-group-text">
+                           name="texto"
+                           class="form-control"
+                           placeholder="Buscar"
+                           value="@Context.Request.Query["texto"]">
+
+                    <button class="btn input-group-text search-button" type="submit">
                         <i class="bi bi-search"></i>
-                    </span>
+                    </button>
+
                 </div>
-            </div>
+
+            </form>
+            
         </div>
     </header>
 
@@ -147,21 +155,23 @@
                     <img src="~/css/assets/White_slim_long.svg" alt="Logo Markett" height="40" />
                 </a>
 
-                <div class="flex-grow-1 mx-4">
+                <form asp-controller="Produto" asp-action="Index" method="get" class="flex-grow-1 mx-4">
 
                     <div class="input-group">
 
                         <input type="text"
+                               name="texto"
                                class="form-control"
-                               placeholder="Buscar produtos">
+                               placeholder="Buscar"
+                               value="@Context.Request.Query["texto"]">
 
-                        <span class="input-group-text">
+                        <button class="btn input-group-text search-button" type="submit">
                             <i class="bi bi-search"></i>
-                        </span>
+                        </button>
 
                     </div>
 
-                </div>
+                </form>
 
                 <div class="d-flex align-items-center gap-4">
 

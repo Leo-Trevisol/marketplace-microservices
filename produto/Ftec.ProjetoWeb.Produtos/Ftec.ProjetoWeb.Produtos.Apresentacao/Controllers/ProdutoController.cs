@@ -13,15 +13,27 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
         {
             _apiFacade = new APIFacade(config);
         }
-        public IActionResult Index(long? categoriaId = null)
+        public IActionResult Index(string? texto, long? categoriaId = null)
         {
             try
             {
-                var produtos = _apiFacade.ListarProdutos();
+                Console.WriteLine("Texto");
+                List<ProdutoModel> produtos;
 
-                if (produtos != null && produtos.Count > 0 && categoriaId.HasValue) {
-                    produtos = this.ObterPorCategoria(produtos, categoriaId.Value);
+                if (!string.IsNullOrWhiteSpace(texto))
+                {
+                    produtos = _apiFacade.BuscarProdutosPorTexto(texto);
                 }
+                else
+                {
+                    produtos = _apiFacade.ListarProdutos();
+
+                    if (produtos != null && produtos.Count > 0 && categoriaId.HasValue)
+                    {
+                        produtos = this.ObterPorCategoria(produtos, categoriaId.Value);
+                    }
+                }
+
                 return View(produtos);
             }
             catch (Exception ex)
@@ -44,10 +56,13 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 return View(new ProdutoModel());
             }
         }
-        public APIResponseModel<APIProdutoAvaliacaoModel> RegistrarAvaliacao(APIProdutoAvaliacaoModel model) {
+        public APIResponseModel<APIProdutoAvaliacaoModel> RegistrarAvaliacao(APIProdutoAvaliacaoModel model)
+        {
             var response = new APIResponseModel<APIProdutoAvaliacaoModel>();
-            try {
-                if (model.Id == Guid.Empty) {
+            try
+            {
+                if (model.Id == Guid.Empty)
+                {
                     model.Id = Guid.NewGuid();
                 }
                 response.Sucesso = _apiFacade.AdicionarAvaliacao(model);
@@ -55,7 +70,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                     ? "Sucesso ao registrar avaliação!"
                     : "Não foi possível registrar avaliação. Tente novamente!";
                 return response;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 response.Sucesso = false;
                 response.Message = $"ERRO! {ex.Message}";
                 return response;
@@ -65,14 +82,20 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 
         #region Functions
         [NonAction]
-        public List<ProdutoModel> ObterProdutosRelacionados(int idCategoria, Guid idProduto) {
+        public List<ProdutoModel> ObterProdutosRelacionados(int idCategoria, Guid idProduto)
+        {
             var relacionados = new List<ProdutoModel>();
             var produtos = _apiFacade.ListarProdutos();
-            if (produtos != null && produtos.Count() > 0) {
-                foreach (var item in produtos) {
-                    if (item.IdCategoria == idCategoria && item.Id != idProduto) {
+            if (produtos != null && produtos.Count() > 0)
+            {
+                foreach (var item in produtos)
+                {
+                    if (item.IdCategoria == idCategoria && item.Id != idProduto)
+                    {
                         relacionados.Add(item);
-                    } else {
+                    }
+                    else
+                    {
                         continue;
                     }
                 }
@@ -80,10 +103,13 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             return relacionados;
         }
         [NonAction]
-        public List<ProdutoModel> ObterPorCategoria(List<ProdutoModel> produtos, long idCategoria) {
+        public List<ProdutoModel> ObterPorCategoria(List<ProdutoModel> produtos, long idCategoria)
+        {
             var lista = new List<ProdutoModel>();
-            foreach(var produto in produtos) {
-                if(produto.IdCategoria == idCategoria) {
+            foreach (var produto in produtos)
+            {
+                if (produto.IdCategoria == idCategoria)
+                {
                     lista.Add(produto);
                 }
             }
