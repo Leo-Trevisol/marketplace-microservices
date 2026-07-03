@@ -183,7 +183,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia
                 comando.CommandText =
                     "SELECT id, codigo, nome, preco, quantidadeEstoque, estoqueMinimoVenda, idCategoria, idImagemPrincipal, descricao, disponivel, excluido, destaque " +
                     "FROM public.produtos " +
-                    "WHERE codigo = @codigo;";
+                    "WHERE codigo = @codigo AND excluido = false;";
 
                 comando.Parameters.AddWithValue("codigo", codigo);
 
@@ -224,7 +224,7 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia
                 comando.CommandText =
                     "SELECT id, codigo, nome, preco, quantidadeEstoque, estoqueMinimoVenda, idCategoria, idImagemPrincipal, descricao, disponivel, excluido, destaque " +
                     "FROM public.produtos " +
-                    "WHERE id = @id;";
+                    "WHERE id = @id AND excluido = false;";
 
                 comando.Parameters.AddWithValue("id", Guid.Parse(id));
 
@@ -265,7 +265,8 @@ namespace Ftec.ProjetoWeb.Produtos.Persistencia
                 comando.CommandText =
                     "SELECT id, codigo, nome, preco, quantidadeEstoque, estoqueMinimoVenda, idCategoria, idImagemPrincipal, descricao, disponivel, excluido, destaque " +
                     "FROM public.produtos " +
-                    "WHERE codigo ILIKE @texto OR nome ILIKE @texto OR descricao ILIKE @texto and excluido = false;";
+                    "WHERE (codigo ILIKE @texto OR nome ILIKE @texto OR descricao ILIKE @texto) AND excluido = false;";
+
 
                 comando.Parameters.AddWithValue("texto", $"%{texto}%");
 
