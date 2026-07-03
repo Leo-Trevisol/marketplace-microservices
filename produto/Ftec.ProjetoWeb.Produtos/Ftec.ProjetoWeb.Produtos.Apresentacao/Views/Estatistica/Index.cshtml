@@ -8,12 +8,11 @@
     var estaLogado = !string.IsNullOrEmpty(nomeUsuario);
 }
 
-
 <div class="meus-pedidos-container">
 
     <h2 class="meus-pedidos-title">Estatísticas</h2>
 
-    @if (Model != null)
+    @if (Model == null)
     {
         <div class="meus-pedidos-vazio">
             <i class="bi bi-bar-chart-line meus-pedidos-vazio-icone"></i>
@@ -28,7 +27,96 @@
     }
     else
     {
-        
+        @* ===== Cards de venda geral ===== *@
+        @if (Model.Estatisticas.VendaGeral != null)
+        {
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-4">
+                    <div class="stat-card stat-card-primary">
+
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon">
+                                <i class="bi bi-cart-check"></i>
+                            </div>
+
+                            <span class="stat-card-title">
+                                Total de Pedidos
+                            </span>
+                        </div>
+
+                        <div class="stat-card-value">
+                            @Model.Estatisticas.VendaGeral.totalPedidos
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-4">
+                    <div class="stat-card stat-card-success">
+
+                        <div class="stat-card-header">
+                            <div class="stat-card-icon">
+                                <i class="bi bi-currency-dollar"></i>
+                            </div>
+
+                            <span class="stat-card-title">
+                                Total em Vendas
+                            </span>
+                        </div>
+
+                        <div class="stat-card-value">
+                            @Model.Estatisticas.VendaGeral.totalVendas.ToString("C2")
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        }
+
+        @* ===== Cards de estatísticas diárias ===== *@
+        @if (Model.Estatisticas.PainelDiario != null && Model.Estatisticas.PainelDiario.Any())
+        {
+            <div class="row g-3">
+                @foreach (var item in Model.Estatisticas.PainelDiario)
+                {
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="stat-card">
+
+                            <div class="stat-card-header">
+                                <div class="stat-card-icon">
+                                    <i class="bi bi-graph-up"></i>
+                                </div>
+
+                                <span class="stat-card-title">
+                                    @item.titulo
+                                </span>
+                            </div>
+
+                            <div class="stat-card-value">
+                                @item.valor
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(item.detalhe))
+                            {
+                                <div class="stat-card-detail">
+                                    @item.detalhe
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else if (Model.Estatisticas.VendaGeral == null)
+        {
+            <div class="meus-pedidos-vazio">
+                <i class="bi bi-bar-chart-line meus-pedidos-vazio-icone"></i>
+                <h5>Nenhuma estatística disponível</h5>
+                <p class="text-muted">Ainda não há dados para exibir.</p>
+            </div>
+        }
     }
 
 </div>

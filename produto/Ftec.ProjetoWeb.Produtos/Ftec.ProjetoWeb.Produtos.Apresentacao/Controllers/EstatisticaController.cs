@@ -12,12 +12,18 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers {
         public IActionResult Index(string? idProduto) {
             try {
                 var model = new EstatisticaModel();
-
+                model.Estatisticas.PainelDiario = _apiFacade.ObtemPainelDiario();
+                model.Estatisticas.VendaGeral = _apiFacade.ObtemTotalVendas();
+                if (!string.IsNullOrEmpty(idProduto)) {
+                    model.Estatisticas.Avaliacao = _apiFacade.ObtemMediaAvaliacao();
+                    model.Estatisticas.VendaProduto = _apiFacade.ObtemVendaProduto();
+                    model.Estatisticas.VendaCliente = _apiFacade.ObtemVendaCliente();
+                }
                 return View(model);
 
             } catch (Exception ex) {
                 ViewBag.Erro = $"Erro ao carregar estatísticas: {ex.Message}";
-                return View(new List<ProdutoModel>());
+                return View(new EstatisticaModel());
             }
         }
     }

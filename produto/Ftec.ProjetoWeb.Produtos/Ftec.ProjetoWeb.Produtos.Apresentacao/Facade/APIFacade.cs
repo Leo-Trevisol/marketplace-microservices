@@ -185,7 +185,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Categorias
-
         public List<CategoriaModel> ListarGeralCategorias(bool montaArvore = false)
         {
             try
@@ -258,8 +257,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             }
         }
 
-
-
         private void MapearFilhosRecursivo(CategoriaModel atual, List<CategoriaModel> todas, List<CategoriaListaViewModel> resultado, int nivel)
         {
             // Busca o nome do pai direto na lista original
@@ -288,7 +285,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 MapearFilhosRecursivo(filho, todas, resultado, nivel + 1);
             }
         }
-
         #endregion
 
         #region Avaliacoes
@@ -412,7 +408,35 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Pagamento
-      
+
+        #endregion
+
+        #region Estatísticas
+        public List<APIEstatisticaDiariaModel> ObtemPainelDiario() {
+            this.obtemBaseUrl(_config, TipoServico.Estatisticas);
+            var painel = Get<List<APIEstatisticaDiariaModel>>($"api/Estatistica/painel-hoje");
+            return painel;
+        }
+        public APIEstatisticaVendaGeral ObtemTotalVendas() {
+            this.obtemBaseUrl(_config, TipoServico.Estatisticas);
+            var totalVenda = Get<APIEstatisticaVendaGeral>($"api/Estatistica/total-vendas");
+            return totalVenda;
+        }
+        public APIEstatisticaAvaliacao ObtemMediaAvaliacao() {
+            this.obtemBaseUrl(_config, TipoServico.Estatisticas);
+            var avaliacao = Get<APIEstatisticaAvaliacao>($"api/Estatistica/media-avaliacao-produto");
+            return avaliacao;
+        }
+        public APIEstatisticaVendaProduto ObtemVendaProduto() {
+            this.obtemBaseUrl(_config, TipoServico.Estatisticas);
+            var vendaP = Get<APIEstatisticaVendaProduto>($"api/Estatistica/media-venda-produto");
+            return vendaP;
+        }
+        public APIEstatisticaVendaCliente ObtemVendaCliente() {
+            this.obtemBaseUrl(_config, TipoServico.Estatisticas);
+            var vendaC = Get<APIEstatisticaVendaCliente>($"api/Estatistica/media-vendas-cliente");
+            return vendaC;
+        }
         #endregion
 
         public Guid? AdicionarPedidoRetornando(APIPedidoRegistrarModel modelo)
@@ -557,6 +581,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                     break;
                 case TipoServico.Pagamento:
                     this._baseUrl = config["PagamentoBaseUrl"];
+                    break;
+                case TipoServico.Estatisticas:
+                    this._baseUrl = config["EstatisticaBaseUrl"];
                     break;
                 default:
                     this._baseUrl = config["ProdutoBaseUrl"];

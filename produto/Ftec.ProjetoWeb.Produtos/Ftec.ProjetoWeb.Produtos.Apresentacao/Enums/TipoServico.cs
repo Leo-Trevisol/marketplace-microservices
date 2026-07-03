@@ -7,6 +7,7 @@
         Avaliacao = 3,
         Usuarios = 4,
         PedidosCarrinho = 5,
-        Pagamento = 6
+        Pagamento = 6,
+        Estatisticas = 8
     }
 }
