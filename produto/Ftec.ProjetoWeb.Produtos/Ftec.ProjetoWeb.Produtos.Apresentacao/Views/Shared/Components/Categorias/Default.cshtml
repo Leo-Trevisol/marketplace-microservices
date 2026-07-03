@@ -1,9 +1,38 @@
-﻿@model List<CategoriaModel>
+﻿@model List<Ftec.ProjetoWeb.Produtos.Apresentacao.Models.CategoriaArvoreModel>
 
-@if (Model != null && Model.Any()) {
-    @foreach (var categoria in Model) {
-        <a href="#" class="header-category" asp-controller="Produto" asp-action="Index" asp-route-categoriaId="@categoria.Id">
-            @categoria.Nome
-        </a>
-    }
+@{
+    const int maxVisiveis = 10;
+    var categorias = Model ?? new List<Ftec.ProjetoWeb.Produtos.Apresentacao.Models.CategoriaArvoreModel>();
+    var visiveis = categorias.Take(maxVisiveis).ToList();
+    var extras = categorias.Skip(maxVisiveis).ToList();
 }
+
+<nav class="categorias-menu d-flex align-items-center gap-3">
+
+    @foreach (var categoria in visiveis)
+    {
+        <partial name="_CategoriaItem" model="categoria" />
+    }
+
+    @if (extras.Any())
+    {
+        <div class="dropdown">
+            <button class="btn btn-link p-0 categories-dropdown" data-bs-toggle="dropdown">
+                Mais
+                <i class="bi bi-chevron-down"></i>
+            </button>
+            <ul class="dropdown-menu">
+                @foreach (var categoria in extras)
+                {
+                    <li>
+                        <partial name="_CategoriaItemDropdown" model="categoria" />
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+    <a class="header-category" asp-controller="Produto" asp-action="Index">
+        Visualizar Todos
+    </a>
+</nav>

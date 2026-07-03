@@ -58,7 +58,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
         }
         public List<CategoriaModel> ObterCategorias()
         {
-            var categorias = _apiFacade.ListarCategorias();
+            var categorias = _apiFacade.ListarGeralCategorias();
             if (categorias != null && categorias.Count() > 0)
             {
                 return categorias;

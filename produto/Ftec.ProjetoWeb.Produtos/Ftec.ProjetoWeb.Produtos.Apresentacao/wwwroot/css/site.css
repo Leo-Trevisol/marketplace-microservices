@@ -585,6 +585,65 @@ body {
     box-sizing: border-box;
 }
 
+.categorias-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    /* Submenu dentro do menu horizontal (visíveis) */
+    .categorias-menu > .dropdown-submenu > .submenu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 180px;
+        background: #fff;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: .25rem;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+        z-index: 1000;
+        padding: .25rem 0;
+    }
+
+    .categorias-menu > .dropdown-submenu:hover > .submenu {
+        display: block;
+    }
+
+/* Submenu dentro do dropdown "Mais" (abre pra direita) */
+.dropdown-menu .dropdown-submenu > .submenu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    min-width: 180px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    z-index: 1000;
+    padding: .25rem 0;
+}
+
+.dropdown-menu .dropdown-submenu:hover > .submenu {
+    display: block;
+}
+
+.submenu {
+    background: #fff;
+}
+
+    .submenu .header-category,
+    .submenu .dropdown-item {
+        color: #212529; /* cor de texto padrão escura */
+    }
+
+        .submenu .header-category:hover,
+        .submenu .dropdown-item:hover {
+            color: #000;
+            background-color: #f8f9fa; /* hover cinza claro, padrão Bootstrap */
+        }
+
 /* Responsivo: 2 por linha em telas médias */
 @media (max-width: 992px) {
     .avaliacao-card-item {

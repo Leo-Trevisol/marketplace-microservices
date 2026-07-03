@@ -1,0 +1,34 @@
+﻿@using Ftec.ProjetoWeb.Produtos.Apresentacao.Models
+@model EstatisticaModel
+
+@{
+    ViewData["Title"] = "Estatísticas";
+    var nomeUsuario = Context.Session.GetString("Nome");
+    var idUsuario = Context.Session.GetString("UsuarioId");
+    var estaLogado = !string.IsNullOrEmpty(nomeUsuario);
+}
+
+
+<div class="meus-pedidos-container">
+
+    <h2 class="meus-pedidos-title">Estatísticas</h2>
+
+    @if (Model != null)
+    {
+        <div class="meus-pedidos-vazio">
+            <i class="bi bi-bar-chart-line meus-pedidos-vazio-icone"></i>
+            <h5>Sem comunicação no momento</h5>
+            <p class="text-muted">Sem estatísticas para exibir no momento!</p>
+            <a asp-controller="Produto" asp-action="Index"
+               class="btn-buy bg-markett-blue mt-2"
+               style="max-width:220px;margin:0 auto">
+                Ver produtos
+            </a>
+        </div>
+    }
+    else
+    {
+        
+    }
+
+</div>

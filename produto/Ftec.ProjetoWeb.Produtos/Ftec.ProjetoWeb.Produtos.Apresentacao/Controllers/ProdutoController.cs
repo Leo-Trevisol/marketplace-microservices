@@ -13,13 +13,14 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
         {
             _apiFacade = new APIFacade(config);
         }
-        public IActionResult Index(string? texto, long? categoriaId = null)
+        public IActionResult Index(string? texto, string? idCategoria = null)
         {
             try
             {
                 Console.WriteLine("Texto");
                 List<ProdutoModel> produtos;
-
+                var categorias = _apiFacade.ListarGeralCategorias();
+                ViewBag.Categorias = categorias;
                 if (!string.IsNullOrWhiteSpace(texto))
                 {
                     produtos = _apiFacade.BuscarProdutosPorTexto(texto);
@@ -27,10 +28,12 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 else
                 {
                     produtos = _apiFacade.ListarProdutos();
-
-                    if (produtos != null && produtos.Count > 0 && categoriaId.HasValue)
-                    {
-                        produtos = this.ObterPorCategoria(produtos, categoriaId.Value);
+                    if (!string.IsNullOrEmpty(idCategoria)) {
+                        long.TryParse(idCategoria, out long categoriaId);
+                        if (produtos != null && produtos.Count > 0)
+                        {
+                            produtos = this.ObterPorCategoria(produtos, categoriaId);
+                        }
                     }
                 }
 

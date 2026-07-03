@@ -1,0 +1,21 @@
+﻿@model Ftec.ProjetoWeb.Produtos.Apresentacao.Models.CategoriaArvoreModel
+
+<div class="dropdown-submenu position-relative">
+    <a class="header-category"
+           asp-controller="Produto"
+           asp-action="Index"
+           asp-route-idCategoria="@Model.Id">
+        @Model.Nome
+        @if (Model.Filhos != null && Model.Filhos.Any()) {
+            <i class="bi bi-chevron-down ms-1"></i>
+        }
+    </a>
+
+    @if (Model.Filhos != null && Model.Filhos.Any()) {
+        <ul class="submenu list-unstyled">
+            @foreach (var filho in Model.Filhos) {
+                <li><partial name="_CategoriaItemDropdown" model="filho" /></li>
+            }
+        </ul>
+    }
+</div>

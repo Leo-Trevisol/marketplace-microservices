@@ -1,0 +1,10 @@
+﻿@model Ftec.ProjetoWeb.Produtos.Apresentacao.Models.CategoriaModel
+
+<div class="dropdown-submenu position-relative">
+    <a class="dropdown-item header-category"
+           asp-controller="Produto"
+           asp-action="Index"
+           asp-route-idCategoria="@Model.Id">
+        @Model.Nome
+    </a>
+</div>

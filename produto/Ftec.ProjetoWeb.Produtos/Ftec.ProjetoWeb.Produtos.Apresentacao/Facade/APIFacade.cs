@@ -1,6 +1,7 @@
 ﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Enums;
 using Ftec.ProjetoWeb.Produtos.Apresentacao.Models;
 using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API;
+using Microsoft.AspNetCore.ResponseCompression;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text.Json;
@@ -185,17 +186,31 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
 
         #region Categorias
 
-        public List<CategoriaModel> ListarCategorias()
+        public List<CategoriaModel> ListarGeralCategorias(bool montaArvore = false)
         {
             try
             {
                 this.obtemBaseUrl(_config, TipoServico.Categoria);
-                var response = Get<List<CategoriaModel>>("api/categoria");
-                return response ?? new List<CategoriaModel>();
+                var response = Get<APIResponseModel<List<CategoriaModel>>>("api/categoria/listar");
+                return response.Data ?? new List<CategoriaModel>();
             }
             catch (Exception e)
             {
                 return new List<CategoriaModel>();
+            }
+        }
+        public List<CategoriaArvoreModel> ListarCategorias(bool montaArvore = false)
+        {
+            try
+            {
+                this.obtemBaseUrl(_config, TipoServico.Categoria);
+                var response = Get<APIResponseModel<List<CategoriaArvoreModel>>>("api/categoria/arvore");
+                return response.Data ?? new List<CategoriaArvoreModel>();
+
+            }
+            catch (Exception e)
+            {
+                return new List<CategoriaArvoreModel>();
             }
         }
 

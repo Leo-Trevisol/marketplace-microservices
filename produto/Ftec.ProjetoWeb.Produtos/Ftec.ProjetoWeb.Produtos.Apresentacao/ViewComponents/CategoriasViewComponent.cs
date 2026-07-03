@@ -10,7 +10,7 @@ public class CategoriasViewComponent : ViewComponent {
     }
 
     public async Task<IViewComponentResult> InvokeAsync() {
-        var categorias = _apiFacade.ListarCategorias();
+        var categorias = _apiFacade.ListarCategorias(true);
         return View(categorias); 
     }
 }
