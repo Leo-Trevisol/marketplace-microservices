@@ -412,16 +412,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Pagamento
-        public bool RegistrarPagamento(APIPagamentoModel modelo)
-        {
-            if (modelo != null)
-            {
-                this.obtemBaseUrl(_config, TipoServico.Pagamento);
-                var status = Post("api/pagamento", modelo);
-                return status;
-            }
-            return false;
-        }
+      
         #endregion
 
         public Guid? AdicionarPedidoRetornando(APIPedidoRegistrarModel modelo)
@@ -448,6 +439,100 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             }
             return null;
         }
+
+        private TResponse PostComRetorno<TRequest, TResponse>(string endpoint, TRequest data)
+        {
+            using (var client = new HttpClient())
+            {
+                var url = $"{_baseUrl.TrimEnd('/')}/{endpoint}";
+                var jsonContent = JsonSerializer.Serialize(data);
+                var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, ContentType);
+
+                var response = client.PostAsync(url, content).Result;
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = response.Content.ReadAsStringAsync().Result;
+                    throw new Exception($"Erro na requisição: {errorContent}");
+                }
+
+                var jsonResposta = response.Content.ReadAsStringAsync().Result;
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                return JsonSerializer.Deserialize<TResponse>(jsonResposta, options);
+            }
+        }
+
+        #region Pagamento
+        public APIPagamentoModel RegistrarPagamento(APIPagamentoModel modelo)
+        {
+            if (modelo == null) return null;
+
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            try
+            {
+                return PostComRetorno<APIPagamentoModel, APIPagamentoModel>("api/pagamento", modelo);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public APIPagamentoTransacaoModel ProcessarTransacao(Guid pagamentoId, decimal valor)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            var request = new APIPagamentoTransacaoModel
+            {
+                pagamentoId = pagamentoId,
+                valor = valor
+            };
+
+            try
+            {
+                return PostComRetorno<APIPagamentoTransacaoModel, APIPagamentoTransacaoModel>("api/pagamento/transacao", request);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        #endregion
+
+        #region Frete
+        public APIFreteModel CalcularFrete(Guid pedidoId, string cepOrigem, string cepDestino)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            var request = new APIFreteCalcularModel
+            {
+                pedidoId = pedidoId,
+                cepOrigem = cepOrigem,
+                cepDestino = cepDestino
+            };
+
+            try
+            {
+                return PostComRetorno<APIFreteCalcularModel, APIFreteModel>("api/frete/calcular", request);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FRETE] ERRO: {ex.Message}");
+                return null;
+            }
+        }
+
+        public APIFreteModel ObterFretePorPedido(Guid pedidoId)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            try
+            {
+                return Get<APIFreteModel>($"api/frete/pedido/{pedidoId}");
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        #endregion
 
 
         #region Helpers

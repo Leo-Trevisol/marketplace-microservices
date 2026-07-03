@@ -23,9 +23,15 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             if (!carrinho.Any())
                 return RedirectToAction("Index", "Carrinho");
 
+            decimal.TryParse(TempData.Peek("ValorFrete")?.ToString(),
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out var valorFrete);
+
             var model = new PagamentoModel
             {
                 PedidoId = idPedido,
+                ValorFrete = valorFrete,
                 Pedido = new APIPedidoModel
                 {
                     id = idPedido,
@@ -49,7 +55,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 return View(model);
 
             var carrinho = _carrinhoService.ObterCarrinho();
-            var valorTotal = carrinho.Sum(x => x.Preco * x.Quantidade);
+            var subtotal = carrinho.Sum(x => x.Preco * x.Quantidade);
+            var valorFrete = model.ValorFrete;
 
             var metodoPagamento = model.FormaPagamento switch
             {
@@ -59,9 +66,10 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 _ => 0
             };
 
+            var totalComFrete = subtotal + valorFrete;
             var total = model.FormaPagamento == "pix"
-                ? valorTotal * 0.9m
-                : valorTotal;
+                ? totalComFrete * 0.9m
+                : totalComFrete;
 
             try
             {
@@ -73,19 +81,27 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                     metodoPagamento = metodoPagamento
                 };
 
-                _apiFacade.RegistrarPagamento(pagamentoModel);
+                var pagamentoCriado = _apiFacade.RegistrarPagamento(pagamentoModel);
+
+                if (pagamentoCriado != null && pagamentoCriado.pagamentoId != Guid.Empty)
+                {
+                    var transacao = _apiFacade.ProcessarTransacao(pagamentoCriado.pagamentoId, total);
+                    TempData["StatusTransacao"] = transacao?.retornoGateway ?? "Pendente";
+                }
             }
             catch (Exception ex)
             {
                 ViewBag.Aviso = ex.Message;
             }
+
             TempData["NumeroPedido"] = model.PedidoId.ToString();
             TempData["NomeCompleto"] = model.NomeCompleto;
             TempData["Email"] = model.Email;
             TempData["FormaPagamento"] = model.FormaPagamento;
+            TempData["ValorFrete"] = valorFrete.ToString("N2");
             TempData["TotalFinal"] = total.ToString("N2");
-            TempData["ProdutoPrecoRaw"] = valorTotal.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            TempData["ProdutoPreco"] = valorTotal.ToString("N2");
+            TempData["ProdutoPrecoRaw"] = subtotal.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            TempData["ProdutoPreco"] = subtotal.ToString("N2");
             TempData["Endereco"] = $"{model.Endereco}, {model.Numero}{(string.IsNullOrEmpty(model.Complemento) ? "" : " - " + model.Complemento)}, {model.Bairro}, {model.Cidade} - {model.Estado}, CEP {model.Cep}";
 
             _carrinhoService.LimparCarrinho();
