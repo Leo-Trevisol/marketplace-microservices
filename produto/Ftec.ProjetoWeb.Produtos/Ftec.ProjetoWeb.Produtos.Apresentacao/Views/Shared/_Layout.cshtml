@@ -81,8 +81,15 @@
 
             <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-person-circle fs-1 text-white"></i>
-                <h5 class="text-white my-2 ">
-                    Olá, @((nomeUsuario + "!") ?? "acesse sua conta!")
+                <h5 class="text-white my-2">
+                    @if (estaLogado)
+                    {
+                        @:Olá, @nomeUsuario!
+                    }
+                    else
+                    {
+                        @:Olá, bem-vindo!
+                    }
                 </h5>
             </div>
 
@@ -105,7 +112,7 @@
 
             
             <div class="list-group list-group-flush mt-3">
-                @await Component.InvokeAsync("Categorias")
+                @await Component.InvokeAsync("CategoriasMobile")
             </div>
 
             @*Cadastrar Produto fixo*@

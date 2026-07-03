@@ -13,8 +13,10 @@
         public int? ParentId { get; set; }
     }
 
-    public class CategoriaArvoreModel {
-        public CategoriaArvoreModel() {
+    public class CategoriaArvoreModel
+    {
+        public CategoriaArvoreModel()
+        {
             Filhos = new List<CategoriaModel>();
         }
         public int Id { get; set; }

@@ -214,24 +214,12 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             }
         }
 
-        public APICategoriaModel ObterCategoriaGerenciar(string id)
+        public APICategoriaModel ObterCategoriaGerenciar(int id)
         {
-            //this.obtemBaseUrl(_config, TipoServico.Categoria);
-            //var response = Get<APICategoriaModel>($"api/Categoria/{id}");
+            this.obtemBaseUrl(_config, TipoServico.Categoria);
+            var response = Get<APIResponseModel<APICategoriaModel>>($"api/Categoria/obterPorId/{id}");
 
-            int.TryParse(id, out int idPretendido);
-            if (idPretendido == 0) idPretendido = 2; // Fallback caso venha nulo/vazio
-
-            // Simula o retorno com base no ID solicitado
-            var categoria = new APICategoriaModel
-            {
-                Id = idPretendido,
-                Nome = idPretendido == 1 ? "Eletrônicos" : idPretendido == 2 ? "Computadores" : "Smartphones",
-                Descricao = idPretendido == 1
-                    ? "Aparelhos e dispositivos eletrônicos em geral"
-                    : "Notebooks, desktops e servidores de alta performance",
-                ParentId = idPretendido == 1 ? null : 1 // Se for 1 é raiz, senão o pai é o id 1
-            };
+            var categoria = response?.Data ?? new APICategoriaModel();
 
             return categoria;
         }
@@ -239,7 +227,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         public bool AdicionarCategoria(APICategoriaModel categoria)
         {
             this.obtemBaseUrl(_config, TipoServico.Categoria); // garante que _baseUrl está setada
-            var status = Post("api/Categoria", categoria);
+            var status = Post("api/categoria/cadastrar", categoria);
             return status;
         }
 
@@ -250,45 +238,27 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             return status;
         }
 
-        public bool ExcluirCategoria(Guid id)
+        public bool ExcluirCategoria(int id)
         {
-            this.obtemBaseUrl(_config, TipoServico.Categoria);
-            var status = Delete($"api/Produto/{id}");
-            return status;
-        }
+            obtemBaseUrl(_config, TipoServico.Categoria);
 
-        public List<CategoriaListaViewModel> ListarCategoriasView()
-        {
-            try
+            using (var client = new HttpClient())
             {
-                this.obtemBaseUrl(_config, TipoServico.Categoria);
+                var url = $"{_baseUrl.TrimEnd('/')}/api/categoria/excluir/{id}";
 
-                // 1. Busca a lista plana vinda da API
-                var response = Get<List<CategoriaModel>>("api/categoria");
-                var listaPlana = response ?? new List<CategoriaModel>();
+                var response = client.DeleteAsync(url).Result;
 
-                var listaOrganizada = new List<CategoriaListaViewModel>();
-
-                // 2. Filtra as categorias "Raiz" (que não têm pai)
-                var raizes = listaPlana
-                    .Where(c => c.ParentId == null || c.ParentId == 0)
-                    .OrderBy(c => c.Nome)
-                    .ToList();
-
-                // 3. Dispara a organização recursiva para cada raiz encontrada
-                foreach (var raiz in raizes)
+                if (!response.IsSuccessStatusCode)
                 {
-                    MapearFilhosRecursivo(raiz, listaPlana, listaOrganizada, nivel: 0);
+                    var error = response.Content.ReadAsStringAsync().Result;
+                    throw new Exception(error);
                 }
 
-                return listaOrganizada;
-            }
-            catch (Exception e)
-            {
-                // Em caso de erro, retorna a lista vazia no formato correto da View
-                return new List<CategoriaListaViewModel>();
+                return true;
             }
         }
+
+
 
         private void MapearFilhosRecursivo(CategoriaModel atual, List<CategoriaModel> todas, List<CategoriaListaViewModel> resultado, int nivel)
         {

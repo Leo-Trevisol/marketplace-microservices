@@ -18,7 +18,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
         {
             try
             {
-                var categorias = _apiFacade.ListarCategoriasView();
+                var categorias = _apiFacade.ListarCategorias();
 
 
                 return View(categorias);
@@ -74,9 +74,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             }
         }
 
-        public IActionResult Editar(Guid id)
+        public IActionResult Editar(int id)
         {
-            var modelo = _apiFacade.ObterCategoriaGerenciar(id.ToString());
+            var modelo = _apiFacade.ObterCategoriaGerenciar(id);
             if (modelo == null) return NotFound();
 
             CarregarCategoriasNoDropdown(modelo.Id);
@@ -101,8 +101,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             }
         }
 
-        [HttpDelete]
-        public IActionResult Excluir(Guid id)
+        [HttpPost]
+        public IActionResult Excluir(int id)
         {
             var status = _apiFacade.ExcluirCategoria(id);
             if (status)
@@ -127,27 +127,64 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 
         private void CarregarCategoriasNoDropdown(int? idCategoriaAtual = null)
         {
-            // 1. Busca a lista do Facade (aquela que já vem ordenada de forma hierárquica)
-            var categorias = _apiFacade.ListarCategoriasView() ?? new List<CategoriaListaViewModel>();
+            var arvore = _apiFacade.ListarCategorias() ?? new List<CategoriaArvoreModel>();
 
-            // 2. REGRA CRUCIAL: Se for Edição, a categoria não pode ser pai de si mesma!
-            if (idCategoriaAtual.HasValue)
+            var lista = new List<CategoriaListaViewModel>();
+
+            void AdicionarCategorias(IEnumerable<CategoriaArvoreModel> categorias, int nivel)
             {
-                categorias = categorias.Where(c => c.Id != idCategoriaAtual.Value).ToList();
+                foreach (var categoria in categorias)
+                {
+                    lista.Add(new CategoriaListaViewModel
+                    {
+                        Id = categoria.Id,
+                        Nome = categoria.Nome,
+                        Nivel = nivel
+                    });
+
+                    if (categoria.Filhos.Any())
+                    {
+                        AdicionarFilhos(categoria.Filhos, nivel + 1);
+                    }
+                }
             }
 
-            // 3. Formata o nome com espaços em branco especiais (Alt+0160) para o navegador não ignorar o recuo
-            var listaFormatada = categorias.Select(c => new
+            void AdicionarFilhos(IEnumerable<CategoriaModel> filhos, int nivel)
+            {
+                foreach (var filho in filhos)
+                {
+                    lista.Add(new CategoriaListaViewModel
+                    {
+                        Id = filho.Id,
+                        Nome = filho.Nome,
+                        Nivel = nivel
+                    });
+                }
+            }
+
+            AdicionarCategorias(arvore, 0);
+
+            if (idCategoriaAtual.HasValue)
+            {
+                lista = lista.Where(c => c.Id != idCategoriaAtual.Value).ToList();
+            }
+
+            var listaFormatada = lista.Select(c => new
             {
                 Id = c.Id,
-                Nome = c.Nivel > 0 ? $"{new string(' ', c.Nivel * 3)}↳ {c.Nome}" : c.Nome
+                Nome = c.Nivel > 0
+                    ? $"{new string('\u00A0', c.Nivel * 4)}↳ {c.Nome}"
+                    : c.Nome
             }).ToList();
 
-            // 4. Insere a opção manual para Categoria Raiz (sem pai)
-            listaFormatada.Insert(0, new { Id = 0, Nome = "[ Nenhuma - Categoria Raiz ]" });
+            listaFormatada.Insert(0, new
+            {
+                Id = 0,
+                Nome = "[ Nenhuma - Categoria Raiz ]"
+            });
 
-            // 5. Transforma em SelectList e joga na ViewBag que a View está esperando
             ViewBag.ParentIdDropdown = new SelectList(listaFormatada, "Id", "Nome");
         }
+
     }
 }

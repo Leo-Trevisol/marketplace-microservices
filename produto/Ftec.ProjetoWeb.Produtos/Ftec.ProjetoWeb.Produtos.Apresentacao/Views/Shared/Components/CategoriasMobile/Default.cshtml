@@ -1,0 +1,21 @@
+﻿@model List<CategoriaArvoreModel>
+
+@foreach (var categoria in Model)
+{
+    <a class="list-group-item list-group-item-action bg-transparent text-white border-0 fw-semibold"
+       asp-controller="Produto"
+       asp-action="Index"
+       asp-route-categoriaId="@categoria.Id">
+        @categoria.Nome
+    </a>
+
+    @foreach (var filho in categoria.Filhos)
+    {
+        <a class="list-group-item list-group-item-action bg-transparent text-white border-0 ps-4"
+           asp-controller="Produto"
+           asp-action="Index"
+           asp-route-categoriaId="@filho.Id">
+            ↳ @filho.Nome
+        </a>
+    }
+}

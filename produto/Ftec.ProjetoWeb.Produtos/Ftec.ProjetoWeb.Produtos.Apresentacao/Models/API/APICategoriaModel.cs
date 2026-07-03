@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API
 {
@@ -18,6 +19,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API
         public string Descricao { get; set; }
 
         // Na tabela está como INT4 NULL (pode ser nulo se for uma categoria raiz)
+        [JsonPropertyName("parent_id")]
         public int? ParentId { get; set; }
     }
 }
