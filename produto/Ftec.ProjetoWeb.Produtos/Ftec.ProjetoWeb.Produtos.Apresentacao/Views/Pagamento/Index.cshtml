@@ -25,6 +25,7 @@
 
         <input asp-for="ProdutoPreco" type="hidden" />
         <input asp-for="PedidoId" type="hidden" />
+        <input asp-for="ValorFrete" type="hidden" />
 
         <div class="pagamento-grid">
 
@@ -231,10 +232,17 @@
                             <span>Subtotal</span>
                             <span>R$ @produto.preco.ToString("N2")</span>
                         </div>
-                        <div class="resumo-linha">
-                            <span>Frete</span>
-                            <span class="text-success fw-semibold">Grátis</span>
-                        </div>
+                            <div class="resumo-linha">
+                                <span>Frete</span>
+                                @if (Model.ValorFrete > 0)
+                                {
+                                    <span>R$ @Model.ValorFrete.ToString("N2")</span>
+                                }
+                                else
+                                {
+                                    <span class="text-success fw-semibold">Grátis</span>
+                                }
+                            </div>
 
                         <div id="desconto-pix" style="display:none">
                             <div class="resumo-linha text-success">

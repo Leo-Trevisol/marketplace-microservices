@@ -55,5 +55,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
         public APIPedidoModel? Pedido { get; set; }
         public Guid PedidoId { get; set; }
 
+        public decimal ValorFrete { get; set; }
+
+
     }
 }

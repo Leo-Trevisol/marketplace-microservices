@@ -10,6 +10,7 @@
     var formaPagamento = TempData["FormaPagamento"]?.ToString();
     var endereco       = TempData["Endereco"]?.ToString();
     var produtoPrecoRaw = TempData["ProdutoPrecoRaw"]?.ToString();
+    var valorFrete = TempData["ValorFrete"]?.ToString();
 
 
     var formaPagamentoLabel = formaPagamento switch {
@@ -94,7 +95,14 @@
                 </div>
                 <div class="resumo-linha">
                     <span class="text-muted">Frete</span>
-                    <span class="text-success fw-semibold">Grátis</span>
+                    @if (!string.IsNullOrEmpty(valorFrete) && valorFrete != "0,00")
+                    {
+                        <span>R$ @valorFrete</span>
+                    }
+                    else
+                    {
+                        <span class="text-success fw-semibold">Grátis</span>
+                    }
                 </div>
 
                 @if (formaPagamento == "pix")

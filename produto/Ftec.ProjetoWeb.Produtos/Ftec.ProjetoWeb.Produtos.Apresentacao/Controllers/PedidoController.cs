@@ -8,10 +8,15 @@ using System.Security.Claims;
 
 namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 {
-    public class PedidoController : Controller {
+    public class PedidoController : Controller
+    {
         private readonly CarrinhoAPIService _carrinhoService;
         private readonly APIFacade _apiFacade;
-        public PedidoController(IConfiguration config, CarrinhoAPIService carrinhoService) {
+        private readonly IConfiguration _config;
+
+        public PedidoController(IConfiguration config, CarrinhoAPIService carrinhoService)
+        {
+            _config = config;
             _apiFacade = new APIFacade(config);
             _carrinhoService = carrinhoService;
         }
@@ -25,6 +30,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 
             try
             {
+                var cepDestino = "95000-000";
+
                 var pedido = new APIPedidoRegistrarModel
                 {
                     id = Guid.NewGuid(),
@@ -34,14 +41,26 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                         produtoId = Guid.Parse(item.IdProduto.ToString()),
                         quantidade = item.Quantidade,
                     }).ToList(),
-                    cepEnderecoEntrega = "95000-000",
+                    cepEnderecoEntrega = cepDestino,
                     numeroEnderecoEntrega = "00"
                 };
 
                 var idPedidoCriado = _apiFacade.AdicionarPedidoRetornando(pedido);
 
+
                 if (idPedidoCriado.HasValue)
                 {
+                    var cepOrigem = _config["CepOrigemLoja"] ?? "90000-000";
+
+                    Console.WriteLine($"[FRETE] Calculando para pedido: {idPedidoCriado.Value}, origem: {cepOrigem}, destino: {cepDestino}");
+
+                    var frete = _apiFacade.CalcularFrete(idPedidoCriado.Value, cepOrigem, cepDestino);
+
+                    Console.WriteLine($"[FRETE] Resultado: {(frete == null ? "NULL (deu erro)" : $"R$ {frete.valorFrete}")}");
+
+                    TempData["ValorFrete"] = (frete?.valorFrete ?? 0m).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    TempData["FreteId"] = frete?.idFrete.ToString();
+
                     return RedirectToAction("Index", "Pagamento", new { idPedido = idPedidoCriado.Value });
                 }
                 else
