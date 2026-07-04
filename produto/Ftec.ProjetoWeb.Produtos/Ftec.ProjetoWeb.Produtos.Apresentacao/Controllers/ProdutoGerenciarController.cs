@@ -50,7 +50,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 // Faz upload da imagem, caso tenha sido enviada
                 if (imagem != null && imagem.Length > 0)
                 {
-                    Console.WriteLine("CHEGOU AQUI CARAIO");
                     var media = await _apiFacade.UploadImagemAsync(imagem);
 
                     if (media == null)
@@ -59,19 +58,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                         CarregarCategoriasNoDropdown(model.IdCategoria);
                         return View(model);
                     }
-                    Console.WriteLine(media.Id);
                     model.IdImagemPrincipal = media.Id;
                 }
 
-                // PRINT DO MODEL
-                Console.WriteLine("===== MODEL ENVIADO PARA A API =====");
-                Console.WriteLine(JsonSerializer.Serialize(
-                    model,
-                    new JsonSerializerOptions
-                    {
-                        WriteIndented = true
-                    }));
-                Console.WriteLine("====================================");
 
                 var status = _apiFacade.AdicionarProduto(model);
 
@@ -128,13 +117,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 
                     model.IdImagemPrincipal = media.Id;
                 }
-
-                Console.WriteLine("===== MODEL EDITAR ENVIADO =====");
-                Console.WriteLine(JsonSerializer.Serialize(model, new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                }));
-                Console.WriteLine("================================");
 
                 var status = _apiFacade.AlterarProduto(model);
 

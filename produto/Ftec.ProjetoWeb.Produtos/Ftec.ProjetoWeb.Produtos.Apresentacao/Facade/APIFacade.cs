@@ -45,10 +45,12 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                                 item.ImagemPrincipal = mediaResponse.Data;
 
                             }
-                            //if (item.IdCategoria.HasValue) {
-                            //    this.obtemBaseUrl(_config, TipoServico.Categoria);
-                            //    item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
-                            //}
+                            if (item.IdCategoria.HasValue)
+                            {
+                                this.obtemBaseUrl(_config, TipoServico.Categoria);
+                                var categoriaResponse = Get<APIResponseModel<CategoriaModel>>($"api/Categoria/obterPorId/{item.IdCategoria.Value}");
+                                item.Categoria = categoriaResponse.Data;
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -91,10 +93,12 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                                 item.ImagemPrincipal = mediaResponse.Data;
 
                             }
-                            //if (item.IdCategoria.HasValue) {
-                            //    this.obtemBaseUrl(_config, TipoServico.Categoria);
-                            //    item.Categoria = Get<CategoriaModel>($"api/Categoria/{item.IdCategoria.Value}");
-                            //}
+                            if (item.IdCategoria.HasValue)
+                            {
+                                this.obtemBaseUrl(_config, TipoServico.Categoria);
+                                var categoriaResponse = Get<APIResponseModel<CategoriaModel>>($"api/Categoria/listar/{item.IdCategoria.Value}");
+                                item.Categoria = categoriaResponse.Data;
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -132,10 +136,12 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                     produto.ImagemPrincipal = mediaResponse.Data;
 
                 }
-                //if (produto.IdCategoria.HasValue) {
-                //    this.obtemBaseUrl(_config, TipoServico.Categoria);
-                //    produto.Categoria = Get<CategoriaModel>($"api/Categoria/{produto.IdCategoria.Value}");
-                //}
+                if (produto.IdCategoria.HasValue)
+                {
+                    this.obtemBaseUrl(_config, TipoServico.Categoria);
+                    var categoriaResponse = Get<APIResponseModel<CategoriaModel>>($"api/Categoria/obterPorId/{produto.IdCategoria.Value}");
+                    produto.Categoria = categoriaResponse.Data;
+                }
                 if (!string.IsNullOrEmpty(produto.Id.ToString()))
                 {
                     this.obtemBaseUrl(_config, TipoServico.Avaliacao);
@@ -151,13 +157,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             var response = Get<APIResponseModel<APIProdutoModel>>($"api/Produto/obtemPorId/{id}");
 
             var produto = response != null && response.Sucesso && response?.Data != null ? response.Data : new APIProdutoModel();
-            if (produto != null)
-            {
-                //if (produto.IdCategoria.HasValue) {
-                //    this.obtemBaseUrl(_config, TipoServico.Categoria);
-                //    produto.Categoria = Get<CategoriaModel>($"api/Categoria/{produto.IdCategoria.Value}");
-                //}
-            }
+
 
             return produto;
         }
@@ -465,27 +465,32 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Estatísticas
-        public List<APIEstatisticaDiariaModel> ObtemPainelDiario() {
+        public List<APIEstatisticaDiariaModel> ObtemPainelDiario()
+        {
             this.obtemBaseUrl(_config, TipoServico.Estatisticas);
             var painel = Get<List<APIEstatisticaDiariaModel>>($"api/Estatistica/painel-hoje");
             return painel;
         }
-        public APIEstatisticaVendaGeral ObtemTotalVendas() {
+        public APIEstatisticaVendaGeral ObtemTotalVendas()
+        {
             this.obtemBaseUrl(_config, TipoServico.Estatisticas);
             var totalVenda = Get<APIEstatisticaVendaGeral>($"api/Estatistica/total-vendas");
             return totalVenda;
         }
-        public APIEstatisticaAvaliacao ObtemMediaAvaliacao() {
+        public APIEstatisticaAvaliacao ObtemMediaAvaliacao()
+        {
             this.obtemBaseUrl(_config, TipoServico.Estatisticas);
             var avaliacao = Get<APIEstatisticaAvaliacao>($"api/Estatistica/media-avaliacao-produto");
             return avaliacao;
         }
-        public APIEstatisticaVendaProduto ObtemVendaProduto() {
+        public APIEstatisticaVendaProduto ObtemVendaProduto()
+        {
             this.obtemBaseUrl(_config, TipoServico.Estatisticas);
             var vendaP = Get<APIEstatisticaVendaProduto>($"api/Estatistica/media-venda-produto");
             return vendaP;
         }
-        public APIEstatisticaVendaCliente ObtemVendaCliente() {
+        public APIEstatisticaVendaCliente ObtemVendaCliente()
+        {
             this.obtemBaseUrl(_config, TipoServico.Estatisticas);
             var vendaC = Get<APIEstatisticaVendaCliente>($"api/Estatistica/media-vendas-cliente");
             return vendaC;

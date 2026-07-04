@@ -20,6 +20,10 @@
              alt="Sem imagem" />
     }
     <h3 class="product-card-title">@Model.Nome</h3>
+    @if (Model.Categoria != null)
+    {
+        <h5 class="product-card-category">@Model.Categoria.Nome</h5>
+    }
     <div class="d-flex align-items-center justify-content-between">
         <p class="product-card-price">R$ @Model.Preco.ToString("N2")</p>
         <button class="product-card-cart-icon">
