@@ -164,8 +164,12 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
 
         public bool AdicionarProduto(APIProdutoModel produto)
         {
+            Console.WriteLine(produto.Nome);
             this.obtemBaseUrl(_config, TipoServico.Produto); // garante que _baseUrl está setada
             var status = Post("api/Produto/cadastrarProduto", produto);
+
+            Console.WriteLine(status);
+
             return status;
         }
 
@@ -182,6 +186,55 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             var status = Delete($"api/Produto/excluirProduto/{id}");
             return status;
         }
+        #endregion
+
+        #region Media
+
+        public async Task<MediaUploadModel?> UploadImagemAsync(IFormFile arquivo)
+        {
+            obtemBaseUrl(_config, TipoServico.Produto);
+
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri(_baseUrl);
+
+            using var form = new MultipartFormDataContent();
+
+            using var stream = arquivo.OpenReadStream();
+
+            form.Add(
+                new StreamContent(stream),
+                "arquivo",
+                arquivo.FileName);
+
+            var response = await client.PostAsync("api/media/upload", form);
+
+            // 🔍 1. status code
+            Console.WriteLine("===== UPLOAD RESPONSE STATUS =====");
+            Console.WriteLine(response.StatusCode);
+
+            // 🔍 2. JSON bruto (isso aqui é o mais importante)
+            var json = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine("===== UPLOAD RESPONSE JSON =====");
+            Console.WriteLine(json);
+
+            response.EnsureSuccessStatusCode();
+
+            // 🔍 3. tentativa de desserializar
+            var resultado = System.Text.Json.JsonSerializer.Deserialize<UploadMediaResponse>(
+                json,
+                new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+            Console.WriteLine("===== DATA OBJETO =====");
+            Console.WriteLine($"Id: {resultado?.Data?.Id}");
+            Console.WriteLine($"Caminho: {resultado?.Data?.CaminhoArquivo}");
+
+            return resultado?.Data;
+        }
+
         #endregion
 
         #region Categorias

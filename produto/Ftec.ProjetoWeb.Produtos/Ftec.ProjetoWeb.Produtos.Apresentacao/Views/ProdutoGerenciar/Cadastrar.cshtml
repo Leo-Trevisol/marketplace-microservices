@@ -11,7 +11,8 @@
             <h2 class="cadastro-produto-title">Cadastrar Produto</h2>
             <p class="text-muted mb-0">Preencha as informações do novo produto</p>
         </div>
-        <a asp-controller="Produto" asp-action="Index"
+        <a asp-controller="Produto"
+           asp-action="Index"
            class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-2"></i>Ver produtos
         </a>
@@ -25,7 +26,10 @@
         </div>
     }
 
-    <form method="post" asp-controller="ProdutoGerenciar" asp-action="Cadastrar">
+    <form method="post"
+          enctype="multipart/form-data"
+          asp-controller="ProdutoGerenciar"
+          asp-action="Cadastrar">
 
         <div class="cadastro-produto-grid">
 
@@ -35,17 +39,20 @@
                     <h5 class="pagamento-section-title">
                         <i class="bi bi-tag-fill me-2"></i>Identificação
                     </h5>
+
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label">Código <span class="text-danger">*</span></label>
                             <input asp-for="Codigo" class="form-control" placeholder="ex: PROD-001" />
                             <span asp-validation-for="Codigo" class="text-danger small"></span>
                         </div>
+
                         <div class="col-md-8">
                             <label class="form-label">Nome do produto <span class="text-danger">*</span></label>
                             <input asp-for="Nome" class="form-control" placeholder="ex: iPhone 13 128GB" />
                             <span asp-validation-for="Nome" class="text-danger small"></span>
                         </div>
+
                         <div class="col-12">
                             <label class="form-label">Descrição <span class="text-danger">*</span></label>
                             <textarea asp-for="Descricao"
@@ -61,6 +68,7 @@
                     <h5 class="pagamento-section-title">
                         <i class="bi bi-box-seam me-2"></i>Preço e Estoque
                     </h5>
+
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label">Preço (R$) <span class="text-danger">*</span></label>
@@ -73,6 +81,7 @@
                             </div>
                             <span asp-validation-for="Preco" class="text-danger small"></span>
                         </div>
+
                         <div class="col-md-4">
                             <label class="form-label">Qtd. em estoque <span class="text-danger">*</span></label>
                             <input asp-for="QuantidadeEstoque"
@@ -82,6 +91,7 @@
                                    placeholder="0" />
                             <span asp-validation-for="QuantidadeEstoque" class="text-danger small"></span>
                         </div>
+
                         <div class="col-md-4">
                             <label class="form-label">Estoque mínimo <span class="text-danger">*</span></label>
                             <input asp-for="EstoqueMinimoVenda"
@@ -98,26 +108,16 @@
                     <h5 class="pagamento-section-title">
                         <i class="bi bi-grid me-2"></i>Categoria
                     </h5>
+
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Categoria <span class="text-danger">*</span></label>
-                            <select asp-for="IdCategoria" class="form-select">
-                                <option value="">Selecione uma categoria</option>
-                               @* @foreach (var cat in ViewBag.Categorias as List<CategoriaModel>)
-                                {
-                                    <option value="@cat.Id">@cat.Nome</option>
-                                }*@
-                                <option value="1">Eletrônicos</option>
-                                <option value="2">Informática</option>
-                                <option value="3">Casa e Decoração</option>
-                                <option value="4">Moda</option>
-                                <option value="5">Beleza</option>
-                                <option value="6">Esportes</option>
-                                <option value="7">Livros</option>
-                                <option value="8">Games</option>
-                                <option value="9">Automotivo</option>
-                                <option value="10">Ferramentas</option>
+
+                            <select asp-for="IdCategoria"
+                                    class="form-select"
+                                    asp-items="ViewBag.ParentIdDropdown">
                             </select>
+
                             <span asp-validation-for="IdCategoria" class="text-danger small"></span>
                         </div>
                     </div>
@@ -137,6 +137,7 @@
                             <p class="fw-semibold mb-0">Disponível para venda</p>
                             <p class="text-muted small mb-0">Produto visível na loja</p>
                         </div>
+
                         <div class="form-check form-switch">
                             <input asp-for="Disponivel"
                                    class="form-check-input cadastro-toggle"
@@ -152,6 +153,7 @@
                             <p class="fw-semibold mb-0">Produto em destaque</p>
                             <p class="text-muted small mb-0">Aparece na seção de destaques</p>
                         </div>
+
                         <div class="form-check form-switch">
                             <input asp-for="Destaque"
                                    class="form-check-input cadastro-toggle"
@@ -162,31 +164,22 @@
                 </div>
 
                 <div class="mt-3">
+
                     <label class="form-label small text-muted">Selecionar imagem</label>
+
                     <input type="file"
-                           id="input-imagem-arquivo"
+                           name="imagem"
                            class="form-control form-control-sm"
                            accept="image/*" />
 
-                    <label class="form-label small text-muted mt-2">URL da imagem</label>
-                    <input type="text"
-                           id="input-imagem-url"
-                           class="form-control form-control-sm"
-                           placeholder="https://..."
-                           readonly />
-
-                    <!-- Vinculado ao model, é o que vai no submit -->
-                    <input type="hidden" asp-for="IdImagemPrincipal" id="input-imagem-id" />
-
-                    <div class="spinner-border spinner-border-sm text-primary d-none mt-2" id="upload-spinner" role="status"></div>
-                    <p class="text-danger small mt-1 mb-0 d-none" id="upload-erro"></p>
                 </div>
 
-                <button type="submit" class="btn-buy bg-markett-blue w-100 mt-2">
+                <button type="submit" class="btn-buy bg-markett-blue w-100 mt-4">
                     <i class="bi bi-check-circle me-2"></i>Cadastrar Produto
                 </button>
 
-                <a asp-controller="Produto" asp-action="Index"
+                <a asp-controller="Produto"
+                   asp-action="Index"
                    class="btn btn-outline-secondary w-100 mt-2">
                     Cancelar
                 </a>
@@ -200,54 +193,7 @@
 </div>
 
 @section Scripts {
-    <script>
-        // Preview da imagem por URL
-        document.getElementById('input-imagem-arquivo').addEventListener('change', async function (e) {
-            const arquivo = e.target.files[0];
-            if (!arquivo) return;
-
-            const spinner = document.getElementById('upload-spinner');
-            const erroEl = document.getElementById('upload-erro');
-            erroEl.classList.add('d-none');
-            spinner.classList.remove('d-none');
-
-            const formData = new FormData();
-            formData.append('arquivo', arquivo);
-
-            try {
-                const response = await fetch('http://produto.neurosky.com.br/api/media/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const resultado = await response.json();
-
-                if (!response.ok || !resultado.sucesso) {
-                    throw new Error(resultado.message || 'Falha no upload');
-                }
-
-                // Só o Id importa pro model
-                document.getElementById('input-imagem-id').value = resultado.data.id;
-
-                // URL é só pra exibição/preview, não é enviada no submit
-                document.getElementById('input-imagem-url').value = resultado.data.caminhoArquivo;
-
-                // Atualiza preview
-                const container = document.getElementById('preview-container');
-                container.innerHTML = `
-                    <img src="${resultado.data.caminhoArquivo}"
-                            alt="Preview"
-                            class="cadastro-imagem-preview-img" />
-                `;
-
-                mostrarToast('Upload realizado com sucesso!', 'success');
-            } catch (err) {
-                erroEl.textContent = err.message;
-                erroEl.classList.remove('d-none');
-                mostrarToast('Erro ao enviar imagem: ' + err.message, 'danger');
-            } finally {
-                spinner.classList.add('d-none');
-            }
-        });
-    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

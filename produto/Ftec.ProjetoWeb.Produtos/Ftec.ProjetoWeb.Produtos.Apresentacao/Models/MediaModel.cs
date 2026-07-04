@@ -4,11 +4,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
 {
     public class MediaModel
     {
-
-        public MediaModel()
-        {
-
-        }
+        public Guid Id { get; set; }
 
         public string NomeArquivo { get; set; }
         public string NomeUnico { get; set; }
@@ -16,6 +12,5 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
         public TipoArquivo TipoArquivo { get; set; }
         public string Extensao { get; set; }
         public DateTime DataUpload { get; set; }
-
     }
 }

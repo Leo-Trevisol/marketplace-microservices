@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient<AuthApiService>();
 builder.Services.AddSession();
 
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 var jwtConfig = builder.Configuration.GetSection("Jwt");
@@ -28,13 +29,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddSession(options => {
+builder.Services.AddSession(options =>
+{
     options.IdleTimeout = TimeSpan.FromMinutes(60);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<CarrinhoAPIService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,6 +48,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 
+
 app.UseRouting();
 
 app.UseSession();
@@ -51,6 +56,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
 
 app.MapControllerRoute(
     name: "default",

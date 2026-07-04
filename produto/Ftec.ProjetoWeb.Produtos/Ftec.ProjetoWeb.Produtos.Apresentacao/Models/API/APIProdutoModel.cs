@@ -4,7 +4,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API
 {
     public class APIProdutoModel
     {
-        public APIProdutoModel() {
+        public APIProdutoModel()
+        {
 
         }
         public Guid Id { get; set; }
@@ -35,5 +36,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API
 
         public bool Disponivel { get; set; }
         public bool Destaque { get; set; }
+
     }
 }
