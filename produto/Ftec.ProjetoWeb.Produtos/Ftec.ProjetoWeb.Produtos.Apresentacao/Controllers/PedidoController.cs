@@ -93,5 +93,88 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 return Content($"ERRO: {ex.Message}");
             }
         }
+
+        public IActionResult MeusPedidos()
+        {
+            var usuarioIdStr = HttpContext.Session.GetString("UsuarioId");
+
+            if (string.IsNullOrEmpty(usuarioIdStr) || !Guid.TryParse(usuarioIdStr, out var usuarioId))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var pedidosApi = _apiFacade.ListarPedidosPorUsuario(usuarioId);
+
+            var pedidos = pedidosApi.Select(MapearPedidoModel).ToList();
+
+            return View(pedidos);
+        }
+
+        public IActionResult Detalhe(string numero)
+        {
+            if (!Guid.TryParse(numero, out var pedidoId))
+                return NotFound();
+
+            var response = _apiFacade.ObterPedidoPorId(pedidoId);
+
+            if (response == null || !response.Sucesso || response.Data == null)
+                return NotFound();
+
+            var pedido = MapearPedidoModel(response.Data);
+
+            return View(pedido);
+        }
+
+        private PedidoModel MapearPedidoModel(APIPedidoModel apiPedido)
+        {
+            var itens = apiPedido.produtosModel.Select(item =>
+            {
+                var produto = _apiFacade.ObterProduto(item.produtoId.ToString());
+
+                return new PedidoItemModel
+                {
+                    ProdutoCodigo = 0,
+                    ProdutoNome = produto?.Nome ?? "Produto não encontrado",
+                    PrecoUnitario = item.preco,
+                    Quantidade = item.quantidade,
+                    Subtotal = item.preco * item.quantidade
+                };
+            }).ToList();
+
+            var frete = _apiFacade.ObterFretePorPedido(apiPedido.id);
+
+            var model = new PedidoModel
+            {
+                NumeroPedido = apiPedido.id.ToString(),
+                DataPedido = apiPedido.dataPedido,
+                Status = MapearStatusPedido(apiPedido.statusPedido), 
+                TotalPago = apiPedido.valorTotal,
+                Itens = itens,
+
+                Cep = frete?.cepDestino ?? apiPedido.cepEnderecoEntrega,
+                Numero = frete?.numero ?? apiPedido.numeroEnderecoEntrega,
+                Endereco = frete?.logradouro ?? "",
+                Complemento = frete?.complemento ?? "",
+                Bairro = frete?.bairro ?? "",
+                Cidade = frete?.cidade ?? "",
+                Estado = frete?.estado ?? "",
+
+                FormaPagamento = "credito",
+
+                NomeCompleto = HttpContext.Session.GetString("Nome") ?? "",
+            };
+
+            return model;
+        }
+
+        private string MapearStatusPedido(int status) => status switch
+        {
+            0 => "Aguardando pagamento",
+            1 => "Pago",
+            2 => "Enviado",
+            3 => "Entregue",
+            4 => "Cancelado",
+            _ => "Desconhecido"
+        };
     }
-}
+    }

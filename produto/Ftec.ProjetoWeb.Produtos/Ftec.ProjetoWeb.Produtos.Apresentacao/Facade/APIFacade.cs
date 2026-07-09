@@ -357,6 +357,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Pedidos
+        #region Pedidos
         public bool AdicionarPedido(APIPedidoRegistrarModel modelo)
         {
             if (modelo != null)
@@ -376,6 +377,25 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             var pedido = Get<APIResponseModel<APIPedidoModel>>($"api/Pedido/{Id}");
             return pedido;
         }
+
+        public List<APIPedidoModel> ListarPedidosPorUsuario(Guid usuarioId)
+        {
+            this.obtemBaseUrl(_config, TipoServico.PedidosCarrinho);
+            try
+            {
+                var response = Get<APIResponseModel<List<APIPedidoModel>>>($"api/Pedido/usuario/{usuarioId}");
+                return response != null && response.Sucesso && response.Data != null
+                    ? response.Data
+                    : new List<APIPedidoModel>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[PEDIDO] ERRO ao listar por usuário: {ex.Message}");
+                return new List<APIPedidoModel>();
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Métodos privados de comunicação HTTP
