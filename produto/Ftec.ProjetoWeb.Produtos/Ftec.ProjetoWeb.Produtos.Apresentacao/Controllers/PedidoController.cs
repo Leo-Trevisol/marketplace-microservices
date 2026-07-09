@@ -20,18 +20,23 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             _apiFacade = new APIFacade(config);
             _carrinhoService = carrinhoService;
         }
+
         [HttpPost]
-        public IActionResult RegistrarPedido(Guid usuarioId)
+        public IActionResult RegistrarPedido(Guid usuarioId, string cepEntrega, string numeroEntrega)
         {
             var carrinho = _carrinhoService.ObterCarrinho();
 
             if (!carrinho.Any())
                 return RedirectToAction("Index", "Carrinho");
 
+            if (string.IsNullOrWhiteSpace(cepEntrega) || string.IsNullOrWhiteSpace(numeroEntrega))
+            {
+                TempData["Erro"] = "Informe o CEP e o número de entrega para continuar.";
+                return RedirectToAction("Index", "Carrinho");
+            }
+
             try
             {
-                var cepDestino = "95000-000";
-
                 var pedido = new APIPedidoRegistrarModel
                 {
                     id = Guid.NewGuid(),
@@ -41,32 +46,47 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                         produtoId = Guid.Parse(item.IdProduto.ToString()),
                         quantidade = item.Quantidade,
                     }).ToList(),
-                    cepEnderecoEntrega = cepDestino,
-                    numeroEnderecoEntrega = "00"
+                    cepEnderecoEntrega = cepEntrega,
+                    numeroEnderecoEntrega = numeroEntrega
                 };
 
                 var idPedidoCriado = _apiFacade.AdicionarPedidoRetornando(pedido);
 
-
-                if (idPedidoCriado.HasValue)
+                if (!idPedidoCriado.HasValue)
                 {
-                    var cepOrigem = _config["CepOrigemLoja"] ?? "90000-000";
-
-                    Console.WriteLine($"[FRETE] Calculando para pedido: {idPedidoCriado.Value}, origem: {cepOrigem}, destino: {cepDestino}");
-
-                    var frete = _apiFacade.CalcularFrete(idPedidoCriado.Value, cepOrigem, cepDestino);
-
-                    Console.WriteLine($"[FRETE] Resultado: {(frete == null ? "NULL (deu erro)" : $"R$ {frete.valorFrete}")}");
-
-                    TempData["ValorFrete"] = (frete?.valorFrete ?? 0m).ToString(System.Globalization.CultureInfo.InvariantCulture);
-                    TempData["FreteId"] = frete?.idFrete.ToString();
-
-                    return RedirectToAction("Index", "Pagamento", new { idPedido = idPedidoCriado.Value });
-                }
-                else
-                {
+                    TempData["Erro"] = "Não foi possível registrar o pedido. Tente novamente.";
                     return RedirectToAction("Index", "Carrinho");
                 }
+
+                var cepOrigem = _config["CepOrigemLoja"] ?? "90000-000";
+
+                var transportadoraId = _apiFacade.ObterTransportadoraPadrao();
+
+                if (!transportadoraId.HasValue)
+                {
+                    TempData["Erro"] = "Nenhuma transportadora disponível no momento.";
+                    return RedirectToAction("Index", "Carrinho");
+                }
+
+                var enderecoEntregaId = Guid.NewGuid();
+
+                Console.WriteLine($"[FRETE] Calculando para pedido: {idPedidoCriado.Value}, origem: {cepOrigem}, destino: {cepEntrega}, transportadora: {transportadoraId}, endereco: {enderecoEntregaId}");
+
+                var frete = _apiFacade.CalcularFrete(idPedidoCriado.Value, cepOrigem, cepEntrega, transportadoraId.Value, enderecoEntregaId);
+
+                if (frete == null)
+                {
+                    Console.WriteLine("[FRETE] Resultado: NULL (deu erro)");
+                    TempData["Erro"] = "Não foi possível calcular o frete para este endereço. Tente novamente.";
+                    return RedirectToAction("Index", "Carrinho");
+                }
+
+                Console.WriteLine($"[FRETE] Resultado: R$ {frete.valorFrete}");
+
+                TempData["ValorFrete"] = frete.valorFrete.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                TempData["FreteId"] = frete.idFrete.ToString();
+
+                return RedirectToAction("Index", "Pagamento", new { idPedido = idPedidoCriado.Value });
             }
             catch (Exception ex)
             {
@@ -74,127 +94,87 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             }
         }
 
-        //[HttpGet]
-        //public IActionResult MeusPedidos()
-        //{
-        //    // ─────────────────────────────────────────────────────────
-        //    // var usuarioId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    // var pedidos = await _pedidoService.ListarPorUsuario(usuarioId);
-        //    // return View(pedidos);
-        //    // ─────────────────────────────────────────────────────────
+        public IActionResult MeusPedidos()
+        {
+            var usuarioIdStr = HttpContext.Session.GetString("UsuarioId");
 
-        //    var pedidos = ObterPedidosFixos();
-        //    return View(pedidos);
-        //}
+            if (string.IsNullOrEmpty(usuarioIdStr) || !Guid.TryParse(usuarioIdStr, out var usuarioId))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
 
-        //[HttpGet]
-        //public IActionResult Detalhe(Guid numero)
-        //{
+            var pedidosApi = _apiFacade.ListarPedidosPorUsuario(usuarioId);
 
-        //    var pedido = _apiFacade.ObterPedidoPorId(numero);
+            var pedidos = pedidosApi.Select(MapearPedidoModel).ToList();
 
-        //    if (pedido == null && pedido.Sucesso)
-        //        return RedirectToAction(nameof(MeusPedidos));
+            return View(pedidos);
+        }
 
-        //    return View(pedido);
-        //}
+        public IActionResult Detalhe(string numero)
+        {
+            if (!Guid.TryParse(numero, out var pedidoId))
+                return NotFound();
 
+            var response = _apiFacade.ObterPedidoPorId(pedidoId);
 
-        //    private static List<PedidoModel> ObterPedidosFixos()
-        //    {
-        //        return new List<PedidoModel>
-        //{
-        //    new PedidoModel
-        //    {
-        //        Id            = 1,
-        //        NumeroPedido  = "123456789",
-        //        DataPedido    = DateTime.Now.AddDays(-2),
-        //        Status        = "Pago",
-        //        NomeCompleto  = "João Silva",
-        //        Email         = "joao@email.com",
-        //        Telefone      = "(11) 99999-0001",
-        //        Endereco      = "Rua das Flores",
-        //        Numero        = "100",
-        //        Complemento   = "Apto 12",
-        //        Bairro        = "Centro",
-        //        Cidade        = "São Paulo",
-        //        Estado        = "SP",
-        //        Cep           = "01000-000",
-        //        FormaPagamento = "pix",
-        //        TotalPago     = 3599.10m,
-        //        Itens = new List<PedidoItemModel>
-        //        {
-        //            new PedidoItemModel
-        //            {
-        //                ProdutoCodigo = 1,
-        //                ProdutoNome   = "iPhone 13 128GB Meia-Noite",
-        //                PrecoUnitario = 3999.00m,
-        //                Quantidade    = 1,
-        //                Subtotal      = 3599.10m
-        //            }
-        //        }
-        //    },
-        //    new PedidoModel
-        //    {
-        //        Id            = 2,
-        //        NumeroPedido  = "987654321",
-        //        DataPedido    = DateTime.Now.AddDays(-10),
-        //        Status        = "Entregue",
-        //        NomeCompleto  = "João Silva",
-        //        Email         = "joao@email.com",
-        //        Telefone      = "(11) 99999-0001",
-        //        Endereco      = "Rua das Flores",
-        //        Numero        = "100",
-        //        Complemento   = "",
-        //        Bairro        = "Centro",
-        //        Cidade        = "São Paulo",
-        //        Estado        = "SP",
-        //        Cep           = "01000-000",
-        //        FormaPagamento = "credito",
-        //        TotalPago     = 9999.00m,
-        //        Itens = new List<PedidoItemModel>
-        //        {
-        //            new PedidoItemModel
-        //            {
-        //                ProdutoCodigo = 2,
-        //                ProdutoNome   = "MacBook Pro M3",
-        //                PrecoUnitario = 9999.00m,
-        //                Quantidade    = 1,
-        //                Subtotal      = 9999.00m
-        //            }
-        //        }
-        //    },
-        //    new PedidoModel
-        //    {
-        //        Id            = 3,
-        //        NumeroPedido  = "456789123",
-        //        DataPedido    = DateTime.Now.AddDays(-1),
-        //        Status        = "Aguardando pagamento",
-        //        NomeCompleto  = "João Silva",
-        //        Email         = "joao@email.com",
-        //        Telefone      = "(11) 99999-0001",
-        //        Endereco      = "Rua das Flores",
-        //        Numero        = "100",
-        //        Complemento   = "",
-        //        Bairro        = "Centro",
-        //        Cidade        = "São Paulo",
-        //        Estado        = "SP",
-        //        Cep           = "01000-000",
-        //        FormaPagamento = "boleto",
-        //        TotalPago     = 299.90m,
-        //        Itens = new List<PedidoItemModel>
-        //        {
-        //            new PedidoItemModel
-        //            {
-        //                ProdutoCodigo = 3,
-        //                ProdutoNome   = "Teclado Mecânico Redragon",
-        //                PrecoUnitario = 299.90m,
-        //                Quantidade    = 1,
-        //                Subtotal      = 299.90m
-        //            }
-        //        }
-        //    }
-        //};
-        //}
+            if (response == null || !response.Sucesso || response.Data == null)
+                return NotFound();
+
+            var pedido = MapearPedidoModel(response.Data);
+
+            return View(pedido);
+        }
+
+        private PedidoModel MapearPedidoModel(APIPedidoModel apiPedido)
+        {
+            var itens = apiPedido.produtosModel.Select(item =>
+            {
+                var produto = _apiFacade.ObterProduto(item.produtoId.ToString());
+
+                return new PedidoItemModel
+                {
+                    ProdutoCodigo = 0,
+                    ProdutoNome = produto?.Nome ?? "Produto não encontrado",
+                    PrecoUnitario = item.preco,
+                    Quantidade = item.quantidade,
+                    Subtotal = item.preco * item.quantidade
+                };
+            }).ToList();
+
+            var frete = _apiFacade.ObterFretePorPedido(apiPedido.id);
+
+            var model = new PedidoModel
+            {
+                NumeroPedido = apiPedido.id.ToString(),
+                DataPedido = apiPedido.dataPedido,
+                Status = MapearStatusPedido(apiPedido.statusPedido), 
+                TotalPago = apiPedido.valorTotal,
+                Itens = itens,
+
+                Cep = frete?.cepDestino ?? apiPedido.cepEnderecoEntrega,
+                Numero = frete?.numero ?? apiPedido.numeroEnderecoEntrega,
+                Endereco = frete?.logradouro ?? "",
+                Complemento = frete?.complemento ?? "",
+                Bairro = frete?.bairro ?? "",
+                Cidade = frete?.cidade ?? "",
+                Estado = frete?.estado ?? "",
+
+                FormaPagamento = "credito",
+
+                NomeCompleto = HttpContext.Session.GetString("Nome") ?? "",
+            };
+
+            return model;
+        }
+
+        private string MapearStatusPedido(int status) => status switch
+        {
+            0 => "Aguardando pagamento",
+            1 => "Pago",
+            2 => "Enviado",
+            3 => "Entregue",
+            4 => "Cancelado",
+            _ => "Desconhecido"
+        };
     }
-}
+    }

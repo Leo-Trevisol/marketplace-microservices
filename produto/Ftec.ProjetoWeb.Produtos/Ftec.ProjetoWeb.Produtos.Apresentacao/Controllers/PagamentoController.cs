@@ -1,9 +1,9 @@
-﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Facade;
+﻿// PagamentoController.cs
+using Ftec.ProjetoWeb.Produtos.Apresentacao.Facade;
 using Ftec.ProjetoWeb.Produtos.Apresentacao.Models;
 using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API;
 using Ftec.ProjetoWeb.Produtos.Apresentacao.Services;
 using Microsoft.AspNetCore.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 {
@@ -11,10 +11,12 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
     {
         private readonly CarrinhoAPIService _carrinhoService;
         private readonly APIFacade _apiFacade;
-        public PagamentoController(IConfiguration config, CarrinhoAPIService carrinhoService) {
+        public PagamentoController(IConfiguration config, CarrinhoAPIService carrinhoService)
+        {
             _apiFacade = new APIFacade(config);
             _carrinhoService = carrinhoService;
         }
+
         [HttpGet]
         public IActionResult Index(Guid idPedido)
         {
@@ -28,10 +30,13 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 System.Globalization.CultureInfo.InvariantCulture,
                 out var valorFrete);
 
+            Guid.TryParse(TempData.Peek("FreteId")?.ToString(), out var freteId);
+
             var model = new PagamentoModel
             {
                 PedidoId = idPedido,
                 ValorFrete = valorFrete,
+                FreteId = freteId,
                 Pedido = new APIPedidoModel
                 {
                     id = idPedido,
@@ -56,20 +61,17 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 
             var carrinho = _carrinhoService.ObterCarrinho();
             var subtotal = carrinho.Sum(x => x.Preco * x.Quantidade);
-            var valorFrete = model.ValorFrete;
 
             var metodoPagamento = model.FormaPagamento switch
             {
-                "credito" => 0,
-                "pix" => 1,
-                "boleto" => 2,
-                _ => 0
+                "credito" => 1, // CartaoCredito
+                "pix" => 3,     // Pix
+                "boleto" => 4,  // Boleto
+                _ => 1
             };
 
-            var totalComFrete = subtotal + valorFrete;
-            var total = model.FormaPagamento == "pix"
-                ? totalComFrete * 0.9m
-                : totalComFrete;
+            decimal total = 0;
+            decimal valorFrete = model.ValorFrete; // fallback, caso a chamada falhe
 
             try
             {
@@ -77,7 +79,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 {
                     pedidoId = model.PedidoId,
                     cpfCliente = model.Cpf.Replace(".", "").Replace("-", ""),
-                    valorTotal = total,
+                    valorProdutos = subtotal,
                     metodoPagamento = metodoPagamento
                 };
 
@@ -85,8 +87,19 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 
                 if (pagamentoCriado != null && pagamentoCriado.pagamentoId != Guid.Empty)
                 {
+                    valorFrete = pagamentoCriado.valorFrete; // valor real vindo da API
+
+                    total = model.FormaPagamento == "pix"
+                        ? pagamentoCriado.valorTotal * 0.9m
+                        : pagamentoCriado.valorTotal;
+
                     var transacao = _apiFacade.ProcessarTransacao(pagamentoCriado.pagamentoId, total);
                     TempData["StatusTransacao"] = transacao?.retornoGateway ?? "Pendente";
+
+                    if (transacao != null && transacao.statusTransacao && model.FreteId != Guid.Empty)
+                    {
+                        _apiFacade.ConfirmarFrete(model.FreteId);
+                    }
                 }
             }
             catch (Exception ex)
@@ -115,8 +128,5 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
 
             return View();
         }
-
-        #region Functions
-        #endregion
     }
 }

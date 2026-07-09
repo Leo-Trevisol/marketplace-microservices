@@ -6,12 +6,18 @@
     var idUsuario = Context.Session.GetString("UsuarioId");
     var estaLogado = !string.IsNullOrEmpty(nomeUsuario);
     var total = Model.Sum(i => i.Preco);
+    var erro = TempData["Erro"]?.ToString();
 }
 
 
 <div class="meus-pedidos-container">
 
     <h2 class="meus-pedidos-title">Meu Carrinho</h2>
+
+    @if (!string.IsNullOrEmpty(erro))
+    {
+        <div class="alert alert-danger">@erro</div>
+    }
 
     @if (!Model.Any())
     {
@@ -35,11 +41,6 @@
 
                     <div class="pedido-card-body">
                         <div class="pedido-item">
-                            @* <img src="@item.ImagemUrl"
-                                 alt="@item.Nome"
-                                 class="pedido-item-img"
-                                 onerror="this.src='https://via.placeholder.com/80?text=Sem+imagem'" /> *@
-
                             <div class="pedido-item-info">
                                 <p class="text-muted small mb-0">Código: @item.Codigo</p>
                                 <p class="fw-semibold mb-0">@item.Nome</p>
@@ -65,21 +66,34 @@
         </div>
 
         <div class="pedido-card-footer mt-3" style="background:#fff; border-radius:12px; padding:16px;">
-            <div class="fs-5">
+            <div class="fs-5 mb-3">
                 <span class="text-muted">Total:</span>
                 <span class="fw-bold text-success">R$ @total.ToString("N2")</span>
             </div>
-           @if (estaLogado)
-           {
-               <form asp-controller="Pedido" asp-action="RegistrarPedido" method="post">
-                   <input type="hidden" name="usuarioId" value="@idUsuario" />
-                   <button type="submit" class="btn-buy bg-markett-blue">
-                       <i class="bi bi-check-circle me-2"></i>Fechar pedido
-                   </button>
-               </form>
-           }
+
+            @if (estaLogado)
+            {
+                <form asp-controller="Pedido" asp-action="RegistrarPedido" method="post">
+                    <input type="hidden" name="usuarioId" value="@idUsuario" />
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-4">
+                            <label class="form-label small">CEP de entrega</label>
+                            <input type="text" name="cepEntrega" class="form-control" placeholder="00000-000" required maxlength="9" />
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label small">Número</label>
+                            <input type="text" name="numeroEntrega" class="form-control" placeholder="Nº" required />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-buy bg-markett-blue">
+                        <i class="bi bi-check-circle me-2"></i>Fechar pedido
+                    </button>
+                </form>
+            }
             else
-            {                
+            {
                 <form asp-controller="Auth" asp-action="Login" method="get">
                     <button type="submit" class="btn-buy bg-markett-blue">
                         <i class="bi bi-check-circle me-2"></i>Logue para continuar

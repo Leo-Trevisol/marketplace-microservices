@@ -357,6 +357,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Pedidos
+        #region Pedidos
         public bool AdicionarPedido(APIPedidoRegistrarModel modelo)
         {
             if (modelo != null)
@@ -376,6 +377,25 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             var pedido = Get<APIResponseModel<APIPedidoModel>>($"api/Pedido/{Id}");
             return pedido;
         }
+
+        public List<APIPedidoModel> ListarPedidosPorUsuario(Guid usuarioId)
+        {
+            this.obtemBaseUrl(_config, TipoServico.PedidosCarrinho);
+            try
+            {
+                var response = Get<APIResponseModel<List<APIPedidoModel>>>($"api/Pedido/usuario/{usuarioId}");
+                return response != null && response.Sucesso && response.Data != null
+                    ? response.Data
+                    : new List<APIPedidoModel>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[PEDIDO] ERRO ao listar por usuário: {ex.Message}");
+                return new List<APIPedidoModel>();
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Métodos privados de comunicação HTTP
@@ -548,14 +568,14 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         public APIPagamentoModel RegistrarPagamento(APIPagamentoModel modelo)
         {
             if (modelo == null) return null;
-
             this.obtemBaseUrl(_config, TipoServico.Pagamento);
             try
             {
                 return PostComRetorno<APIPagamentoModel, APIPagamentoModel>("api/pagamento", modelo);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"[PAGAMENTO] ERRO: {ex.Message}"); 
                 return null;
             }
         }
@@ -581,25 +601,37 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Frete
-        public APIFreteModel CalcularFrete(Guid pedidoId, string cepOrigem, string cepDestino)
+        public APIFreteModel CalcularFrete(Guid pedidoId, string cepOrigem, string cepDestino,
+            Guid transportadoraId, Guid enderecoEntregaId)
         {
             this.obtemBaseUrl(_config, TipoServico.Pagamento);
-            var request = new APIFreteCalcularModel
+            var request = new
             {
-                pedidoId = pedidoId,
-                cepOrigem = cepOrigem,
-                cepDestino = cepDestino
+                pedidoId,
+                cepOrigem,
+                cepDestino,
+                transportadoraId,
+                enderecoEntregaId
             };
 
             try
             {
-                return PostComRetorno<APIFreteCalcularModel, APIFreteModel>("api/frete/calcular", request);
+                return PostComRetorno<object, APIFreteModel>("api/frete/calcular", request);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[FRETE] ERRO: {ex.Message}");
                 return null;
             }
+        }
+
+        public Guid? ObterTransportadoraPadrao()
+        {
+            var transportadoras = ListarTransportadoras();
+            return transportadoras
+                .Where(t => t.ativo)
+                .OrderBy(t => t.valorBase)
+                .FirstOrDefault()?.transportadoraId;
         }
 
         public APIFreteModel ObterFretePorPedido(Guid pedidoId)
@@ -614,9 +646,150 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 return null;
             }
         }
+
         #endregion
 
+        public bool ConfirmarFrete(Guid freteId)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            try
+            {
+                Console.WriteLine($"[FRETE] Confirmando frete: {freteId}");
+                return Post($"api/frete/{freteId}/confirmar", new { });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FRETE] ERRO ao confirmar: {ex.Message}");
+                return false;
+            }
+        }
 
+        public bool EsnviarFrete(Guid freteId, string codigoRastreio)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            try
+            {
+                Console.WriteLine($"[FRETE] Enviando frete: {freteId}");
+                var request = new APIFreteEnvioModel { codigoRastreio = codigoRastreio };
+                return Post($"api/frete/{freteId}/enviar", request);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FRETE] ERRO ao enviar: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool MarcarFreteEmTransito(Guid freteId)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            try
+            {
+                Console.WriteLine($"[FRETE] Marcando em trânsito: {freteId}");
+                return Post($"api/frete/{freteId}/em-transito", new { });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FRETE] ERRO ao marcar em trânsito: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool MarcarFreteEntregue(Guid freteId)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            try
+            {
+                Console.WriteLine($"[FRETE] Marcando como entregue: {freteId}");
+                return Post($"api/frete/{freteId}/entregar", new { });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FRETE] ERRO ao marcar como entregue: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool CancelarFrete(Guid freteId)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            try
+            {
+                Console.WriteLine($"[FRETE] Cancelando frete: {freteId}");
+                return Delete($"api/frete/{freteId}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FRETE] ERRO ao cancelar: {ex.Message}");
+                return false;
+            }
+        }
+
+
+        #region Transportadora
+
+        public List<APITransportadoraModel> ListarTransportadoras()
+        {
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            try
+            {
+                Console.WriteLine("[TRANSPORTADORA] Listando transportadoras");
+                var result = Get<List<APITransportadoraModel>>("api/transportadora");
+                return result ?? new List<APITransportadoraModel>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[TRANSPORTADORA] ERRO ao listar: {ex.Message}");
+                return new List<APITransportadoraModel>();
+            }
+        }
+
+        public APITransportadoraModel ObterTransportadora(Guid transportadoraId)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            try
+            {
+                Console.WriteLine($"[TRANSPORTADORA] Obtendo transportadora: {transportadoraId}");
+                return Get<APITransportadoraModel>($"api/transportadora/{transportadoraId}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[TRANSPORTADORA] ERRO ao obter: {ex.Message}");
+                return null;
+            }
+        }
+
+        public bool AtivarTransportadora(Guid transportadoraId)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            try
+            {
+                Console.WriteLine($"[TRANSPORTADORA] Ativando transportadora: {transportadoraId}");
+                return Post($"api/transportadora/{transportadoraId}/ativar", new { });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[TRANSPORTADORA] ERRO ao ativar: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool DesativarTransportadora(Guid transportadoraId)
+        {
+            this.obtemBaseUrl(_config, TipoServico.Pagamento);
+            try
+            {
+                Console.WriteLine($"[TRANSPORTADORA] Desativando transportadora: {transportadoraId}");
+                return Post($"api/transportadora/{transportadoraId}/desativar", new { });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[TRANSPORTADORA] ERRO ao desativar: {ex.Message}");
+                return false;
+            }
+        }
+
+        #endregion
         #region Helpers
         public void obtemBaseUrl(IConfiguration config, TipoServico tipo)
         {
