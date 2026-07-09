@@ -26,6 +26,7 @@
         <input asp-for="ProdutoPreco" type="hidden" />
         <input asp-for="PedidoId" type="hidden" />
         <input asp-for="ValorFrete" type="hidden" />
+        <input asp-for="FreteId" type="hidden" />
 
         <div class="pagamento-grid">
 
@@ -212,53 +213,43 @@
                         <i class="bi bi-bag-fill me-2"></i>Resumo do Pedido
                     </h5>
 
-                    @if(Model.Pedido != null && Model.Pedido.produtosModel.Count() > 0)
+                    @if (Model.Pedido != null && Model.Pedido.produtosModel.Count() > 0)
                     {
-                        foreach(var produto in Model.Pedido.produtosModel)
-                        {   
-                            @* <div class="d-flex gap-3 mb-3 align-items-center">
-                                <img src="https://unifique.com.br/upload/blog/2025/02/quem-inventou-celular.jpg"
-                                        alt="@produto.Nome"
-                                        class="resumo-produto-img" />
-                                <div>
-                                    <p class="fw-semibold mb-1">@produto.Nome</p>
-                                    <p class="text-muted small mb-0">Qtd: 1</p>
-                                </div> 
-                            </div>*@
+                        var subtotal = Model.Pedido.produtosModel.Sum(x => x.preco * x.quantidade);
 
                         <hr />
 
                         <div class="resumo-linha">
                             <span>Subtotal</span>
-                            <span>R$ @produto.preco.ToString("N2")</span>
+                            <span>R$ @subtotal.ToString("N2")</span>
                         </div>
-                            <div class="resumo-linha">
-                                <span>Frete</span>
-                                @if (Model.ValorFrete > 0)
-                                {
-                                    <span>R$ @Model.ValorFrete.ToString("N2")</span>
-                                }
-                                else
-                                {
-                                    <span class="text-success fw-semibold">Grátis</span>
-                                }
-                            </div>
+
+                        <div class="resumo-linha">
+                            <span>Frete</span>
+                            @if (Model.ValorFrete > 0)
+                            {
+                                <span>R$ @Model.ValorFrete.ToString("N2")</span>
+                            }
+                            else
+                            {
+                                <span class="text-success fw-semibold">Grátis</span>
+                            }
+                        </div>
 
                         <div id="desconto-pix" style="display:none">
                             <div class="resumo-linha text-success">
                                 <span>Desconto PIX (10%)</span>
-                                <span>- R$ @((produto.preco * 0.1m).ToString("N2"))</span>
+                                <span>- R$ <span id="desconto-valor">0,00</span></span>
                             </div>
                         </div>
-                        }
+
                         <hr />
 
                         <div class="resumo-linha fw-bold fs-5">
                             <span>Total</span>
-                            <span id="total-final" class="text-success">R$ @(Model.Pedido.produtosModel.Sum(x => x.preco * x.quantidade).ToString("N2"))</span>
+                            <span id="total-final" class="text-success">R$ @((subtotal + Model.ValorFrete).ToString("N2"))</span>
                         </div>
                     }
-
 
                     <button type="submit" class="btn-buy bg-markett-blue mt-4 w-100">
                         <i class="bi bi-lock-fill me-2"></i>Confirmar Pedido
@@ -282,18 +273,28 @@
             : "0");
         const precoComDesconto = (preco * 0.9).toFixed(2);
 
+                const subtotal = @(Model.Pedido != null
+                    ? Model.Pedido.produtosModel.Sum(x => x.preco * x.quantidade).ToString(System.Globalization.CultureInfo.InvariantCulture)
+                    : "0");
+        const valorFrete = @Model.ValorFrete.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        const totalComFrete = subtotal + valorFrete;
+        const totalComFreteEDesconto = (totalComFrete * 0.9).toFixed(2);
+        const descontoPixValor = (totalComFrete * 0.1).toFixed(2);
+
         const radios = document.querySelectorAll('.pagamento-metodo-radio');
         const cards  = document.querySelectorAll('.pagamento-metodo-card');
         const camposCredito = document.getElementById('campos-credito');
         const infoPix    = document.getElementById('info-pix');
         const infoBoleto = document.getElementById('info-boleto');
         const descontoPix = document.getElementById('desconto-pix');
+        const descontoValorEl = document.getElementById('desconto-valor');
         const totalFinal  = document.getElementById('total-final');
         const selectParcelas = document.getElementById('select-parcelas');
 
-        // Preencher select de parcelas
+        // Preencher select de parcelas (parcelamento é só sobre o total com frete)
         for (let i = 1; i <= 12; i++) {
-            const val = (preco / i).toFixed(2).replace('.', ',');
+            const val = (totalComFrete / i).toFixed(2).replace('.', ',');
             const opt = new Option(
                 i === 1 ? `1x de R$ ${val} (sem juros)` : `${i}x de R$ ${val} (sem juros)`,
                 i
@@ -305,25 +306,22 @@
             card.closest('label').addEventListener('click', () => {
                 const metodo = card.dataset.metodo;
 
-                // Ativa visual
                 cards.forEach(c => c.classList.remove('pagamento-metodo-ativo'));
                 card.classList.add('pagamento-metodo-ativo');
 
-                // Seleciona o radio
                 const radio = card.closest('label').querySelector('input[type=radio]');
                 radio.checked = true;
 
-                // Mostra/oculta seções
                 camposCredito.style.setProperty('display', metodo === 'credito' ? 'flex' : 'none', 'important');
                 infoPix.style.display    = metodo === 'pix'    ? 'block' : 'none';
                 infoBoleto.style.display = metodo === 'boleto' ? 'block' : 'none';
                 descontoPix.style.display = metodo === 'pix' ? 'block' : 'none';
 
-                // Atualiza total
                 if (metodo === 'pix') {
-                    totalFinal.textContent = `R$ ${precoComDesconto.replace('.', ',')}`;
+                    descontoValorEl.textContent = descontoPixValor.replace('.', ',');
+                    totalFinal.textContent = `R$ ${totalComFreteEDesconto.replace('.', ',')}`;
                 } else {
-                    totalFinal.textContent = `R$ ${preco.toFixed(2).replace('.', ',')}`;
+                    totalFinal.textContent = `R$ ${totalComFrete.toFixed(2).replace('.', ',')}`;
                 }
             });
         });

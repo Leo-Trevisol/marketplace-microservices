@@ -1,12 +1,13 @@
-﻿using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API;
+﻿// PagamentoModel.cs — só adicionei o FreteId
+using Ftec.ProjetoWeb.Produtos.Apresentacao.Models.API;
 using System.ComponentModel.DataAnnotations;
 
 namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
 {
     public class PagamentoModel
     {
-        public PagamentoModel() {
-        }
+        public PagamentoModel() { }
+
         public int ProdutoCodigo { get; set; }
         public string? ProdutoNome { get; set; }
         public decimal ProdutoPreco { get; set; }
@@ -56,7 +57,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Models
         public Guid PedidoId { get; set; }
 
         public decimal ValorFrete { get; set; }
-
-
+        public Guid FreteId { get; set; } // <-- novo
     }
 }
