@@ -8,7 +8,17 @@
         public Guid enderecoEntregaId { get; set; }
 
         public decimal valorFrete { get; set; }
-        public string statusEntrega { get; set; } = "Pendente";
+        public int statusEntrega { get; set; }
+
+        public string StatusEntregaTexto => statusEntrega switch
+        {
+            0 => "Pendente",
+            1 => "Preparando",
+            2 => "Enviado",
+            3 => "EmTransito",
+            4 => "Entregue",
+            _ => "Desconhecido"
+        };
 
         public string cepDestino { get; set; } = string.Empty;
         public string logradouro { get; set; } = string.Empty;
@@ -31,27 +41,27 @@
         public string EnderecoCompleto =>
             $"{logradouro}, {numero}{(string.IsNullOrEmpty(complemento) ? "" : " - " + complemento)}, {bairro}, {cidade} - {estado}, CEP {cepDestino}";
 
-        public bool EstaPendente => statusEntrega?.ToLower() == "pendente";
-        public bool EstaEmTransito => statusEntrega?.ToLower() == "emtransito";
-        public bool EstaEntregue => statusEntrega?.ToLower() == "entregue";
+        public bool EstaPendente => statusEntrega == 0;
+        public bool EstaEmTransito => statusEntrega == 3;
+        public bool EstaEntregue => statusEntrega == 4;
 
-        public string StatusBadgeClass => statusEntrega?.ToLower() switch
+        public string StatusBadgeClass => statusEntrega switch
         {
-            "pendente" => "bg-warning text-dark",
-            "preparando" => "bg-info text-white",
-            "enviado" => "bg-primary text-white",
-            "emtransito" => "bg-secondary text-white",
-            "entregue" => "bg-success text-white",
+            0 => "bg-warning text-dark",   // Pendente
+            1 => "bg-info text-white",     // Preparando
+            2 => "bg-primary text-white",  // Enviado
+            3 => "bg-secondary text-white",// EmTransito
+            4 => "bg-success text-white",  // Entregue
             _ => "bg-secondary text-white"
         };
 
-        public string StatusIcone => statusEntrega?.ToLower() switch
+        public string StatusIcone => statusEntrega switch
         {
-            "pendente" => "bi-clock",
-            "preparando" => "bi-hourglass-split",
-            "enviado" => "bi-truck",
-            "emtransito" => "bi-arrow-right-circle",
-            "entregue" => "bi-box-seam",
+            0 => "bi-clock",
+            1 => "bi-hourglass-split",
+            2 => "bi-truck",
+            3 => "bi-arrow-right-circle",
+            4 => "bi-box-seam",
             _ => "bi-question-circle"
         };
     }

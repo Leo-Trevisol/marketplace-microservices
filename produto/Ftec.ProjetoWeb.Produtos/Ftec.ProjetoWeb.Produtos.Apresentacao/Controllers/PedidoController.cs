@@ -68,7 +68,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                     return RedirectToAction("Index", "Carrinho");
                 }
 
-                var enderecoEntregaId = Guid.Empty;
+                var enderecoEntregaId = Guid.NewGuid();
 
                 Console.WriteLine($"[FRETE] Calculando para pedido: {idPedidoCriado.Value}, origem: {cepOrigem}, destino: {cepEntrega}, transportadora: {transportadoraId}, endereco: {enderecoEntregaId}");
 
