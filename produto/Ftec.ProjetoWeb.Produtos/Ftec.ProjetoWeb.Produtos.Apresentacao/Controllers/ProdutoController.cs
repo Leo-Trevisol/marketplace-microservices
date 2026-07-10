@@ -17,7 +17,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
         {
             try
             {
-                Console.WriteLine("Texto");
+
                 List<ProdutoModel> produtos;
                 var categorias = _apiFacade.ListarGeralCategorias();
                 ViewBag.Categorias = categorias;
@@ -28,7 +28,8 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 else
                 {
                     produtos = _apiFacade.ListarProdutos();
-                    if (!string.IsNullOrEmpty(idCategoria)) {
+                    if (!string.IsNullOrEmpty(idCategoria))
+                    {
                         long.TryParse(idCategoria, out long categoriaId);
                         if (produtos != null && produtos.Count > 0)
                         {

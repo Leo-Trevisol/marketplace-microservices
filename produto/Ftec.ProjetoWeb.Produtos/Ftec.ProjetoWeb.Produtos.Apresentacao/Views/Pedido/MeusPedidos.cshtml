@@ -1,6 +1,8 @@
 ﻿@model List<Ftec.ProjetoWeb.Produtos.Apresentacao.Models.PedidoModel>
+@inject IConfiguration Configuration
 
 @{
+    var produtoUrl = Configuration["ProdutoBaseUrl"];
     ViewData["Title"] = "Meus Pedidos";
 }
 
@@ -54,7 +56,7 @@
                         {
                             <div class="pedido-item">
                               @*{{trocar src por item.ProdutoImagem}} *@
-                                <img src="https://unifique.com.br/upload/blog/2025/02/quem-inventou-celular.jpg"
+                                <img src="@($"{produtoUrl}arquivos/{(string.IsNullOrWhiteSpace(item.ImagemPrincipal) ? "noImage.png" : item.ImagemPrincipal)}")"
                                      alt="@item.ProdutoNome"
                                      class="pedido-item-img" />
                                 <div class="pedido-item-info">

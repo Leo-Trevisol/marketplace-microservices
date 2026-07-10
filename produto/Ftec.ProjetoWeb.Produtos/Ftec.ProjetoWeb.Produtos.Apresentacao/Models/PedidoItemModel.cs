@@ -7,5 +7,7 @@
         public decimal PrecoUnitario { get; set; }
         public int Quantidade { get; set; }
         public decimal Subtotal { get; set; }
+
+        public string? ImagemPrincipal { get; set; }
     }
 }

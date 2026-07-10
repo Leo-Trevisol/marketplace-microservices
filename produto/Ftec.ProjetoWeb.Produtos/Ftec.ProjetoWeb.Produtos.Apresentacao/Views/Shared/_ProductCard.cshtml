@@ -10,7 +10,7 @@
     @if (Model.ImagemPrincipal != null)
     {
         <img class="product-card-image"
-             src="@($"{produtoUrl}arquivos/{Model.ImagemPrincipal.NomeUnico}")"
+             src="@($"{produtoUrl}arquivos/{(string.IsNullOrWhiteSpace(Model.ImagemPrincipal.NomeUnico) ? "noImage.png" : Model.ImagemPrincipal.NomeUnico)}")"
              alt="@Model.Nome" />
     }
     else

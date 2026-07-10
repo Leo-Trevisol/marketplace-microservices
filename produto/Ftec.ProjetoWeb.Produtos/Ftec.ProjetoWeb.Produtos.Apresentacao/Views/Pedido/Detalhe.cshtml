@@ -1,6 +1,8 @@
 ﻿@model Ftec.ProjetoWeb.Produtos.Apresentacao.Models.PedidoModel
+@inject IConfiguration Configuration
 
 @{
+    var produtoUrl = Configuration["ProdutoBaseUrl"];
     ViewData["Title"] = $"Pedido #{Model.NumeroPedido}";
     var previsao = Model.DataPedido.AddDays(7).ToString("dd/MM/yyyy");
 }
@@ -37,7 +39,7 @@
                 {
                     <div class="d-flex align-items-center gap-3 mb-3">
                         @*{{trocar src por item.ProdutoImagem}} *@
-                        <img src="https://unifique.com.br/upload/blog/2025/02/quem-inventou-celular.jpg"
+                        <img src="@($"{produtoUrl}arquivos/{(string.IsNullOrWhiteSpace(item.ImagemPrincipal) ? "noImage.png" : item.ImagemPrincipal)}")"
                              alt="@item.ProdutoNome"
                              class="confirmacao-produto-img" />
                         <div class="flex-grow-1">

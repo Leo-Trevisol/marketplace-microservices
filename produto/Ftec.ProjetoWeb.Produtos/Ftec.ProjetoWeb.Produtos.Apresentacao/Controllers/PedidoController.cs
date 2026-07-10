@@ -103,6 +103,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
+            // Guid user = new Guid("85072fea-1ca3-4be0-9e37-d3a259bf47db");
+            //var pedidosApi = _apiFacade.ListarPedidosPorUsuario(user);
+
             var pedidosApi = _apiFacade.ListarPedidosPorUsuario(usuarioId);
 
             var pedidos = pedidosApi.Select(MapearPedidoModel).ToList();
@@ -115,12 +118,10 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             if (!Guid.TryParse(numero, out var pedidoId))
                 return NotFound();
 
+
             var response = _apiFacade.ObterPedidoPorId(pedidoId);
 
-            if (response == null || !response.Sucesso || response.Data == null)
-                return NotFound();
-
-            var pedido = MapearPedidoModel(response.Data);
+            var pedido = MapearPedidoModel(response);
 
             return View(pedido);
         }
@@ -131,13 +132,16 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             {
                 var produto = _apiFacade.ObterProduto(item.produtoId.ToString());
 
+
+
                 return new PedidoItemModel
                 {
                     ProdutoCodigo = 0,
                     ProdutoNome = produto?.Nome ?? "Produto não encontrado",
                     PrecoUnitario = item.preco,
                     Quantidade = item.quantidade,
-                    Subtotal = item.preco * item.quantidade
+                    Subtotal = item.preco * item.quantidade,
+                    ImagemPrincipal = produto?.ImagemPrincipal.NomeUnico
                 };
             }).ToList();
 
@@ -147,7 +151,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             {
                 NumeroPedido = apiPedido.id.ToString(),
                 DataPedido = apiPedido.dataPedido,
-                Status = MapearStatusPedido(apiPedido.statusPedido), 
+                Status = MapearStatusPedido(apiPedido.statusPedido),
                 TotalPago = apiPedido.valorTotal,
                 Itens = itens,
 
@@ -177,4 +181,4 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
             _ => "Desconhecido"
         };
     }
-    }
+}

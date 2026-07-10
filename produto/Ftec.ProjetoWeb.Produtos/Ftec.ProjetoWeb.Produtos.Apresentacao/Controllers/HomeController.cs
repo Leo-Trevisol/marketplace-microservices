@@ -16,10 +16,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Controllers
         {
             var model = new HomeModel();
             model.ProdutosDestaque = this.ObterProdutosDestaque();
-<<<<<<< HEAD
-=======
-            //Console.WriteLine(model.ProdutosDestaque[0].Categoria.Nome);
->>>>>>> df86178aaca16a2a8b6c6c3c4f3364abd9496e34
+
             model.Categorias = this.ObterCategorias();
 
             return View(model);

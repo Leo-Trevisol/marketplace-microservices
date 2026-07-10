@@ -208,15 +208,11 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
 
             var response = await client.PostAsync("api/media/upload", form);
 
-            // 🔍 1. status code
-            Console.WriteLine("===== UPLOAD RESPONSE STATUS =====");
-            Console.WriteLine(response.StatusCode);
+
 
             // 🔍 2. JSON bruto (isso aqui é o mais importante)
             var json = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine("===== UPLOAD RESPONSE JSON =====");
-            Console.WriteLine(json);
 
             response.EnsureSuccessStatusCode();
 
@@ -228,9 +224,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                     PropertyNameCaseInsensitive = true
                 });
 
-            Console.WriteLine("===== DATA OBJETO =====");
-            Console.WriteLine($"Id: {resultado?.Data?.Id}");
-            Console.WriteLine($"Caminho: {resultado?.Data?.CaminhoArquivo}");
+
 
             return resultado?.Data;
         }
@@ -286,7 +280,11 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         public bool AlterarCategoria(APICategoriaModel categoria)
         {
             this.obtemBaseUrl(_config, TipoServico.Categoria);
-            var status = Put($"api/Produto/{categoria.Id}", categoria);
+            if (categoria.ParentId == 0)
+            {
+                categoria.ParentId = null;
+            }
+            var status = Put($"api/categoria/alterar", categoria);
             return status;
         }
 
@@ -357,7 +355,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         #endregion
 
         #region Pedidos
-        #region Pedidos
+
         public bool AdicionarPedido(APIPedidoRegistrarModel modelo)
         {
             if (modelo != null)
@@ -371,10 +369,10 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
                 return false;
             }
         }
-        public APIResponseModel<APIPedidoModel> ObterPedidoPorId(Guid Id)
+        public APIPedidoModel ObterPedidoPorId(Guid Id)
         {
             this.obtemBaseUrl(_config, TipoServico.PedidosCarrinho);
-            var pedido = Get<APIResponseModel<APIPedidoModel>>($"api/Pedido/{Id}");
+            var pedido = Get<APIPedidoModel>($"api/Pedido/{Id}");
             return pedido;
         }
 
@@ -383,10 +381,9 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             this.obtemBaseUrl(_config, TipoServico.PedidosCarrinho);
             try
             {
-                var response = Get<APIResponseModel<List<APIPedidoModel>>>($"api/Pedido/usuario/{usuarioId}");
-                return response != null && response.Sucesso && response.Data != null
-                    ? response.Data
-                    : new List<APIPedidoModel>();
+                var response = Get<List<APIPedidoModel>>($"api/Pedido/GetPedidosUsuario/{usuarioId}");
+
+                return response;
             }
             catch (Exception ex)
             {
@@ -396,7 +393,6 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
         }
         #endregion
 
-        #endregion
 
         #region Métodos privados de comunicação HTTP
         private T Get<T>(string endpoint)
@@ -575,7 +571,7 @@ namespace Ftec.ProjetoWeb.Produtos.Apresentacao.Facade
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[PAGAMENTO] ERRO: {ex.Message}"); 
+                Console.WriteLine($"[PAGAMENTO] ERRO: {ex.Message}");
                 return null;
             }
         }
